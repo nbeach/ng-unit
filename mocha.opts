@@ -1,0 +1,4 @@
+--compilers ts:ts-node/register
+--recursive
+--require mocha-shim.ts
+src/**/*.spec.ts

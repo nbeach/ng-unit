@@ -1,0 +1,60 @@
+{
+  "name": "ngx-test-utils",
+  "version": "1.0.0",
+  "description": "Parameteration for mocha tests",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/nbeach/mocha-where.git"
+  },
+  "author": "Nicholas Beach <nicholas.c.beach@gmail.com> (http://nicholasbeach.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nbeach/mocha-where/issues"
+  },
+  "keywords": [
+    "mocha",
+    "test",
+    "parameterize"
+  ],
+  "scripts": {
+    "clean": "rimraf src/**/*.js src/**/*.js.map src/**/*.d.ts",
+    "build": "npm run clean && tsc",
+    "release:tag": "git tag $(node -p -e \"require('./package.json').version\") && git push origin --tags",
+    "release": "npm test && npm run build && npm run release:tag && npm publish",
+    "test": "mocha --opts mocha.opts",
+    "test:watch": "mocha --opts mocha.opts --watch --reporter progress"
+  },
+  "devDependencies": {
+    "@angular/common": "^4.4.3",
+    "@angular/compiler": "^4.4.3",
+    "@angular/core": "^4.4.3",
+    "@angular/platform-browser": "^4.4.3",
+    "@angular/platform-browser-dynamic": "^4.4.3",
+    "@types/chai": "^4.0.4",
+    "@types/mocha": "^2.2.43",
+    "chai": "^3.5.0",
+    "core-js": "^2.5.1",
+    "jsdom": "^11.2.0",
+    "mocha": "^3.0.1",
+    "mocha-where": "^1.0.3",
+    "rimraf": "^2.6.2",
+    "rxjs": "^5.4.3",
+    "ts-helpers": "^1.1.2",
+    "ts-node": "^3.3.0",
+    "typescript": "^2.5.2",
+    "zone.js": "^0.8.17"
+  },
+  "dependencies": {
+    "@types/lodash": "^4.14.74",
+    "@types/node": "^8.0.31",
+    "@types/sinon": "^2.3.6",
+    "lodash": "^4.17.4",
+    "reflect-metadata": "^0.1.10",
+    "sinon": "^4.0.1"
+  },
+  "peerDependencies": {
+    "@angular/core": ">= 4.4.3"
+  }
+}
