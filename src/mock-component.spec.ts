@@ -89,7 +89,7 @@ describe("mockComponent", () => {
         expect(instance.someMethod.called).to.be.true;
     });
 
-    it("allows passing custom mocks providers", () => {
+    it("allows passing a custom mock provider", () => {
         let called = false;
         const mockProvider = function() {
             return () => called = true;

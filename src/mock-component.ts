@@ -13,7 +13,7 @@ function instanceExistsIn<T>(object: Type<T>, list: any[]): boolean {
     return some(list, (dec: any) => dec instanceof object)
 }
 
-export function mockComponent<T>(constructor: Type<T>, mockMethodConstructor: () => any = () => stub()): any {
+export function mockComponent<T>(constructor: Type<T>, mockProvider: () => any = stub): any {
     const propertyMetadata = Reflect.getMetadata('propMetadata', constructor);
 
     const options = {
@@ -24,7 +24,7 @@ export function mockComponent<T>(constructor: Type<T>, mockMethodConstructor: ()
     };
 
     const outputs = reduce(options.outputs, (obj, property) => set(obj, property, new EventEmitter<any>()), {});
-    const mockedMethods = keysIn(constructor.prototype).reduce((obj, property) => set(obj, property, mockMethodConstructor()), {});
+    const mockedMethods = keysIn(constructor.prototype).reduce((obj, property) => set(obj, property, mockProvider()), {});
     const destructor = { ngOnDestroy: () => values(outputs).forEach((output: EventEmitter<any>) => output.complete()) } ;
 
     const MockComponent = function() {};
