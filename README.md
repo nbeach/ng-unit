@@ -1,4 +1,4 @@
-# ngx-test-utils
+# ngx-unit
 Testing utilities for Angular
 
 ### Usage
