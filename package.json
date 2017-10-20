@@ -6,12 +6,12 @@
   "types": "src/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git://github.com/nbeach/mocha-where.git"
+    "url": "git://github.com/nbeach/ngx-test-utils.git"
   },
   "author": "Nicholas Beach <nicholas.c.beach@gmail.com> (http://nicholasbeach.com)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/nbeach/mocha-where/issues"
+    "url": "https://github.com/nbeach/ngx-test-utils/issues"
   },
   "keywords": [
     "mocha",
