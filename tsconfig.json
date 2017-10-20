@@ -15,7 +15,6 @@
     "declaration" : true
   },
   "exclude": [
-    "src/**/*.spec.ts",
     "mocha-shim.ts"
   ]
 

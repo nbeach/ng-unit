@@ -2,5 +2,5 @@
 node_modules/
 npm-debug.log
 **/*.js
-**/*.d.ts
 **/*.js.map
+**/*.d.ts

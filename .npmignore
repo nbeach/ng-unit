@@ -1,4 +1,8 @@
 .idea/
 node_modules/
 npm-debug.log
-**/*.spec.ts
+**/*.spec.*
+
+mocha.opts
+mocha-shim.ts
+tsconfig.json
