@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, Output, Type} from "@angular/core";
 import {selectorOf} from "./selector-of";
 import "reflect-metadata";
-import {reduce, defaultTo, keys, some, set, values, merge, extend, keysIn} from "lodash";
+import {defaultTo, extend, keys, keysIn, reduce, set, some, values, isNull} from "lodash";
 import {stub} from "sinon";
 
 function propertiesDecoratedWith(decorator: any, propertyMetadata: any): string[] {

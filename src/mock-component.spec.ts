@@ -1,29 +1,26 @@
 import {Component, EventEmitter, Input, Output} from "@angular/core";
-import {ComponentFixture, TestBed} from "@angular/core/testing";
-import {expect} from 'chai';
+import {TestBed} from "@angular/core/testing";
+import {expect, use} from 'chai';
+import * as chaiDom from 'chai-dom';
+import * as sinonChai from 'sinon-chai';
 import {where} from "mocha-where";
 import {mockComponent} from "./mock-component";
 import {range} from "lodash";
-import {createComponent} from "./setup";
-import {selectComponent, selectComponents} from "./dom";
-import {TestModuleMetadata} from "@angular/core/testing";
+import {testComponent} from "./test-setup";
+use(chaiDom);
+use(sinonChai);
 
 describe("mockComponent", () => {
     afterEach(TestBed.resetTestingModule);
 
     describe("can communicate with it's parent by", () => {
-        let subject: CommunicatingParent,
-            subjectElement: any,
-            detectChanges: () => void,
-            fixture: ComponentFixture<any>;
+        let subject: CommunicatingParent, detectChanges: () => void, child: any, element: any;
 
         beforeEach(() => {
-            const moduleConfig: TestModuleMetadata = {
-                declarations: [mockComponent(CommunicatingChildComponent)],
-                providers: []
-            };
-
-            ({subject, subjectElement, detectChanges, fixture} = createComponent(CommunicatingParent, moduleConfig));
+            ({subject, element, detectChanges, child} = testComponent({
+                subject: CommunicatingParent,
+                mock: [CommunicatingChildComponent]
+            }));
         });
 
         where([
@@ -35,8 +32,7 @@ describe("mockComponent", () => {
             subject[scenario.bindingMethod]("foo");
             detectChanges();
 
-            const childInstance = selectComponent('child', fixture);
-            expect(childInstance[scenario.childProperty]).to.equal("foo");
+            expect(child(CommunicatingChildComponent)[scenario.childProperty]).to.equal("foo");
         });
 
         where([
@@ -45,64 +41,59 @@ describe("mockComponent", () => {
             ["named output events", "namedOutput", "#namedOutputFromChild"],
         ])
         .it("emitting #name", (scenario: any) => {
-            const childInstance = selectComponent('child', fixture);
-            childInstance[scenario.childOutput].emit("bar");
+            child(CommunicatingChildComponent)[scenario.childOutput].emit("bar");
             detectChanges();
-            expect(subjectElement.querySelector(scenario.parentTagSelector).textContent).to.equal("bar");
+            expect(element(scenario.parentTagSelector)).to.have.text("bar");
         });
 
     });
 
     it("allows multiple instantiations of the mock", () => {
-        const {fixture, detectChanges} = createComponent(MultiChildParentComponent, {
-            declarations: [mockComponent(CommunicatingChildComponent)],
-            providers: []
+        const {children, detectChanges} = testComponent({
+            subject: MultiChildParentComponent,
+            mock: [CommunicatingChildComponent],
         });
+
         detectChanges();
-
-        const childInstances = selectComponents('child', fixture);
-        expect(childInstances.length).to.equal(3);
-        expect(childInstances[0].input).to.equal(0);
-        expect(childInstances[1].input).to.equal(1);
-        expect(childInstances[2].input).to.equal(2);
+        expect(children(CommunicatingChildComponent)).to.have.length(3);
+        expect(children(CommunicatingChildComponent)[0].input).to.equal(0);
+        expect(children(CommunicatingChildComponent)[1].input).to.equal(1);
+        expect(children(CommunicatingChildComponent)[2].input).to.equal(2);
     });
 
-    it("mocks components with no inputs or outputs", () => {
-        const {fixture} = createComponent(NonCommunicatingParent, {
-            declarations: [mockComponent(NonCommunicatingChildComponent)],
-            providers: []
+    describe("mocks", () => {
+        let child: any, children: any;
+
+         beforeEach(() => {
+             ({child, children} = testComponent({
+                 subject: NonCommunicatingParent,
+                 mock: [NonCommunicatingChildComponent],
+             }));
+         });
+
+        it("components with no inputs or outputs", () => {
+            expect(children(NonCommunicatingChildComponent)).to.have.length(1);
         });
 
-        const childInstances = selectComponents('child', fixture);
-        expect(childInstances.length).to.equal(1);
-    });
-    
-    it("mocks component methods", () => {
-        const {fixture} = createComponent(NonCommunicatingParent, {
-            declarations: [mockComponent(NonCommunicatingChildComponent)],
-            providers: []
+        it("component methods", () => {
+            const instance = child(NonCommunicatingChildComponent);
+            instance.someMethod();
+            expect(instance.someMethod).to.have.been.called;
         });
 
-        const instance = selectComponent(NonCommunicatingChildComponent, fixture);
-        instance.someMethod();
-
-        expect(instance.someMethod.called).to.be.true;
     });
 
-    it("allows passing a custom mock provider", () => {
+    it("allows use of a custom mock factory", () => {
         let called = false;
-        const mockProvider = function() {
-            return () => called = true;
-        };
+        const mockFactory = function() { return () => called = true; };
 
-        const {fixture} = createComponent(NonCommunicatingParent, {
-            declarations: [mockComponent(NonCommunicatingChildComponent, mockProvider)],
-            providers: []
+        const {child} = testComponent({
+            subject: NonCommunicatingParent,
+            mock: [NonCommunicatingChildComponent],
+            methodMockFactory: mockFactory
         });
 
-        const instance = selectComponent(NonCommunicatingChildComponent, fixture);
-        instance.someMethod();
-
+        child(NonCommunicatingChildComponent).someMethod();
         expect(called).to.be.true;
     });
 
