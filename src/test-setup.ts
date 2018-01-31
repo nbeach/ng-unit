@@ -4,14 +4,13 @@ import {concat, defaultTo} from 'lodash';
 import {selectComponent, selectComponents} from "./dom";
 import {mockComponent} from "./mock-component";
 
-
 export class ComponentTestContext<T> {
     constructor(private _fixture: ComponentFixture<T>) {}
 
     public element = (selector: string): Element | null => this._fixture.nativeElement.querySelector(selector);
     public elements = (selector: string): NodeListOf<Element> => this._fixture.nativeElement.querySelectorAll(selector);
-    public child = (selectorOrType: string | Type<any>): any => selectComponent(selectorOrType, this._fixture);
-    public children = (selectorOrType: string | Type<any>): any[] => selectComponents(selectorOrType, this._fixture);
+    public child = <T>(selectorOrType: string | Type<T>): T => selectComponent(selectorOrType, this._fixture);
+    public children = <T>(selectorOrType: string | Type<T>): T[] => selectComponents(selectorOrType, this._fixture);
     public detectChanges = () : void => this._fixture.detectChanges();
 
     get subject(): T {
@@ -43,6 +42,7 @@ export function testComponent<T>(config: TestConfig<T>): ComponentTestContext<T>
         declarations: concat(config.subject, componentMocks, realComponents),
     });
     const fixture = TestBed.createComponent(config.subject);
+    fixture.detectChanges();
 
     return new ComponentTestContext(fixture);
 }

@@ -4,10 +4,8 @@ import {setCheckboxValue, setInputValue, setRadioButton, setSelectValue, setText
 import {FormsModule} from "@angular/forms";
 import * as chai from 'chai';
 import {expect} from 'chai';
-import * as sinonChai from 'sinon-chai';
 import * as chaiDom from 'chai-dom';
 
-chai.use(sinonChai);
 chai.use(chaiDom);
 
 describe("DOM", () => {
