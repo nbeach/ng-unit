@@ -6,7 +6,7 @@ import * as sinonChai from 'sinon-chai';
 import {where} from "mocha-where";
 import {mockComponent} from "./mock-component";
 import {range} from "lodash";
-import {selectComponent, selectComponents} from "./dom";
+import {By} from "@angular/platform-browser";
 
 use(chaiDom);
 use(sinonChai);
@@ -43,7 +43,8 @@ describe("mockComponent", () => {
             subject[scenario.bindingMethod]("foo");
             fixture.detectChanges();
 
-            expect(selectComponent(CommunicatingChildComponent, fixture)[scenario.childProperty]).to.equal("foo");
+            const component = fixture.debugElement.query(By.css("child")).componentInstance;
+            expect(component[scenario.childProperty]).to.equal("foo");
         });
 
         where([
@@ -52,7 +53,8 @@ describe("mockComponent", () => {
             ["named output events", "namedOutput", "#namedOutputFromChild"],
         ])
         .it("emitting #name", (scenario: any) => {
-            selectComponent(CommunicatingChildComponent, fixture)[scenario.childOutput].emit("bar");
+            const component = fixture.debugElement.query(By.css("child")).componentInstance;
+            component[scenario.childOutput].emit("bar");
             fixture.detectChanges();
             expect(subjectElement.querySelector(scenario.parentTagSelector)).to.have.text("bar");
         });
@@ -68,7 +70,7 @@ describe("mockComponent", () => {
         const fixture = TestBed.createComponent(MultiChildParentComponent);
         fixture.detectChanges();
 
-        const components = selectComponents(CommunicatingChildComponent, fixture);
+        const components = fixture.debugElement.queryAll(By.css("child")).map(element => element.componentInstance);;
         expect(components).to.have.length(3);
         expect(components[0].input).to.equal(0);
         expect(components[1].input).to.equal(1);
@@ -89,13 +91,14 @@ describe("mockComponent", () => {
          });
 
         it("components with no inputs or outputs", () => {
-            expect(selectComponents(NonCommunicatingChildComponent, fixture)).to.have.length(1);
+            const components = fixture.debugElement.queryAll(By.css("child")).map(element => element.componentInstance);
+            expect(components).to.have.length(1);
         });
 
         it("component methods", () => {
-            const instance = selectComponent(NonCommunicatingChildComponent, fixture);
-            instance.someMethod();
-            expect(instance.someMethod).to.have.been.called;
+            const component = fixture.debugElement.query(By.css("child")).componentInstance;
+            component.someMethod();
+            expect(component.someMethod).to.have.been.called;
         });
 
     });
@@ -111,7 +114,8 @@ describe("mockComponent", () => {
 
         const fixture = TestBed.createComponent(NonCommunicatingParent);
 
-        selectComponent(NonCommunicatingChildComponent, fixture).someMethod();
+        const component = fixture.debugElement.query(By.css("child")).componentInstance;
+        component.someMethod();
         expect(called).to.be.true;
     });
 
