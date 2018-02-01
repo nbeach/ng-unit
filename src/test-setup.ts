@@ -2,7 +2,7 @@ import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {Type} from "@angular/core";
 import {concat, defaultTo} from 'lodash';
 import {selectComponent, selectComponents} from "./dom";
-import {mockComponent} from "./mock-component";
+import {mockComponent, MockSetup} from "./mock-component";
 
 export class ComponentTestContext<T> {
     constructor(private _fixture: ComponentFixture<T>) {}
@@ -34,17 +34,55 @@ export interface TestConfig<T> {
     methodMockFactory?: () => any;
 }
 
-export function testComponent<T>(config: TestConfig<T>): ComponentTestContext<T> {
-    const realComponents = defaultTo(config.use, []);
-    const mockComponents = defaultTo(config.mock, [])
-        .map(type => mockComponent(type, config.methodMockFactory));
+interface MockTypeAndSetup {
+    type: Type<any>,
+    setup: MockSetup
+}
 
-    TestBed.configureTestingModule({
-        declarations: concat(config.subject, mockComponents, realComponents),
-    });
-    const fixture = TestBed.createComponent(config.subject);
-    fixture.detectChanges();
+export class TestBuilder<T> {
+    private mockSets: MockTypeAndSetup[] = [];
 
-    return new ComponentTestContext(fixture);
+    public static configure<T>(config: TestConfig<T>) {
+        return new TestBuilder(config);
+    }
+
+    private constructor(private config: TestConfig<T>) { }
+
+    public setupMock(type: Type<any>, setup: (mock: any) => void): TestBuilder<T> {
+        this.mockSets.push({type: type, setup: setup});
+        return this;
+    }
+
+    // public input(): TestBuilder<T> {
+    //     return this;
+    // }
+
+    public create(): ComponentTestContext<T> {
+        const realComponents = defaultTo(this.config.use, []);
+        const mockComponents = defaultTo(this.config.mock, [])
+            .map(type => this.createComponentMock(type, this.mockSets));
+
+        TestBed.configureTestingModule({
+            declarations: concat(this.config.subject, mockComponents, realComponents),
+        });
+
+        const fixture = TestBed.createComponent(this.config.subject);
+        fixture.detectChanges();
+
+        return new ComponentTestContext(fixture);
+    }
+
+    private createComponentMock<T>(type: Type<T>, setup: MockTypeAndSetup[]): Type<T> {
+        const relevantMockSetups = setup
+            .filter(set => set.type === type)
+            .map(set => set.setup);
+
+        return mockComponent(type,  mock => this.applyMockSetups(mock, relevantMockSetups));
+    }
+
+    private applyMockSetups(mock: any, mockSetups: MockSetup[]): void {
+        mockSetups.forEach(setup => setup(mock));
+    }
+
 }
 

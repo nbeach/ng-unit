@@ -13,7 +13,12 @@ function instanceExistsIn<T>(object: Type<T>, list: any[]): boolean {
     return some(list, (dec: any) => dec instanceof object)
 }
 
-export function mockComponent<T>(constructor: Type<T>, mockSetup: (mock: any) => void = () => {}, mockProvider: () => any = stub): any {
+
+export interface MockSetup {
+    (mock: any): void
+}
+
+export function mockComponent<T>(constructor: Type<T>, mockSetup: MockSetup = () => {}, mockProvider: () => any = stub): any {
     const propertyMetadata = Reflect.getMetadata('propMetadata', constructor);
 
     const options = {

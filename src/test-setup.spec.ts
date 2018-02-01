@@ -1,4 +1,4 @@
-import {ComponentTestContext, testComponent} from "./test-setup";
+import {ComponentTestContext, TestBuilder} from "./test-setup";
 import {Component} from "@angular/core";
 import * as chai from 'chai';
 import {expect} from 'chai';
@@ -42,10 +42,10 @@ describe("TestSetup", () => {
     describe("allows", () => {
 
         beforeEach(() => {
-            context = testComponent({
+            context = TestBuilder.configure({
                 subject: TestComponent,
                 use: [ChildComponent]
-            });
+            }).create();
         });
 
 
@@ -100,12 +100,13 @@ describe("TestSetup", () => {
     });
 
     it("allows mocking child components", () => {
-        context = testComponent({
+        context =  TestBuilder.configure({
             subject: TestComponent,
-            mock: [ChildComponent]
-        });
+            mock: [ChildComponent],
+        })
+        .setupMock(ChildComponent, (mock: any) => mock.invokeMe.returns("I'm mocked"))
+        .create();
 
-        context.child<any>(ChildComponent).invokeMe.returns("I'm mocked");
         expect(context.child(ChildComponent).invokeMe()).to.equal("I'm mocked");
     });
 
