@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, Output, Type} from "@angular/core";
 import {selectorOf} from "./selector-of";
 import "reflect-metadata";
-import {defaultTo, extend, keys, keysIn, reduce, set, some, values} from "lodash";
+import {defaultTo, extend, keys, keysIn, reduce, set, some} from "lodash";
 import {stub} from "sinon";
 
 function propertiesDecoratedWith(decorator: any, propertyMetadata: any): string[] {
@@ -23,12 +23,12 @@ export function mockComponent<T>(constructor: Type<T>, mockProvider: () => any =
         outputs: propertiesDecoratedWith(Output, propertyMetadata),
     };
 
-    const outputs = reduce(options.outputs, (obj, property) => set(obj, property, new EventEmitter<any>()), {});
-    const mockedMethods = keysIn(constructor.prototype).reduce((obj, property) => set(obj, property, mockProvider()), {});
-    const destructor = { ngOnDestroy: () => values(outputs).forEach((output: EventEmitter<any>) => output.complete()) } ;
-
-    const MockComponent = function() {};
-    MockComponent.prototype = extend({}, outputs, mockedMethods, destructor);
+    const MockComponent = function() {
+        const outputs = reduce(options.outputs, (obj, property) => set(obj, property, new EventEmitter<any>()), {});
+        const mockedMethods = keysIn(constructor.prototype).reduce((obj, property) => set(obj, property, mockProvider()), {});
+        // const destructor = { ngOnDestroy: () => values(outputs).forEach((output: EventEmitter<any>) => output.complete()) } ;
+        return extend({}, outputs, mockedMethods);
+    };
 
     return Component(options as Component)(MockComponent);
 }

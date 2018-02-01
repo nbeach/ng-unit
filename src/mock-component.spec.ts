@@ -119,6 +119,21 @@ describe("mockComponent", () => {
         expect(called).to.be.true;
     });
 
+    it("creates unique event emitters for each instance", () => {
+        const MockComponent = mockComponent(CommunicatingChildComponent);
+        const first = new MockComponent();
+        const second = new MockComponent();
+
+        expect((first as any).output).to.not.equal((second as any).output);
+    });
+
+    it("creates unique method mocks for each instance", () => {
+        const MockComponent = mockComponent(CommunicatingChildComponent);
+        const first = new MockComponent();
+        const second = new MockComponent();
+
+        expect((first as any).foo).to.not.equal((second as any).foo);
+    });
 });
 
 @Component({ selector: 'child' })
@@ -127,6 +142,8 @@ class CommunicatingChildComponent {
     @Input('differentInput') private namedInput: string;
     @Output() private output = new EventEmitter<any>();
     @Output('differentOutput') private namedOutput = new EventEmitter<any>();
+
+    public foo() {};
 }
 
 @Component({
