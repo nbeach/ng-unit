@@ -1,6 +1,9 @@
 import {Component} from "@angular/core";
 import {ComponentFixture, TestBed} from "@angular/core/testing";
-import {setCheckboxValue, setInputValue, setRadioButton, setSelectValue, setTextAreaValue} from "./dom";
+import {
+    selectComponent, selectComponents, setCheckboxValue, setInputValue, setRadioButton, setSelectValue,
+    setTextAreaValue
+} from "./dom";
 import {FormsModule} from "@angular/forms";
 import * as chai from 'chai';
 import {expect} from 'chai';
@@ -33,6 +36,8 @@ describe("DOM", () => {
             <input id="radio1" name="radio" value="Yes" type="radio" [checked]="radioValue === 'Yes'" (change)="radioButtonChanged($event)">
             <input id="radio2" name="radio" value="No" type="radio" [checked]="radioValue === 'No'" (change)="radioButtonChanged($event)">
             <span id="radio-value-display">{{radioValue}}</span>
+            <child id="first-born"></child>
+            <child id="second-born"></child>
         `
     })
     class TestComponent {
@@ -50,9 +55,17 @@ describe("DOM", () => {
         }
     }
 
+    @Component({
+        selector: "child",
+        template: ""
+    })
+    class ChildComponent {
+        public message = "I'm the child!";
+    }
+
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [TestComponent],
+            declarations: [TestComponent, ChildComponent],
             imports: [FormsModule]
         });
 
@@ -107,6 +120,34 @@ describe("DOM", () => {
         setCheckboxValue(subjectElement.querySelector('input[type=checkbox]'), false);
         fixture.detectChanges();
         expect(subjectElement.querySelector('#check-value-display')).to.have.text("false");
+    });
+
+    describe("selectComponent() selects a component by", () => {
+
+        it("CSS selector", () => {
+            expect(selectComponent('#first-born', fixture).message).to.equal("I'm the child!")
+        });
+
+        it("type", () => {
+            expect(selectComponent(ChildComponent, fixture).message).to.equal("I'm the child!")
+        });
+
+    });
+
+    describe("selectComponents() selects components by", () => {
+
+        it("CSS selector", () => {
+            const children = selectComponents('child', fixture);
+            expect(children[0].message).to.equal("I'm the child!");
+            expect(children[1].message).to.equal("I'm the child!");
+        });
+
+        it("type", () => {
+            const children = selectComponents(ChildComponent, fixture);
+            expect(children[0].message).to.equal("I'm the child!");
+            expect(children[1].message).to.equal("I'm the child!");
+        });
+
     });
 
 });
