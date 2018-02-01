@@ -107,7 +107,7 @@ describe("mockComponent", () => {
         let called = false;
         const mockFactory = function() { return () => called = true; };
 
-        const mockChildComponent = mockComponent(NonCommunicatingChildComponent, mockFactory);
+        const mockChildComponent = mockComponent(NonCommunicatingChildComponent, () => {}, mockFactory);
         TestBed.configureTestingModule({
             declarations: [NonCommunicatingParent, mockChildComponent]
         });
@@ -133,6 +133,15 @@ describe("mockComponent", () => {
         const second = new MockComponent();
 
         expect((first as any).foo).to.not.equal((second as any).foo);
+    });
+
+    it("allows for mock setup to be passed", () => {
+        const MockComponent = mockComponent(CommunicatingChildComponent, mock => {
+            mock.foo.returns("sasquatch");
+        });
+        const mock = new MockComponent();
+
+        expect(mock.foo()).to.equal("sasquatch");
     });
 });
 
