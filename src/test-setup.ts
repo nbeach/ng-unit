@@ -29,17 +29,18 @@ export class ComponentTestContext<T> {
 
 export interface TestConfig<T> {
     subject: Type<T>
-    mock?: any[];
-    use?: any[];
+    mock?: Type<any>[];
+    use?: Type<any>[];
     methodMockFactory?: () => any;
 }
 
 export function testComponent<T>(config: TestConfig<T>): ComponentTestContext<T> {
-    const componentMocks = defaultTo(config.mock, []).map((c: any) => mockComponent(c, config.methodMockFactory));
     const realComponents = defaultTo(config.use, []);
+    const mockComponents = defaultTo(config.mock, [])
+        .map(type => mockComponent(type, config.methodMockFactory));
 
     TestBed.configureTestingModule({
-        declarations: concat(config.subject, componentMocks, realComponents),
+        declarations: concat(config.subject, mockComponents, realComponents),
     });
     const fixture = TestBed.createComponent(config.subject);
     fixture.detectChanges();
