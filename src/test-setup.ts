@@ -1,24 +1,29 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
-import {Type} from "@angular/core";
+import {Component, Type} from "@angular/core";
 import {concat, defaultTo} from 'lodash';
 import {selectComponent, selectComponents} from "./dom";
 import {mockComponent, MockSetup} from "./mock-component";
+import {selectorOf} from "./selector-of";
 
 export class ComponentTestContext<T> {
-    constructor(private _fixture: ComponentFixture<T>) {}
+    private _subject: T;
 
-    public element = (selector: string): Element | null => this._fixture.nativeElement.querySelector(selector);
-    public elements = (selector: string): NodeListOf<Element> => this._fixture.nativeElement.querySelectorAll(selector);
+    constructor(private type: Type<T>, private _fixture: ComponentFixture<any>) {
+        this._subject = selectComponent(type, _fixture) as any;
+    }
+
+    public element = (selector: string): Element | null => this.subjectElement.querySelector(selector);
+    public elements = (selector: string): NodeListOf<Element> => this.subjectElement.querySelectorAll(selector);
     public child = <T>(selectorOrType: string | Type<T>): T => selectComponent(selectorOrType, this._fixture);
     public children = <T>(selectorOrType: string | Type<T>): T[] => selectComponents(selectorOrType, this._fixture);
     public detectChanges = () : void => this._fixture.detectChanges();
 
     get subject(): T {
-        return this._fixture.componentInstance
+        return this.child(this.type);
     }
 
     get subjectElement(): Element {
-        return this._fixture.nativeElement;
+        return this._fixture.nativeElement.querySelector(selectorOf(this.type));
     }
 
     get fixture(): ComponentFixture<T> {
@@ -40,7 +45,8 @@ interface MockTypeAndSetup {
 }
 
 export class TestBuilder<T> {
-    private mockSets: MockTypeAndSetup[] = [];
+    private mockSetups: MockTypeAndSetup[] = [];
+    private inputInitializations = new Map<string, any>();
 
     public static configure<T>(config: TestConfig<T>) {
         return new TestBuilder(config);
@@ -49,30 +55,54 @@ export class TestBuilder<T> {
     private constructor(private config: TestConfig<T>) { }
 
     public setupMock(type: Type<any>, setup: (mock: any) => void): TestBuilder<T> {
-        this.mockSets.push({type: type, setup: setup});
+        this.mockSetups.push({type: type, setup: setup});
         return this;
     }
 
-    // public input(): TestBuilder<T> {
-    //     return this;
-    // }
+    public input(inputName: string, value: any): TestBuilder<T> {
+        this.inputInitializations.set(inputName, value);
+        return this;
+    }
 
     public create(): ComponentTestContext<T> {
         const realComponents = defaultTo(this.config.use, []);
         const mockComponents = defaultTo(this.config.mock, [])
-            .map(type => this.createComponentMock(type, this.mockSets));
+            .map(type => TestBuilder.createComponentMock(type, this.mockSetups));
 
+        const subject = this.config.subject;
+        const TestHostComponent = TestBuilder.createTestHostComponent(subject, this.inputInitializations);
         TestBed.configureTestingModule({
-            declarations: concat(this.config.subject, mockComponents, realComponents),
+            declarations: concat(TestHostComponent, subject, mockComponents, realComponents),
         });
 
-        const fixture = TestBed.createComponent(this.config.subject);
+        const fixture = TestBed.createComponent(TestHostComponent);
         fixture.detectChanges();
 
-        return new ComponentTestContext(fixture);
+        return new ComponentTestContext<T>(subject, fixture);
     }
 
-    private createComponentMock<T>(type: Type<T>, setup: MockTypeAndSetup[]): Type<T> {
+    private static createTestHostComponent<T>(subject: Type<T>, inputInitializations: Map<string, any>) {
+        const inputsNames = Array.from(inputInitializations.keys());
+        const template =  this.createSubjectComponentTag(subject, inputsNames);
+
+        @Component({ template: template })
+        class TestHostComponent {
+            constructor() {
+                const inputs = Array.from(inputInitializations.entries());
+                inputs.forEach(input => this[input[0]] = input[1]);
+            }
+        }
+
+        return TestHostComponent;
+    }
+
+    private static createSubjectComponentTag<T>(subject: Type<T>, inputs: string[]): string {
+        const inputAttributes = inputs.map(input => `[${input}]="${input}"`).join(" ");
+        const subjectTagName = selectorOf(subject);
+        return `<${subjectTagName} ${inputAttributes}></${subjectTagName}>`;
+    }
+
+    private static createComponentMock<T>(type: Type<T>, setup: MockTypeAndSetup[]): Type<T> {
         const relevantMockSetups = setup
             .filter(set => set.type === type)
             .map(set => set.setup);
@@ -80,9 +110,8 @@ export class TestBuilder<T> {
         return mockComponent(type,  mock => this.applyMockSetups(mock, relevantMockSetups));
     }
 
-    private applyMockSetups(mock: any, mockSetups: MockSetup[]): void {
+    private static applyMockSetups(mock: any, mockSetups: MockSetup[]): void {
         mockSetups.forEach(setup => setup(mock));
     }
 
 }
-

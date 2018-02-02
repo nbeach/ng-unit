@@ -13,7 +13,6 @@ function instanceExistsIn<T>(object: Type<T>, list: any[]): boolean {
     return some(list, (dec: any) => dec instanceof object)
 }
 
-
 export interface MockSetup {
     (mock: any): void
 }

@@ -1,5 +1,5 @@
 import {ComponentTestContext, TestBuilder} from "./test-setup";
-import {Component} from "@angular/core";
+import {Component, Input} from "@angular/core";
 import * as chai from 'chai';
 import {expect} from 'chai';
 import * as chaiDom from 'chai-dom';
@@ -22,7 +22,8 @@ describe("TestSetup", () => {
         `
     })
     class TestComponent {
-        public message: string = "foo";
+        @Input() public someInput = "";
+        public message = "foo";
     }
 
     @Component({
@@ -108,6 +109,17 @@ describe("TestSetup", () => {
         .create();
 
         expect(context.child(ChildComponent).invokeMe()).to.equal("I'm mocked");
+    });
+
+    it("allows setting initial components inputs", () => {
+        context =  TestBuilder.configure({
+            subject: TestComponent,
+            use: [ChildComponent]
+        })
+        .input("someInput", "Schwoosh!")
+        .create();
+
+        expect(context.subject.someInput).to.equal("Schwoosh!");
     });
 
 });
