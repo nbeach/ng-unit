@@ -2,7 +2,7 @@ import {Component} from "@angular/core";
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {
     selectComponent, selectComponents, setCheckboxValue, setInputValue, setRadioButton, setSelectValue,
-    setTextAreaValue
+    setTextAreaValue, focus, blur
 } from "./dom";
 import {FormsModule} from "@angular/forms";
 import * as chai from 'chai';
@@ -19,9 +19,11 @@ describe("DOM", () => {
     @Component({
         selector: 'parent',
         template: `
-            <input type="text" [(ngModel)]="textValue">
+            <input type="text" [(ngModel)]="textValue" (focus)="focusValue = 'Focused!'" (blur)="blurValue = 'Blurred!'">
             <textarea [(ngModel)]="textValue"></textarea>
             <span id="text-value-display">{{textValue}}</span>
+            <span id="focus-display">{{focusValue}}</span>
+            <span id="blur-display">{{blurValue}}</span>
             
             <input type="checkbox" [checked]="checked" (change)="checked = !checked">
             <span id="check-value-display">{{checked ? "true" : "false" }}</span>
@@ -45,6 +47,8 @@ describe("DOM", () => {
         private checked: boolean;
         private selectValue: string;
         private radioValue: string;
+        private focusValue: string;
+        private blurValue: string;
 
         private radioButtonChanged(event: any) {
             if(event.target.checked) {
@@ -148,6 +152,18 @@ describe("DOM", () => {
             expect(children[1].message).to.equal("I'm the child!");
         });
 
+    });
+
+    it("blur() triggers a blur even on the element", () => {
+        blur(subjectElement.querySelector('input'));
+        fixture.detectChanges();
+        expect(subjectElement.querySelector('#blur-display')).to.have.text("Blurred!");
+    });
+
+    it("focus() triggers a focus event on the element", () => {
+        focus(subjectElement.querySelector('input'));
+        fixture.detectChanges();
+        expect(subjectElement.querySelector('#focus-display')).to.have.text("Focused!");
     });
 
 });
