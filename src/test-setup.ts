@@ -4,6 +4,7 @@ import {concat, defaultTo} from 'lodash';
 import {selectComponent, selectComponents} from "./dom";
 import {mockComponent, MockSetup} from "./mock-component";
 import {selectorOf} from "./selector-of";
+const createElement = require("dom-create-element-query-selector")
 
 export class ComponentTestContext<T> {
     private _subject: T;
@@ -97,9 +98,15 @@ export class TestBuilder<T> {
     }
 
     private static createSubjectComponentTag<T>(subject: Type<T>, inputs: string[]): string {
-        const inputAttributes = inputs.map(input => `[${input}]="${input}"`).join(" ");
         const subjectTagName = selectorOf(subject);
-        return `<${subjectTagName} ${inputAttributes}></${subjectTagName}>`;
+        const elementHtml = createElement(subjectTagName).outerHTML;
+
+        return this.addInputsToTag(elementHtml, inputs);
+    }
+
+    private static addInputsToTag(tag: string, inputs: string[]) {
+        const inputAttributes = inputs.map(input => ` [${input}]="${input}"`).join("");
+        return tag.replace(/></, `${inputAttributes}><`);
     }
 
     private static createComponentMock<T>(type: Type<T>, setup: MockTypeAndSetup[]): Type<T> {

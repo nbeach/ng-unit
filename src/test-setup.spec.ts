@@ -122,4 +122,72 @@ describe("TestSetup", () => {
         expect(context.subject.someInput).to.equal("Schwoosh!");
     });
 
+    describe("allows testing components with selectors for", () => {
+
+        it("tag names", () => {
+            @Component({
+                selector: 'parent',
+                template: `<span id="message">Sasquatch</span>`
+            })
+            class SubjectComponent {}
+
+            const context =  TestBuilder.configure({ subject: SubjectComponent }).create();
+
+            expect(context.element('#message')).to.have.text("Sasquatch");
+        });
+
+        it("attributes", () => {
+            @Component({
+                selector: '[parent]',
+                template: `<span id="message">Sasquatch</span>`
+            })
+            class SubjectComponent {}
+
+            const context =  TestBuilder.configure({ subject: SubjectComponent }).create();
+
+            expect(context.element('#message')).to.have.text("Sasquatch");
+        });
+
+        it("classes", () => {
+            @Component({
+                selector: '.parent',
+                template: `<span id="message">Sasquatch</span>`
+            })
+            class SubjectComponent {}
+
+            const context =  TestBuilder.configure({ subject: SubjectComponent }).create();
+
+            expect(context.element('#message')).to.have.text("Sasquatch");
+        });
+
+        it("tag names, classes, and attributes", () => {
+            @Component({
+                selector: 'parent.parent[parent]',
+                template: `<span id="message">Sasquatch</span>`
+            })
+            class SubjectComponent {}
+
+            const context =  TestBuilder.configure({ subject: SubjectComponent }).create();
+
+            expect(context.element('#message')).to.have.text("Sasquatch");
+        });
+
+        it("attributes that are also input names", () => {
+            @Component({
+                selector: '[parent]',
+                template: `<span id="message">{{parent}}</span>`
+            })
+            class SubjectComponent {
+                @Input() private parent: string;
+            }
+
+            const context =  TestBuilder.configure({ subject: SubjectComponent })
+                .input("parent", "Sasquatch")
+                .create();
+
+            expect(context.element('#message')).to.have.text("Sasquatch");
+        });
+    });
+
+
 });

@@ -55,6 +55,7 @@
     "@types/lodash": "^4.14.74",
     "@types/node": "^8.0.31",
     "@types/sinon": "^2.3.6",
+    "dom-create-element-query-selector": "^1.0.5",
     "lodash": "^4.17.4",
     "sinon": "^4.0.1"
   },
