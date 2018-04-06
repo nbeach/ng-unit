@@ -143,6 +143,29 @@ describe("mockComponent", () => {
 
         expect(mock.foo()).to.equal("sasquatch");
     });
+
+    it("supports rendering transcluded content", () => {
+
+        @Component({ selector: 'child' })
+        class ChildComponent {}
+
+        @Component({
+            selector: 'parent',
+            template: `<child><span id="message">Sasquatch</span></child>`
+        })
+        class ParentComponent {}
+
+
+        const MockChildComponent = mockComponent(ChildComponent);
+        TestBed.configureTestingModule({
+            declarations: [ParentComponent, MockChildComponent]
+        });
+
+        const fixture = TestBed.createComponent(ParentComponent);
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('#message')).to.have.text("Sasquatch");
+    });
 });
 
 @Component({ selector: 'child' })

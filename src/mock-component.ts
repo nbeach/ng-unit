@@ -21,7 +21,7 @@ export function mockComponent<T>(constructor: Type<T>, mockSetup: MockSetup = ()
 
     const options = {
         selector: selectorOf(constructor),
-        template: '',
+        template: '<ng-content></ng-content>',
         inputs: propertiesDecoratedWith("Input", propertyMetadata),
         outputs: propertiesDecoratedWith("Output", propertyMetadata),
     };
