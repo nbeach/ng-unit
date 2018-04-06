@@ -27,12 +27,12 @@
     "test:watch": "mocha --opts mocha.opts --watch --reporter progress"
   },
   "devDependencies": {
-    "@angular/common": "^4.4.3",
-    "@angular/compiler": "^4.4.3",
-    "@angular/core": "^4.4.3",
-    "@angular/forms": "^4.4.3",
-    "@angular/platform-browser": "^4.4.3",
-    "@angular/platform-browser-dynamic": "^4.4.3",
+    "@angular/common": "^5.2.9",
+    "@angular/compiler": "^5.2.9",
+    "@angular/core": "^5.2.9",
+    "@angular/forms": "^5.2.9",
+    "@angular/platform-browser": "^5.2.9",
+    "@angular/platform-browser-dynamic": "^5.2.9",
     "@types/chai": "^4.0.4",
     "@types/chai-dom": "0.0.5",
     "@types/mocha": "^2.2.43",
@@ -48,7 +48,7 @@
     "sinon-chai": "^2.14.0",
     "ts-helpers": "^1.1.2",
     "ts-node": "^3.3.0",
-    "typescript": "^2.5.2",
+    "typescript": "^2.8.1",
     "zone.js": "^0.8.17"
   },
   "dependencies": {
@@ -56,10 +56,9 @@
     "@types/node": "^8.0.31",
     "@types/sinon": "^2.3.6",
     "lodash": "^4.17.4",
-    "reflect-metadata": "^0.1.10",
     "sinon": "^4.0.1"
   },
   "peerDependencies": {
-    "@angular/core": ">= 4.4.3"
+    "@angular/core": ">= 5.2.9"
   }
 }

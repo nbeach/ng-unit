@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import 'ts-helpers';
 
 import 'core-js/client/shim';

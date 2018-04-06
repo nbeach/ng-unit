@@ -1,10 +1,8 @@
 import {Component} from "@angular/core";
-import 'reflect-metadata';
 
 export function selectorOf(component: any) {
-    const [componentDecorator] = Reflect
-        .getMetadata('annotations', component)
-        .filter((annotation: any) => annotation instanceof Component);
+    const [componentDecorator] = component.__annotations__
+        .filter((annotation: any) => annotation.ngMetadataName === "Component");
 
     return componentDecorator.selector;
 }
