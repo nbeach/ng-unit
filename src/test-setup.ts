@@ -37,6 +37,7 @@ export interface TestConfig<T> {
     subject: Type<T>
     mock?: Type<any>[];
     use?: Type<any>[];
+    providers?: any[];
     methodMockFactory?: () => any;
 }
 
@@ -66,6 +67,7 @@ export class TestBuilder<T> {
     }
 
     public create(): ComponentTestContext<T> {
+        const providers = defaultTo(this.config.providers, []);
         const realComponents = defaultTo(this.config.use, []);
         const mockComponents = defaultTo(this.config.mock, [])
             .map(type => TestBuilder.createComponentMock(type, this.mockSetups));
@@ -74,6 +76,7 @@ export class TestBuilder<T> {
         const TestHostComponent = TestBuilder.createTestHostComponent(subject, this.inputInitializations);
         TestBed.configureTestingModule({
             declarations: concat(TestHostComponent, subject, mockComponents, realComponents),
+            providers: providers
         });
 
         const fixture = TestBed.createComponent(TestHostComponent);

@@ -177,6 +177,31 @@ describe("TestSetup", () => {
         expect(context.child(ChildComponent).invokeMe()).to.equal("I'm mocked");
     });
 
+    it("allows configuring providers", () => {
+        class SomeService {
+            public invokeMe() {
+                return "Hello World";
+            }
+        }
+
+        @Component({
+            selector: "tested",
+            template: `<span id="message">{{someService.invokeMe()}}</span>`
+        })
+        class SubjectComponent {
+            constructor(private someService: SomeService) {}
+        }
+
+        const context =  TestBuilder.configure({
+            subject: SubjectComponent,
+            providers: [{provide: SomeService, useValue: new SomeService()}]
+        }).create();
+
+
+        expect(context.element("#message")).to.have.text("Hello World");
+
+    });
+
     it("allows setting initial components inputs", () => {
         @Component({
             selector: "tested",
