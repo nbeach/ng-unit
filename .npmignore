@@ -1,8 +1,9 @@
 .idea/
 node_modules/
-npm-debug.log
 **/*.spec.*
 
 mocha.opts
 mocha-shim.ts
 tsconfig.json
+npm-debug.log
+yarn-error.log
