@@ -1,17 +1,17 @@
 {
-  "name": "ngx-unit",
+  "name": "ng-unit",
   "version": "1.0.0",
   "description": "Parameteration for mocha tests",
   "main": "src/index.js",
   "types": "src/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git://github.com/nbeach/ngx-unit.git"
+    "url": "git://github.com/nbeach/ng-unit.git"
   },
   "author": "Nicholas Beach <nicholas.c.beach@gmail.com> (http://nicholasbeach.com)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/nbeach/ngx-unit/issues"
+    "url": "https://github.com/nbeach/ng-unit/issues"
   },
   "keywords": [
     "mocha",
