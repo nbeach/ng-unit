@@ -1,7 +1,7 @@
 {
   "name": "ng-unit",
-  "version": "0.0.1",
-  "description": "Parameteration for mocha tests",
+  "version": "0.0.2",
+  "description": "Testing utilities for Angular",
   "main": "src/index.js",
   "types": "src/index.d.ts",
   "repository": {
@@ -14,9 +14,13 @@
     "url": "https://github.com/nbeach/ng-unit/issues"
   },
   "keywords": [
-    "mocha",
+    "angular",
+    "ng",
     "test",
-    "parameterize"
+    "testing",
+    "mock",
+    "mocking",
+    "component"
   ],
   "scripts": {
     "clean": "rimraf src/**/*.js src/**/*.js.map src/**/*.d.ts",
