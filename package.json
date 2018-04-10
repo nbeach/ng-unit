@@ -1,6 +1,6 @@
 {
   "name": "ng-unit",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Parameteration for mocha tests",
   "main": "src/index.js",
   "types": "src/index.d.ts",
