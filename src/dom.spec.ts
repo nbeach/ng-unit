@@ -1,13 +1,20 @@
 import {Component} from "@angular/core";
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {
-    selectComponent, selectComponents, setCheckboxValue, setInputValue, setRadioButton, setSelectValue,
-    setTextAreaValue, focus, blur
+    selectComponent,
+    selectComponents,
+    setCheckboxValue,
+    setInputValue,
+    setRadioButton,
+    setSelectValue,
+    setTextAreaValue,
+    trigger
 } from "./dom";
 import {FormsModule} from "@angular/forms";
 import * as chai from 'chai';
 import {expect} from 'chai';
 import * as chaiDom from 'chai-dom';
+import {where} from "mocha-where/src/where";
 
 chai.use(chaiDom);
 
@@ -154,16 +161,23 @@ describe("DOM", () => {
 
     });
 
-    it("blur() triggers a blur even on the element", () => {
-        blur(subjectElement.querySelector('input'));
-        fixture.detectChanges();
-        expect(subjectElement.querySelector('#blur-display')).to.have.text("Blurred!");
-    });
-
-    it("focus() triggers a focus event on the element", () => {
-        focus(subjectElement.querySelector('input'));
+    it("trigger() triggers triggers the provided event on the element", () => {
+        trigger(subjectElement.querySelector('input'), 'focus');
         fixture.detectChanges();
         expect(subjectElement.querySelector('#focus-display')).to.have.text("Focused!");
+    });
+
+    where([
+        ['name',                'method'        ],
+        [setInputValue.name,    setInputValue   ],
+        [setSelectValue.name,   setSelectValue  ],
+        [setTextAreaValue.name, setTextAreaValue],
+        [setCheckboxValue.name, setCheckboxValue],
+        [setRadioButton.name,   setRadioButton  ],
+        [trigger.name,          trigger         ],
+    ])
+    .it("#name() throws an error when the element is null", (scenario) => {
+        expect(() => scenario.method(null, "")).to.throw("Element is not present");
     });
 
 });
