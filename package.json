@@ -28,7 +28,8 @@
     "release:tag": "git tag $(node -p -e \"require('./package.json').version\") && git push origin --tags",
     "release": "npm test && npm run build && npm run release:tag && npm publish",
     "test": "mocha --opts mocha.opts",
-    "test:watch": "mocha --opts mocha.opts --watch --reporter progress"
+    "test:watch": "mocha --opts mocha.opts --watch --reporter progress",
+    "test:coverage": "nyc mocha --opts mocha.opts && nyc report --reporter=text-lcov | coveralls"
   },
   "devDependencies": {
     "@angular/common": "^5.2.9",
@@ -44,9 +45,11 @@
     "chai": "^3.5.0",
     "chai-dom": "^1.5.0",
     "core-js": "^2.5.1",
+    "coveralls": "^3.0.0",
     "jsdom": "^11.2.0",
     "mocha": "^3.0.1",
     "mocha-where": "^1.0.3",
+    "nyc": "^11.6.0",
     "rimraf": "^2.6.2",
     "rxjs": "^5.4.3",
     "sinon-chai": "^2.14.0",
