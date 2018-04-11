@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, Type} from "@angular/core";
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {
     selectComponent,
@@ -19,121 +19,166 @@ import {where} from "mocha-where/src/where";
 chai.use(chaiDom);
 
 describe("DOM", () => {
-    let subject: TestComponent,
-        subjectElement: any,
-        fixture: ComponentFixture<TestComponent>;
 
-    @Component({
-        selector: 'parent',
-        template: `
-            <input type="text" [(ngModel)]="textValue" (focus)="focusValue = 'Focused!'" (blur)="blurValue = 'Blurred!'">
-            <textarea [(ngModel)]="textValue"></textarea>
-            <span id="text-value-display">{{textValue}}</span>
-            <span id="focus-display">{{focusValue}}</span>
-            <span id="blur-display">{{blurValue}}</span>
-            
-            <input type="checkbox" [checked]="checked" (change)="checked = !checked">
-            <span id="check-value-display">{{checked ? "true" : "false" }}</span>
-            
-            <select [(ngModel)]="selectValue">
-                <option></option>
-                <option>Hello</option>
-                <option>Goodbye</option>
-            </select>
-            <span id="select-value-display">{{selectValue}}</span>
-            
-            <input id="radio1" name="radio" value="Yes" type="radio" [checked]="radioValue === 'Yes'" (change)="radioButtonChanged($event)">
-            <input id="radio2" name="radio" value="No" type="radio" [checked]="radioValue === 'No'" (change)="radioButtonChanged($event)">
-            <span id="radio-value-display">{{radioValue}}</span>
-            <child id="first-born"></child>
-            <child id="second-born"></child>
-        `
-    })
-    class TestComponent {
-        private textValue: string;
-        private checked: boolean;
-        private selectValue: string;
-        private radioValue: string | null;
-        private focusValue: string;
-        private blurValue: string;
-
-        private radioButtonChanged(event: any) {
-            if(event.target.checked) {
-                this.radioValue = event.target.value;
-            } else if(event.target.value === this.radioValue) {
-                this.radioValue = null;
-            }
-        }
-    }
-
-    @Component({
-        selector: "child",
-        template: ""
-    })
-    class ChildComponent {
-        public message = "I'm the child!";
-    }
-
-    beforeEach(() => {
+    function setupTestModule(parent: Type<any>, children: Type<any>[] = []): any {
         TestBed.configureTestingModule({
-            declarations: [TestComponent, ChildComponent],
+            declarations: [parent, ...children],
             imports: [FormsModule]
         });
 
-        fixture = TestBed.createComponent(TestComponent);
-        subject = fixture.componentInstance;
-        subjectElement = fixture.debugElement.nativeElement;
+        const fixture = TestBed.createComponent(parent);
         fixture.detectChanges();
-    });
+
+        return {
+            fixture: fixture,
+            subject: fixture.componentInstance,
+            subjectElement: fixture.debugElement.nativeElement
+        };
+    }
 
     afterEach(TestBed.resetTestingModule);
 
     it('setInputValue() sets the value of <input type="text"> elements', () => {
+        @Component({
+            selector: 'parent',
+            template: `
+                <input type="text" [(ngModel)]="textValue">
+                
+            `
+        })
+        class TestComponent {
+            public textValue: string;
+        }
+        const {subject, subjectElement, fixture} = setupTestModule(TestComponent);
+
         setInputValue(subjectElement.querySelector('input'), "hello world!");
         fixture.detectChanges();
 
-        expect(subjectElement.querySelector('#text-value-display')).to.have.text("hello world!");
+        expect(subject.textValue).to.equal("hello world!");
     });
 
     it('setTextAreaValue() sets the value of <textarea> elements', () => {
+        @Component({
+            selector: 'parent',
+            template: `
+                <textarea [(ngModel)]="textValue"></textarea>
+            `
+        })
+        class TestComponent {
+            public textValue: string;
+        }
+        const {subject, subjectElement, fixture} = setupTestModule(TestComponent);
+
         setTextAreaValue(subjectElement.querySelector('textarea'), "hello world!");
         fixture.detectChanges();
 
-        expect(subjectElement.querySelector('#text-value-display')).to.have.text("hello world!");
+        expect(subject.textValue).to.equal("hello world!");
     });
 
     it('setSelectValue() sets the value of <select> elements', () => {
+        @Component({
+            selector: 'parent',
+            template: `                
+                <select [(ngModel)]="selectValue">
+                    <option></option>
+                    <option>Hello</option>
+                    <option>Goodbye</option>
+                </select>
+            `
+        })
+        class TestComponent {
+            public selectValue: string;
+        }
+        const {subject, subjectElement, fixture} = setupTestModule(TestComponent);
+
         setSelectValue(subjectElement.querySelector('select'), "Goodbye");
         fixture.detectChanges();
 
-        expect(subjectElement.querySelector('#select-value-display')).to.have.text("Goodbye");
+        expect(subject.selectValue).to.equal("Goodbye");
     });
 
     it('setRadioButton() sets the value of <input type="radio"> elements', () => {
+
+
+        @Component({
+            selector: 'parent',
+            template: `                
+                <input id="radio1" name="radio" value="Yes" type="radio" [checked]="radioValue === 'Yes'" (change)="radioButtonChanged($event)">
+                <input id="radio2" name="radio" value="No" type="radio" [checked]="radioValue === 'No'" (change)="radioButtonChanged($event)">
+                <span id="radio-value-display">{{radioValue}}</span>
+            `
+        })
+        class TestComponent {
+            public radioValue: string | null;
+
+            private radioButtonChanged(event: any) {
+                if(event.target.checked) {
+                    this.radioValue = event.target.value;
+                } else if(event.target.value === this.radioValue) {
+                    this.radioValue = null;
+                }
+            }
+        }
+        const {subject, subjectElement, fixture} = setupTestModule(TestComponent);
+
+
         setRadioButton(subjectElement.querySelector('#radio1'), true);
         fixture.detectChanges();
-        expect(subjectElement.querySelector('#radio-value-display')).to.have.text("Yes");
+        expect(subject.radioValue).to.equal("Yes");
 
         setRadioButton(subjectElement.querySelector('#radio2'), true);
         fixture.detectChanges();
-        expect(subjectElement.querySelector('#radio-value-display')).to.have.text("No");
+        expect(subject.radioValue).to.equal("No");
 
         setRadioButton(subjectElement.querySelector('#radio2'), false);
         fixture.detectChanges();
-        expect(subjectElement.querySelector('#radio-value-display')).to.have.text("");
+        expect(subject.radioValue).to.be.null;
     });
 
     it('setCheckboxValue() sets the value of <input type="check"> elements', () => {
+        @Component({
+            selector: 'parent',
+            template: `                
+                <input type="checkbox" [checked]="checked" (change)="checked = !checked">
+            `
+        })
+        class TestComponent {
+            private checked: boolean;
+        }
+        const {subject, subjectElement, fixture} = setupTestModule(TestComponent);
+
         setCheckboxValue(subjectElement.querySelector('input[type=checkbox]'), true);
         fixture.detectChanges();
-        expect(subjectElement.querySelector('#check-value-display')).to.have.text("true");
+        expect(subject.checked).to.be.true;
 
         setCheckboxValue(subjectElement.querySelector('input[type=checkbox]'), false);
         fixture.detectChanges();
-        expect(subjectElement.querySelector('#check-value-display')).to.have.text("false");
+        expect(subject.checked).to.be.false;
     });
 
     describe("selectComponent() selects a component by", () => {
+        let fixture: ComponentFixture<any>;
+
+        @Component({
+            selector: 'parent',
+            template: `                    
+                    <child id="first-born"></child>
+                    <child id="second-born"></child>
+                `
+        })
+        class TestComponent {}
+
+        @Component({
+            selector: "child",
+            template: ""
+        })
+        class ChildComponent {
+            public message = "I'm the child!";
+        }
+
+        beforeEach(() => {
+            fixture = setupTestModule(TestComponent, [ChildComponent]).fixture;
+        });
 
         it("CSS selector", () => {
             expect(selectComponent('#first-born', fixture).message).to.equal("I'm the child!")
@@ -146,6 +191,28 @@ describe("DOM", () => {
     });
 
     describe("selectComponents() selects components by", () => {
+        let fixture: ComponentFixture<any>;
+
+        @Component({
+            selector: 'parent',
+            template: `                    
+                    <child id="first-born"></child>
+                    <child id="second-born"></child>
+                `
+        })
+        class TestComponent {}
+
+        @Component({
+            selector: "child",
+            template: ""
+        })
+        class ChildComponent {
+            public message = "I'm the child!";
+        }
+
+        beforeEach(() => {
+            fixture = setupTestModule(TestComponent, [ChildComponent]).fixture;
+        });
 
         it("CSS selector", () => {
             const children = selectComponents('child', fixture);
@@ -162,9 +229,22 @@ describe("DOM", () => {
     });
 
     it("trigger() triggers triggers the provided event on the element", () => {
+        @Component({
+            selector: 'parent',
+            template: `
+                <input type="text"  (focus)="focused = true">
+                <span></span>
+                
+            `
+        })
+        class TestComponent {
+            public focused = false;
+        }
+        const {subject, subjectElement, fixture} = setupTestModule(TestComponent);
+
         trigger(subjectElement.querySelector('input'), 'focus');
         fixture.detectChanges();
-        expect(subjectElement.querySelector('#focus-display')).to.have.text("Focused!");
+        expect(subject.focused).to.be.true;
     });
 
     where([
