@@ -46,7 +46,7 @@ describe("DOM", () => {
         private textValue: string;
         private checked: boolean;
         private selectValue: string;
-        private radioValue: string;
+        private radioValue: string | null;
         private focusValue: string;
         private blurValue: string;
 

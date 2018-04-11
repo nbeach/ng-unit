@@ -69,7 +69,7 @@ export class TestBuilder<T> {
     public create(): ComponentTestContext<T> {
         const providers = defaultTo(this.config.providers, []);
         const realComponents = defaultTo(this.config.use, []);
-        const mockComponents = defaultTo(this.config.mock, [])
+        const mockComponents = defaultTo(this.config.mock, [] as Type<any>[])
             .map(type => TestBuilder.createComponentMock(type, this.mockSetups));
 
         const subject = this.config.subject;

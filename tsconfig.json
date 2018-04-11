@@ -9,6 +9,7 @@
     "noImplicitThis": true,
     "noImplicitReturns": true,
     "noImplicitAny": true,
+    "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
     "lib": ["es6", "dom"],
     "types": ["node", "mocha"],
