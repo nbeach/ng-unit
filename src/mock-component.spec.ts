@@ -1,15 +1,10 @@
 import {Component, EventEmitter, Input, Output} from "@angular/core";
 import {ComponentFixture, TestBed} from "@angular/core/testing";
-import {expect, use} from 'chai';
-import * as chaiDom from 'chai-dom';
-import * as sinonChai from 'sinon-chai';
+import {expect} from 'chai';
 import {where} from "mocha-where";
 import {mockComponent} from "./mock-component";
 import {range} from "lodash";
 import {By} from "@angular/platform-browser";
-
-use(chaiDom);
-use(sinonChai);
 
 describe("mockComponent", () => {
 

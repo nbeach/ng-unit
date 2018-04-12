@@ -11,12 +11,8 @@ import {
     trigger
 } from "./dom";
 import {FormsModule} from "@angular/forms";
-import * as chai from 'chai';
 import {expect} from 'chai';
-import * as chaiDom from 'chai-dom';
 import {where} from "mocha-where/src/where";
-
-chai.use(chaiDom);
 
 describe("DOM", () => {
 

@@ -1,12 +1,9 @@
 import {ComponentTestContext, TestBuilder} from "./test-setup";
 import {Component, Input} from "@angular/core";
-import * as chai from 'chai';
 import {expect} from 'chai';
-import * as chaiDom from 'chai-dom';
 import {TestBed} from "@angular/core/testing";
 import {By} from "@angular/platform-browser";
 
-chai.use(chaiDom);
 
 describe("TestSetup", () => {
     afterEach(TestBed.resetTestingModule);
