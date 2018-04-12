@@ -227,11 +227,7 @@ describe("DOM", () => {
     it("trigger() triggers triggers the provided event on the element", () => {
         @Component({
             selector: 'parent',
-            template: `
-                <input type="text"  (focus)="focused = true">
-                <span></span>
-                
-            `
+            template: `<input type="text"  (focus)="focused = true">`
         })
         class TestComponent {
             public focused = false;
