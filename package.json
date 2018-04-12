@@ -40,7 +40,8 @@
       "src/**/*.ts"
     ],
     "exclude": [
-      "**/*.spec.ts"
+      "**/*.spec.ts",
+      "src/index.ts"
     ],
     "reporter": [
       "text",
