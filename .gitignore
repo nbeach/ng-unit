@@ -1,7 +1,9 @@
 .idea/
 node_modules/
+.nyc_output/
 npm-debug.log
 yarn-error.log
 **/*.js
 **/*.js.map
 **/*.d.ts
+coverage/
