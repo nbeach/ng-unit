@@ -4,6 +4,7 @@ import {concat} from 'lodash';
 import {selectComponent, selectComponents} from "./dom";
 import {mockComponent, MockSetup} from "./mock-component";
 import {selectorOf} from "./selector-of";
+
 const createElement = require("dom-create-element-query-selector")
 
 let _subject: any = null;
@@ -22,6 +23,11 @@ export const fixture = (): ComponentFixture<any> => _fixture;
 
 export const testComponent = <T>(subject: Type<T>) => new TestBuilder(subject);
 
+export default interface OutputWatch {
+    name: string,
+    action: (event: any) => void
+}
+
 export class TestBuilder<T> {
     private _providers: any[] = [];
     private _use: Type<any>[] = [];
@@ -29,6 +35,7 @@ export class TestBuilder<T> {
 
     private mockSetups: {type: Type<any>, setup: MockSetup}[] = [];
     private inputInitializations = new Map<string, any>();
+    private outputSubscriptions: OutputWatch[] = [];
 
     constructor(private subject: Type<T>) {}
 
@@ -39,6 +46,11 @@ export class TestBuilder<T> {
 
     public input(inputName: string, value: any): TestBuilder<T> {
         this.inputInitializations.set(inputName, value);
+        return this;
+    }
+
+    public output(outputName: string, action: (event: any) => void): TestBuilder<T> {
+        this.outputSubscriptions.push({ name: outputName, action: action });
         return this;
     }
 
@@ -68,10 +80,16 @@ export class TestBuilder<T> {
 
         _fixture = TestBed.createComponent(TestHostComponent);
         _fixture.detectChanges();
-
         _subject = child(this.subject);
+
+        TestBuilder.subscribeToOutputs(_subject, this.outputSubscriptions);
+
         _subjectElement = _fixture.nativeElement.querySelector(selectorOf(this.subject));
         return _subject as T
+    }
+
+    private static subscribeToOutputs<T>(component: T, outputWatches: OutputWatch[]) {
+        outputWatches.forEach(subscription => component[subscription.name].subscribe(subscription.action))
     }
 
     private static createTestHostComponent<T>(subject: Type<T>, inputInitializations: Map<string, any>) {

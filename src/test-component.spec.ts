@@ -9,7 +9,7 @@ import {
     subjectElement,
     testComponent
 } from "./test-component";
-import {Component, Input} from "@angular/core";
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {expect} from 'chai';
 import {TestBed} from "@angular/core/testing";
 import {By} from "@angular/platform-browser";
@@ -219,7 +219,7 @@ describe("TestSetup", () => {
         expect(element("#message")).to.have.text("Hello World");
     });
 
-    it("sets initial components input values", () => {
+    it("sets initial component input values", () => {
         @Component({
             selector: "tested",
             template: ``
@@ -234,6 +234,28 @@ describe("TestSetup", () => {
 
         expect(subject.someInput).to.equal("Schwoosh!");
     });
+
+    it("subscribes to component out values", () => {
+        @Component({
+            selector: "tested",
+            template: ``
+        })
+        class SubjectComponent {
+            @Output() public someOutput = new EventEmitter<string>();
+        }
+
+        let first = null, second = null;
+        const subject = testComponent(SubjectComponent)
+            .output("someOutput", event => first = event)
+            .output("someOutput", () => second = true)
+            .begin();
+
+        subject.someOutput.emit("Hello World");
+
+        expect(first).to.equal("Hello World");
+        expect(second).to.equal(true);
+    });
+
 
     describe("works with components with selectors for", () => {
 
