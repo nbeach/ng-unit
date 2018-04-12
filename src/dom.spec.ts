@@ -32,7 +32,9 @@ describe("DOM", () => {
         };
     }
 
-    afterEach(TestBed.resetTestingModule);
+    afterEach(() => {
+        TestBed.resetTestingModule()
+    });
 
     it('setInputValue() sets the value of <input type="text"> elements', () => {
         @Component({

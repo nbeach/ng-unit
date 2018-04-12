@@ -6,7 +6,9 @@ import {By} from "@angular/platform-browser";
 
 
 describe("TestSetup", () => {
-    afterEach(TestBed.resetTestingModule);
+    afterEach(() => {
+        TestBed.resetTestingModule()
+    });
 
     describe('selects from the subject template', () => {
 
