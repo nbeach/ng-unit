@@ -94,8 +94,6 @@ describe("DOM", () => {
     });
 
     it('setRadioButton() sets the value of <input type="radio"> elements', () => {
-
-
         @Component({
             selector: 'parent',
             template: `                

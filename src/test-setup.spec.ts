@@ -8,149 +8,152 @@ import {By} from "@angular/platform-browser";
 describe("TestSetup", () => {
     afterEach(TestBed.resetTestingModule);
 
-    describe("allows", () => {
+    describe('selects from the subject template', () => {
 
-        describe('selecting', () => {
-
-            it("an element from the subject template", () => {
-                @Component({
-                    selector: "tested",
-                    template: `<span id="greeting">Hello World</span>`
-                })
-                class SubjectComponent {}
-
-                const context = TestBuilder.configure({ subject: SubjectComponent }).create();
-
-                expect(context.element("#greeting")).to.have.text("Hello World")
-            });
-
-            it("elements from the subject template", () => {
-                @Component({
-                    selector: "tested",
-                    template: `
-                        <span>Hello World</span>
-                        <span>Goodbye Cruel World</span>
-                    `
-                })
-                class SubjectComponent {}
-
-                const context = TestBuilder.configure({ subject: SubjectComponent }).create();
-
-                const elements = context.elements("span");
-                expect(elements[0]).to.have.text("Hello World");
-                expect(elements[1]).to.have.text("Goodbye Cruel World");
-            });
-
-            it("a child component instance", () => {
-                @Component({
-                    selector: "tested",
-                    template: `<child></child>`
-                })
-                class SubjectComponent {}
-
-                @Component({
-                    selector: "child",
-                    template: ``
-                })
-                class ChildComponent {
-                    public invokeMe = () => "Hey there!";
-                }
-
-                const context = TestBuilder.configure({
-                    subject: SubjectComponent,
-                    use: [ChildComponent]
-                }).create();
-
-
-                const child = context.child(ChildComponent);
-                expect(child.invokeMe()).to.equal("Hey there!");
-            });
-
-            it("child component instances", () => {
-                @Component({
-                    selector: "tested",
-                    template: `
-                        <child></child>
-                        <child></child>
-                    `
-                })
-                class SubjectComponent {}
-
-                @Component({
-                    selector: "child",
-                    template: ``
-                })
-                class ChildComponent {
-                    public invokeMe = () => "Hey there!";
-                }
-
-                const context = TestBuilder.configure({
-                    subject: SubjectComponent,
-                    use: [ChildComponent]
-                }).create();
-
-
-                const children = context.children<ChildComponent>("child");
-                expect(children[0].invokeMe()).to.equal("Hey there!");
-                expect(children[1].invokeMe()).to.equal("Hey there!");
-            });
-
-        });
-
-        describe("gives access to the subject", () => {
+        it("a single element", () => {
             @Component({
                 selector: "tested",
-                template: `<p id="message">{{message}}</p>`
+                template: `<span id="greeting">Hello World</span>`
             })
             class SubjectComponent {
-                public message = "foo";
             }
 
-            let context: ComponentTestContext<SubjectComponent>;
+            const context = TestBuilder.configure({subject: SubjectComponent}).create();
 
-            beforeEach(() => {
-                context = TestBuilder.configure({ subject: SubjectComponent }).create();
-            });
-
-            it("instance", () => {
-                expect(context.subject.message).to.equal("foo");
-            });
-
-            it("element", () => {
-                expect(context.subjectElement.querySelector("#message")).to.not.be.null;
-            });
-
-            it("test fixture", () => {
-                const messageElement = context.fixture.debugElement.query(By.css("#message"));
-                expect(messageElement).to.not.be.null;
-            });
-
+            expect(context.element("#greeting")).to.have.text("Hello World")
         });
 
-        it("triggering change detection", () => {
+        it("multiple elements", () => {
             @Component({
                 selector: "tested",
-                template: `<p id="message">{{message}}</p>`
+                template: `
+                    <span>Hello World</span>
+                    <span>Goodbye Cruel World</span>
+                `
             })
             class SubjectComponent {
-                public message = "foo";
             }
 
-            const context = TestBuilder.configure({ subject: SubjectComponent }).create();
+            const context = TestBuilder.configure({subject: SubjectComponent}).create();
 
-            context.subject.message = "Bam!";
-            context.detectChanges();
-            expect(context.element("#message")).to.have.text("Bam!");
+            const elements = context.elements("span");
+            expect(elements[0]).to.have.text("Hello World");
+            expect(elements[1]).to.have.text("Goodbye Cruel World");
+        });
+
+        it("a single child component instance", () => {
+            @Component({
+                selector: "tested",
+                template: `
+                    <child></child>`
+            })
+            class SubjectComponent {
+            }
+
+            @Component({
+                selector: "child",
+                template: ``
+            })
+            class ChildComponent {
+                public invokeMe = () => "Hey there!";
+            }
+
+            const context = TestBuilder.configure({
+                subject: SubjectComponent,
+                use: [ChildComponent]
+            }).create();
+
+
+            const child = context.child(ChildComponent);
+            expect(child.invokeMe()).to.equal("Hey there!");
+        });
+
+        it("multiple child component instances", () => {
+            @Component({
+                selector: "tested",
+                template: `
+                    <child></child>
+                    <child></child>
+                `
+            })
+            class SubjectComponent {
+            }
+
+            @Component({
+                selector: "child",
+                template: ``
+            })
+            class ChildComponent {
+                public invokeMe = () => "Hey there!";
+            }
+
+            const context = TestBuilder.configure({
+                subject: SubjectComponent,
+                use: [ChildComponent]
+            }).create();
+
+
+            const children = context.children<ChildComponent>("child");
+            expect(children[0].invokeMe()).to.equal("Hey there!");
+            expect(children[1].invokeMe()).to.equal("Hey there!");
         });
 
     });
 
-    it("allows mocking child components", () => {
+    describe("gives access to the subject", () => {
         @Component({
             selector: "tested",
-            template: `<child id="child-one"></child>`
+            template: `<p id="message">{{message}}</p>`
         })
-        class SubjectComponent {}
+        class SubjectComponent {
+            public message = "foo";
+        }
+
+        let context: ComponentTestContext<SubjectComponent>;
+
+        beforeEach(() => {
+            context = TestBuilder.configure({subject: SubjectComponent}).create();
+        });
+
+        it("instance", () => {
+            expect(context.subject.message).to.equal("foo");
+        });
+
+        it("element", () => {
+            expect(context.subjectElement.querySelector("#message")).to.not.be.null;
+        });
+
+        it("test fixture", () => {
+            const messageElement = context.fixture.debugElement.query(By.css("#message"));
+            expect(messageElement).to.not.be.null;
+        });
+
+    });
+
+    it("triggers change detection", () => {
+        @Component({
+            selector: "tested",
+            template: `<p id="message">{{message}}</p>`
+        })
+        class SubjectComponent {
+            public message = "foo";
+        }
+
+        const context = TestBuilder.configure({subject: SubjectComponent}).create();
+
+        context.subject.message = "Bam!";
+        context.detectChanges();
+        expect(context.element("#message")).to.have.text("Bam!");
+    });
+
+    it("mocks child components", () => {
+        @Component({
+            selector: "tested",
+            template: `
+                <child id="child-one"></child>`
+        })
+        class SubjectComponent {
+        }
 
         @Component({
             selector: "child",
@@ -164,17 +167,17 @@ describe("TestSetup", () => {
 
         }
 
-        const context =  TestBuilder.configure({
+        const context = TestBuilder.configure({
             subject: SubjectComponent,
             mock: [ChildComponent],
         })
-        .setupMock(ChildComponent, (mock: any) => mock.invokeMe.returns("I'm mocked"))
-        .create();
+            .setupMock(ChildComponent, (mock: any) => mock.invokeMe.returns("I'm mocked"))
+            .create();
 
         expect(context.child(ChildComponent).invokeMe()).to.equal("I'm mocked");
     });
 
-    it("allows configuring providers", () => {
+    it("configures providers", () => {
         class SomeService {
             public invokeMe() {
                 return "Hello World";
@@ -186,20 +189,20 @@ describe("TestSetup", () => {
             template: `<span id="message">{{someService.invokeMe()}}</span>`
         })
         class SubjectComponent {
-            constructor(private someService: SomeService) {}
+            constructor(private someService: SomeService) {
+            }
         }
 
-        const context =  TestBuilder.configure({
+        const context = TestBuilder.configure({
             subject: SubjectComponent,
             providers: [{provide: SomeService, useValue: new SomeService()}]
         }).create();
 
 
         expect(context.element("#message")).to.have.text("Hello World");
-
     });
 
-    it("allows setting initial components inputs", () => {
+    it("sets initial components input values", () => {
         @Component({
             selector: "tested",
             template: ``
@@ -208,14 +211,14 @@ describe("TestSetup", () => {
             @Input() public someInput = "";
         }
 
-        const context = TestBuilder.configure({ subject: SubjectComponent })
-        .input("someInput", "Schwoosh!")
-        .create();
+        const context = TestBuilder.configure({subject: SubjectComponent})
+            .input("someInput", "Schwoosh!")
+            .create();
 
         expect(context.subject.someInput).to.equal("Schwoosh!");
     });
 
-    describe("allows testing components with selectors for", () => {
+    describe("works with components with selectors for", () => {
 
         it("tag names", () => {
             @Component({
@@ -224,7 +227,7 @@ describe("TestSetup", () => {
             })
             class SubjectComponent {}
 
-            const context = TestBuilder.configure({ subject: SubjectComponent }).create();
+            const context = TestBuilder.configure({subject: SubjectComponent}).create();
 
             expect(context.element('#message')).to.have.text("Sasquatch");
         });
@@ -234,9 +237,10 @@ describe("TestSetup", () => {
                 selector: '[parent]',
                 template: `<span id="message">Sasquatch</span>`
             })
-            class SubjectComponent {}
+            class SubjectComponent {
+            }
 
-            const context = TestBuilder.configure({ subject: SubjectComponent }).create();
+            const context = TestBuilder.configure({subject: SubjectComponent}).create();
 
             expect(context.element('#message')).to.have.text("Sasquatch");
         });
@@ -248,7 +252,7 @@ describe("TestSetup", () => {
             })
             class SubjectComponent {}
 
-            const context = TestBuilder.configure({ subject: SubjectComponent }).create();
+            const context = TestBuilder.configure({subject: SubjectComponent}).create();
 
             expect(context.element('#message')).to.have.text("Sasquatch");
         });
@@ -260,7 +264,7 @@ describe("TestSetup", () => {
             })
             class SubjectComponent {}
 
-            const context = TestBuilder.configure({ subject: SubjectComponent }).create();
+            const context = TestBuilder.configure({subject: SubjectComponent}).create();
 
             expect(context.element('#message')).to.have.text("Sasquatch");
         });
@@ -274,7 +278,7 @@ describe("TestSetup", () => {
                 @Input() private parent: string;
             }
 
-            const context = TestBuilder.configure({ subject: SubjectComponent })
+            const context = TestBuilder.configure({subject: SubjectComponent})
                 .input("parent", "Sasquatch")
                 .create();
 
