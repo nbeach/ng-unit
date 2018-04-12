@@ -16,9 +16,6 @@ import {By} from "@angular/platform-browser";
 
 
 describe("TestSetup", () => {
-    afterEach(() => {
-        TestBed.resetTestingModule()
-    });
 
     describe('selects from the subject template', () => {
 
@@ -42,8 +39,7 @@ describe("TestSetup", () => {
                     <span>Goodbye Cruel World</span>
                 `
             })
-            class SubjectComponent {
-            }
+            class SubjectComponent {}
 
             testComponent(SubjectComponent).begin();
 
@@ -58,8 +54,7 @@ describe("TestSetup", () => {
                 template: `
                     <child></child>`
             })
-            class SubjectComponent {
-            }
+            class SubjectComponent {}
 
             @Component({
                 selector: "child",
@@ -84,8 +79,7 @@ describe("TestSetup", () => {
                     <child></child>
                 `
             })
-            class SubjectComponent {
-            }
+            class SubjectComponent {}
 
             @Component({
                 selector: "child",
