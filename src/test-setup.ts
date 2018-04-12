@@ -6,32 +6,21 @@ import {mockComponent, MockSetup} from "./mock-component";
 import {selectorOf} from "./selector-of";
 const createElement = require("dom-create-element-query-selector")
 
-export class ComponentTestContext<T> {
-    private _subject: T;
+let _subject: any = null;
+let _subjectElement: any = null;
+let _fixture: any = null;
 
-    constructor(private type: Type<T>, private _fixture: ComponentFixture<any>) {
-        this._subject = selectComponent(type, _fixture) as any;
-    }
+export const element = (selector: string): Element | null => subjectElement().querySelector(selector);
+export const elements = (selector: string): NodeListOf<Element> => subjectElement().querySelectorAll(selector);
+export const child = <T>(selectorOrType: string | Type<T>): T => selectComponent(selectorOrType, _fixture);
+export const children = <T>(selectorOrType: string | Type<T>): T[] => selectComponents(selectorOrType, _fixture);
+export const detectChanges = () : void => _fixture.detectChanges();
 
-    public element = (selector: string): Element | null => this.subjectElement.querySelector(selector);
-    public elements = (selector: string): NodeListOf<Element> => this.subjectElement.querySelectorAll(selector);
-    public child = <T>(selectorOrType: string | Type<T>): T => selectComponent(selectorOrType, this._fixture);
-    public children = <T>(selectorOrType: string | Type<T>): T[] => selectComponents(selectorOrType, this._fixture);
-    public detectChanges = () : void => this._fixture.detectChanges();
+export const subject = <T>(): T => _subject;
+export const subjectElement = (): Element => _subjectElement;
+export const fixture = <T>(): ComponentFixture<T> => _fixture;
 
-    get subject(): T {
-        return this.child(this.type);
-    }
 
-    get subjectElement(): Element {
-        return this._fixture.nativeElement.querySelector(selectorOf(this.type));
-    }
-
-    get fixture(): ComponentFixture<T> {
-        return this._fixture;
-    }
-
-}
 
 export interface TestConfig<T> {
     subject: Type<T>
@@ -46,15 +35,17 @@ interface MockTypeAndSetup {
     setup: MockSetup
 }
 
+
+export function setupTest<T>(config: TestConfig<T>) {
+    return new TestBuilder(config);
+}
+
+
 export class TestBuilder<T> {
     private mockSetups: MockTypeAndSetup[] = [];
     private inputInitializations = new Map<string, any>();
 
-    public static configure<T>(config: TestConfig<T>) {
-        return new TestBuilder(config);
-    }
-
-    private constructor(private config: TestConfig<T>) { }
+    constructor(private config: TestConfig<T>) { }
 
     public setupMock(type: Type<any>, setup: (mock: any) => void): TestBuilder<T> {
         this.mockSetups.push({type: type, setup: setup});
@@ -66,7 +57,7 @@ export class TestBuilder<T> {
         return this;
     }
 
-    public create(): ComponentTestContext<T> {
+    public begin(): void {
         const providers = defaultTo(this.config.providers, []);
         const realComponents = defaultTo(this.config.use, []);
         const mockComponents = defaultTo(this.config.mock, [] as Type<any>[])
@@ -82,7 +73,9 @@ export class TestBuilder<T> {
         const fixture = TestBed.createComponent(TestHostComponent);
         fixture.detectChanges();
 
-        return new ComponentTestContext<T>(subject, fixture);
+        _fixture = fixture;
+        _subject = child(subject);
+        _subjectElement = _fixture.nativeElement.querySelector(selectorOf(subject));
     }
 
     private static createTestHostComponent<T>(subject: Type<T>, inputInitializations: Map<string, any>) {

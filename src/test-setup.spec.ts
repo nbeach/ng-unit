@@ -1,4 +1,14 @@
-import {ComponentTestContext, TestBuilder} from "./test-setup";
+import {
+    child,
+    children,
+    detectChanges,
+    element,
+    elements,
+    fixture,
+    subject,
+    subjectElement,
+    setupTest
+} from "./test-setup";
 import {Component, Input} from "@angular/core";
 import {expect} from 'chai';
 import {TestBed} from "@angular/core/testing";
@@ -19,7 +29,7 @@ describe("TestSetup", () => {
             })
             class SubjectComponent {}
 
-            const {element} = TestBuilder.configure({subject: SubjectComponent}).create();
+            setupTest({subject: SubjectComponent}).begin();
 
             expect(element("#greeting")).to.have.text("Hello World")
         });
@@ -35,7 +45,7 @@ describe("TestSetup", () => {
             class SubjectComponent {
             }
 
-            const {elements} = TestBuilder.configure({subject: SubjectComponent}).create();
+            setupTest({subject: SubjectComponent}).begin();
 
             const messages = elements("span");
             expect(messages[0]).to.have.text("Hello World");
@@ -59,10 +69,10 @@ describe("TestSetup", () => {
                 public invokeMe = () => "Hey there!";
             }
 
-            const {child} = TestBuilder.configure({
+            setupTest({
                 subject: SubjectComponent,
                 use: [ChildComponent]
-            }).create();
+            }).begin();
 
 
             const childComponent = child(ChildComponent);
@@ -88,10 +98,10 @@ describe("TestSetup", () => {
                 public invokeMe = () => "Hey there!";
             }
 
-            const {children} = TestBuilder.configure({
+            setupTest({
                 subject: SubjectComponent,
                 use: [ChildComponent]
-            }).create();
+            }).begin();
 
 
             const childComponents = children<ChildComponent>("child");
@@ -110,22 +120,20 @@ describe("TestSetup", () => {
             public message = "foo";
         }
 
-        let context: ComponentTestContext<SubjectComponent>;
-
         beforeEach(() => {
-            context = TestBuilder.configure({subject: SubjectComponent}).create();
+            setupTest({subject: SubjectComponent}).begin();
         });
 
         it("instance", () => {
-            expect(context.subject.message).to.equal("foo");
+            expect(subject<SubjectComponent>().message).to.equal("foo");
         });
 
         it("element", () => {
-            expect(context.subjectElement.querySelector("#message")).to.not.be.null;
+            expect(subjectElement().querySelector("#message")).to.not.be.null;
         });
 
         it("test fixture", () => {
-            const messageElement = context.fixture.debugElement.query(By.css("#message"));
+            const messageElement = fixture().debugElement.query(By.css("#message"));
             expect(messageElement).to.not.be.null;
         });
 
@@ -140,9 +148,9 @@ describe("TestSetup", () => {
             public message = "foo";
         }
 
-        const {subject, detectChanges, element} = TestBuilder.configure({subject: SubjectComponent}).create();
+        setupTest({subject: SubjectComponent}).begin();
 
-        subject.message = "Bam!";
+        subject<SubjectComponent>().message = "Bam!";
         detectChanges();
         expect(element("#message")).to.have.text("Bam!");
     });
@@ -168,12 +176,12 @@ describe("TestSetup", () => {
 
         }
 
-        const {child} = TestBuilder.configure({
+        setupTest({
             subject: SubjectComponent,
             mock: [ChildComponent],
         })
             .setupMock(ChildComponent, (mock: any) => mock.invokeMe.returns("I'm mocked"))
-            .create();
+            .begin();
 
         expect(child(ChildComponent).invokeMe()).to.equal("I'm mocked");
     });
@@ -194,10 +202,10 @@ describe("TestSetup", () => {
             }
         }
 
-        const {element} = TestBuilder.configure({
+        setupTest({
             subject: SubjectComponent,
             providers: [{provide: SomeService, useValue: new SomeService()}]
-        }).create();
+        }).begin();
 
 
         expect(element("#message")).to.have.text("Hello World");
@@ -212,11 +220,11 @@ describe("TestSetup", () => {
             @Input() public someInput = "";
         }
 
-        const {subject} = TestBuilder.configure({subject: SubjectComponent})
+        setupTest({subject: SubjectComponent})
             .input("someInput", "Schwoosh!")
-            .create();
+            .begin();
 
-        expect(subject.someInput).to.equal("Schwoosh!");
+        expect(subject<SubjectComponent>().someInput).to.equal("Schwoosh!");
     });
 
     describe("works with components with selectors for", () => {
@@ -228,7 +236,7 @@ describe("TestSetup", () => {
             })
             class SubjectComponent {}
 
-            const {element} = TestBuilder.configure({subject: SubjectComponent}).create();
+            setupTest({subject: SubjectComponent}).begin();
 
             expect(element('#message')).to.have.text("Sasquatch");
         });
@@ -241,7 +249,7 @@ describe("TestSetup", () => {
             class SubjectComponent {
             }
 
-            const {element} = TestBuilder.configure({subject: SubjectComponent}).create();
+            setupTest({subject: SubjectComponent}).begin();
 
             expect(element('#message')).to.have.text("Sasquatch");
         });
@@ -253,7 +261,7 @@ describe("TestSetup", () => {
             })
             class SubjectComponent {}
 
-            const {element} = TestBuilder.configure({subject: SubjectComponent}).create();
+            setupTest({subject: SubjectComponent}).begin();
 
             expect(element('#message')).to.have.text("Sasquatch");
         });
@@ -265,9 +273,9 @@ describe("TestSetup", () => {
             })
             class SubjectComponent {}
 
-            const context = TestBuilder.configure({subject: SubjectComponent}).create();
+            setupTest({subject: SubjectComponent}).begin();
 
-            expect(context.element('#message')).to.have.text("Sasquatch");
+            expect(element('#message')).to.have.text("Sasquatch");
         });
 
         it("attributes that are also input names", () => {
@@ -279,9 +287,9 @@ describe("TestSetup", () => {
                 @Input() private parent: string;
             }
 
-            const {element} = TestBuilder.configure({subject: SubjectComponent})
+            setupTest({subject: SubjectComponent})
                 .input("parent", "Sasquatch")
-                .create();
+                .begin();
 
             expect(element('#message')).to.have.text("Sasquatch");
         });
