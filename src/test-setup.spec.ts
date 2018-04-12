@@ -7,7 +7,7 @@ import {
     fixture,
     subject,
     subjectElement,
-    setupTest
+    testComponent
 } from "./test-setup";
 import {Component, Input} from "@angular/core";
 import {expect} from 'chai';
@@ -29,7 +29,7 @@ describe("TestSetup", () => {
             })
             class SubjectComponent {}
 
-            setupTest({subject: SubjectComponent}).begin();
+            testComponent(SubjectComponent).begin();
 
             expect(element("#greeting")).to.have.text("Hello World")
         });
@@ -45,7 +45,7 @@ describe("TestSetup", () => {
             class SubjectComponent {
             }
 
-            setupTest({subject: SubjectComponent}).begin();
+            testComponent(SubjectComponent).begin();
 
             const messages = elements("span");
             expect(messages[0]).to.have.text("Hello World");
@@ -69,11 +69,9 @@ describe("TestSetup", () => {
                 public invokeMe = () => "Hey there!";
             }
 
-            setupTest({
-                subject: SubjectComponent,
-                use: [ChildComponent]
-            }).begin();
-
+            testComponent(SubjectComponent)
+                .use([ChildComponent])
+                .begin();
 
             const childComponent = child(ChildComponent);
             expect(childComponent.invokeMe()).to.equal("Hey there!");
@@ -98,11 +96,9 @@ describe("TestSetup", () => {
                 public invokeMe = () => "Hey there!";
             }
 
-            setupTest({
-                subject: SubjectComponent,
-                use: [ChildComponent]
-            }).begin();
-
+            testComponent(SubjectComponent)
+                .use([ChildComponent])
+                .begin();
 
             const childComponents = children<ChildComponent>("child");
             expect(childComponents[0].invokeMe()).to.equal("Hey there!");
@@ -121,7 +117,7 @@ describe("TestSetup", () => {
         }
 
         beforeEach(() => {
-            setupTest({subject: SubjectComponent}).begin();
+            testComponent(SubjectComponent).begin();
         });
 
         it("instance", () => {
@@ -148,7 +144,7 @@ describe("TestSetup", () => {
             public message = "foo";
         }
 
-        setupTest({subject: SubjectComponent}).begin();
+        testComponent(SubjectComponent).begin();
 
         subject<SubjectComponent>().message = "Bam!";
         detectChanges();
@@ -176,10 +172,8 @@ describe("TestSetup", () => {
 
         }
 
-        setupTest({
-            subject: SubjectComponent,
-            mock: [ChildComponent],
-        })
+        testComponent(SubjectComponent)
+            .mock([ChildComponent])
             .setupMock(ChildComponent, (mock: any) => mock.invokeMe.returns("I'm mocked"))
             .begin();
 
@@ -202,11 +196,9 @@ describe("TestSetup", () => {
             }
         }
 
-        setupTest({
-            subject: SubjectComponent,
-            providers: [{provide: SomeService, useValue: new SomeService()}]
-        }).begin();
-
+        testComponent(SubjectComponent)
+            .providers([{provide: SomeService, useValue: new SomeService()}])
+            .begin();
 
         expect(element("#message")).to.have.text("Hello World");
     });
@@ -220,7 +212,7 @@ describe("TestSetup", () => {
             @Input() public someInput = "";
         }
 
-        setupTest({subject: SubjectComponent})
+        testComponent(SubjectComponent)
             .input("someInput", "Schwoosh!")
             .begin();
 
@@ -236,7 +228,7 @@ describe("TestSetup", () => {
             })
             class SubjectComponent {}
 
-            setupTest({subject: SubjectComponent}).begin();
+            testComponent(SubjectComponent).begin();
 
             expect(element('#message')).to.have.text("Sasquatch");
         });
@@ -249,7 +241,7 @@ describe("TestSetup", () => {
             class SubjectComponent {
             }
 
-            setupTest({subject: SubjectComponent}).begin();
+            testComponent(SubjectComponent).begin();
 
             expect(element('#message')).to.have.text("Sasquatch");
         });
@@ -261,7 +253,7 @@ describe("TestSetup", () => {
             })
             class SubjectComponent {}
 
-            setupTest({subject: SubjectComponent}).begin();
+            testComponent(SubjectComponent).begin();
 
             expect(element('#message')).to.have.text("Sasquatch");
         });
@@ -273,7 +265,7 @@ describe("TestSetup", () => {
             })
             class SubjectComponent {}
 
-            setupTest({subject: SubjectComponent}).begin();
+            testComponent(SubjectComponent).begin();
 
             expect(element('#message')).to.have.text("Sasquatch");
         });
@@ -287,7 +279,7 @@ describe("TestSetup", () => {
                 @Input() private parent: string;
             }
 
-            setupTest({subject: SubjectComponent})
+            testComponent(SubjectComponent)
                 .input("parent", "Sasquatch")
                 .begin();
 

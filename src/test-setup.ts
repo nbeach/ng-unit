@@ -36,8 +36,8 @@ interface MockTypeAndSetup {
 }
 
 
-export function setupTest<T>(config: TestConfig<T>) {
-    return new TestBuilder(config);
+export function testComponent<T>(subject: Type<T>) {
+    return new TestBuilder({ subject: subject});
 }
 
 
@@ -54,6 +54,21 @@ export class TestBuilder<T> {
 
     public input(inputName: string, value: any): TestBuilder<T> {
         this.inputInitializations.set(inputName, value);
+        return this;
+    }
+
+    public mock(components: Type<any>[]) {
+        this.config.mock = components;
+        return this;
+    }
+
+    public use(components: Type<any>[]) {
+        this.config.use = components;
+        return this;
+    }
+
+    public providers(providers: any[]) {
+        this.config.providers = providers;
         return this;
     }
 
