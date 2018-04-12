@@ -8,7 +8,7 @@ import {
     subject,
     subjectElement,
     testComponent
-} from "./test-setup";
+} from "./test-component";
 import {Component, Input} from "@angular/core";
 import {expect} from 'chai';
 import {TestBed} from "@angular/core/testing";
@@ -73,8 +73,7 @@ describe("TestSetup", () => {
                 .use([ChildComponent])
                 .begin();
 
-            const childComponent = child(ChildComponent);
-            expect(childComponent.invokeMe()).to.equal("Hey there!");
+            expect(child(ChildComponent).invokeMe()).to.equal("Hey there!");
         });
 
         it("multiple child component instances", () => {

@@ -1,6 +1,6 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {Component, Type} from "@angular/core";
-import {concat, defaultTo} from 'lodash';
+import {concat} from 'lodash';
 import {selectComponent, selectComponents} from "./dom";
 import {mockComponent, MockSetup} from "./mock-component";
 import {selectorOf} from "./selector-of";
@@ -20,32 +20,17 @@ export const subject = <T>(): T => _subject;
 export const subjectElement = (): Element => _subjectElement;
 export const fixture = <T>(): ComponentFixture<T> => _fixture;
 
-
-
-export interface TestConfig<T> {
-    subject: Type<T>
-    mock?: Type<any>[];
-    use?: Type<any>[];
-    providers?: any[];
-    methodMockFactory?: () => any;
-}
-
-interface MockTypeAndSetup {
-    type: Type<any>,
-    setup: MockSetup
-}
-
-
-export function testComponent<T>(subject: Type<T>) {
-    return new TestBuilder({ subject: subject});
-}
-
+export const testComponent = <T>(subject: Type<T>) => new TestBuilder(subject);
 
 export class TestBuilder<T> {
-    private mockSetups: MockTypeAndSetup[] = [];
+    private _providers: any[] = [];
+    private _use: Type<any>[] = [];
+    private _mock: Type<any>[] = [];
+
+    private mockSetups: {type: Type<any>, setup: MockSetup}[] = [];
     private inputInitializations = new Map<string, any>();
 
-    constructor(private config: TestConfig<T>) { }
+    constructor(private subject: Type<T>) {}
 
     public setupMock(type: Type<any>, setup: (mock: any) => void): TestBuilder<T> {
         this.mockSetups.push({type: type, setup: setup});
@@ -58,39 +43,35 @@ export class TestBuilder<T> {
     }
 
     public mock(components: Type<any>[]) {
-        this.config.mock = components;
+        this._mock = components;
         return this;
     }
 
     public use(components: Type<any>[]) {
-        this.config.use = components;
+        this._use = components;
         return this;
     }
 
     public providers(providers: any[]) {
-        this.config.providers = providers;
+        this._providers = providers;
         return this;
     }
 
     public begin(): void {
-        const providers = defaultTo(this.config.providers, []);
-        const realComponents = defaultTo(this.config.use, []);
-        const mockComponents = defaultTo(this.config.mock, [] as Type<any>[])
-            .map(type => TestBuilder.createComponentMock(type, this.mockSetups));
+        const mockComponents = this._mock.map(type => TestBuilder.createComponentMock(type, this.mockSetups));
 
-        const subject = this.config.subject;
-        const TestHostComponent = TestBuilder.createTestHostComponent(subject, this.inputInitializations);
+        const TestHostComponent = TestBuilder.createTestHostComponent(this.subject, this.inputInitializations);
         TestBed.configureTestingModule({
-            declarations: concat(TestHostComponent, subject, mockComponents, realComponents),
-            providers: providers
+            declarations: concat(TestHostComponent, this.subject, mockComponents, this._use),
+            providers: this._providers
         });
 
         const fixture = TestBed.createComponent(TestHostComponent);
         fixture.detectChanges();
 
         _fixture = fixture;
-        _subject = child(subject);
-        _subjectElement = _fixture.nativeElement.querySelector(selectorOf(subject));
+        _subject = child(this.subject);
+        _subjectElement = _fixture.nativeElement.querySelector(selectorOf(this.subject));
     }
 
     private static createTestHostComponent<T>(subject: Type<T>, inputInitializations: Map<string, any>) {
@@ -132,4 +113,9 @@ export class TestBuilder<T> {
         mockSetups.forEach(setup => setup(mock));
     }
 
+}
+
+interface MockTypeAndSetup {
+    type: Type<any>,
+    setup: MockSetup
 }
