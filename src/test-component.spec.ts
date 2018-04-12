@@ -208,8 +208,7 @@ describe("TestSetup", () => {
             template: `<span id="message">{{someService.invokeMe()}}</span>`
         })
         class SubjectComponent {
-            constructor(private someService: SomeService) {
-            }
+            constructor(private someService: SomeService) {}
         }
 
         testComponent(SubjectComponent)
@@ -229,7 +228,7 @@ describe("TestSetup", () => {
         }
 
         const subject = testComponent(SubjectComponent)
-            .input("someInput", "Schwoosh!")
+            .setInput("someInput", "Schwoosh!")
             .begin();
 
         expect(subject.someInput).to.equal("Schwoosh!");
@@ -246,8 +245,8 @@ describe("TestSetup", () => {
 
         let first = null, second = null;
         const subject = testComponent(SubjectComponent)
-            .output("someOutput", event => first = event)
-            .output("someOutput", () => second = true)
+            .onOutput("someOutput", event => first = event)
+            .onOutput("someOutput", () => second = true)
             .begin();
 
         subject.someOutput.emit("Hello World");
@@ -318,7 +317,7 @@ describe("TestSetup", () => {
             }
 
             testComponent(SubjectComponent)
-                .input("parent", "Sasquatch")
+                .setInput("parent", "Sasquatch")
                 .begin();
 
             expect(element('#message')).to.have.text("Sasquatch");
