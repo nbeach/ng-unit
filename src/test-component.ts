@@ -7,8 +7,8 @@ import {selectorOf} from "./selector-of";
 const createElement = require("dom-create-element-query-selector")
 
 let _subject: any = null;
-let _subjectElement: any = null;
-let _fixture: any = null;
+let _subjectElement: Element;
+let _fixture: ComponentFixture<any>;
 
 export const element = (selector: string): Element | null => subjectElement().querySelector(selector);
 export const elements = (selector: string): NodeListOf<Element> => subjectElement().querySelectorAll(selector);
