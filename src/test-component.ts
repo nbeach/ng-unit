@@ -18,7 +18,7 @@ export const detectChanges = () : void => _fixture.detectChanges();
 
 export const subject = <T>(): T => _subject;
 export const subjectElement = (): Element => _subjectElement;
-export const fixture = <T>(): ComponentFixture<T> => _fixture;
+export const fixture = (): ComponentFixture<any> => _fixture;
 
 export const testComponent = <T>(subject: Type<T>) => new TestBuilder(subject);
 
@@ -57,7 +57,7 @@ export class TestBuilder<T> {
         return this;
     }
 
-    public begin(): void {
+    public begin(): T {
         const mockComponents = this._mock.map(type => TestBuilder.createComponentMock(type, this.mockSetups));
 
         const TestHostComponent = TestBuilder.createTestHostComponent(this.subject, this.inputInitializations);
@@ -66,12 +66,12 @@ export class TestBuilder<T> {
             providers: this._providers
         });
 
-        const fixture = TestBed.createComponent(TestHostComponent);
-        fixture.detectChanges();
+        _fixture = TestBed.createComponent(TestHostComponent);
+        _fixture.detectChanges();
 
-        _fixture = fixture;
         _subject = child(this.subject);
         _subjectElement = _fixture.nativeElement.querySelector(selectorOf(this.subject));
+        return _subject as T
     }
 
     private static createTestHostComponent<T>(subject: Type<T>, inputInitializations: Map<string, any>) {

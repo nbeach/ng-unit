@@ -115,12 +115,14 @@ describe("TestSetup", () => {
             public message = "foo";
         }
 
+        let subject: SubjectComponent;
+
         beforeEach(() => {
-            testComponent(SubjectComponent).begin();
+            subject = testComponent(SubjectComponent).begin();
         });
 
         it("instance", () => {
-            expect(subject<SubjectComponent>().message).to.equal("foo");
+            expect(subject.message).to.equal("foo");
         });
 
         it("element", () => {
@@ -143,6 +145,22 @@ describe("TestSetup", () => {
             public message = "foo";
         }
 
+        const subject = testComponent(SubjectComponent).begin();
+
+        subject.message = "Bam!";
+        detectChanges();
+        expect(element("#message")).to.have.text("Bam!");
+    });
+
+    it("accesses subject after setup", () => {
+        @Component({
+            selector: "tested",
+            template: `<p id="message">{{message}}</p>`
+        })
+        class SubjectComponent {
+            public message = "foo";
+        }
+
         testComponent(SubjectComponent).begin();
 
         subject<SubjectComponent>().message = "Bam!";
@@ -153,8 +171,7 @@ describe("TestSetup", () => {
     it("mocks child components", () => {
         @Component({
             selector: "tested",
-            template: `
-                <child id="child-one"></child>`
+            template: `<child id="child-one"></child>`
         })
         class SubjectComponent {
         }
@@ -211,11 +228,11 @@ describe("TestSetup", () => {
             @Input() public someInput = "";
         }
 
-        testComponent(SubjectComponent)
+        const subject = testComponent(SubjectComponent)
             .input("someInput", "Schwoosh!")
             .begin();
 
-        expect(subject<SubjectComponent>().someInput).to.equal("Schwoosh!");
+        expect(subject.someInput).to.equal("Schwoosh!");
     });
 
     describe("works with components with selectors for", () => {
