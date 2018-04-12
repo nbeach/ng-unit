@@ -8,7 +8,9 @@ import {By} from "@angular/platform-browser";
 
 describe("mockComponent", () => {
 
-    afterEach(TestBed.resetTestingModule);
+    afterEach(() => {
+        TestBed.resetTestingModule()
+    });
 
     describe("can communicate with it's parent by", () => {
         let subject: CommunicatingParent,
