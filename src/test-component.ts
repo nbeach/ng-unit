@@ -25,6 +25,7 @@ export const elements = (selector: string): NodeListOf<Element> => subjectElemen
 export const child = <T>(selectorOrType: string | Type<T>): T => selectComponent(selectorOrType, _fixture);
 export const children = <T>(selectorOrType: string | Type<T>): T[] => selectComponents(selectorOrType, _fixture);
 export const detectChanges = () : void => _fixture.detectChanges();
+export const teardown = () : void => { TestBed.resetTestingModule(); };
 
 export const subject = <T>(): T => _subject;
 export const subjectElement = (): Element => _subjectElement;
@@ -74,7 +75,6 @@ export class TestBuilder<T> {
     }
 
     public begin(): T {
-        TestBed.resetTestingModule();
 
         const mockComponents = this._mock.map(type => createComponentMock(type, this.mockSetups));
         const TestHostComponent = createTestHostComponent(this.subject, this.inputInitializations);

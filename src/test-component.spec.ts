@@ -7,15 +7,16 @@ import {
     fixture,
     subject,
     subjectElement,
+    teardown,
     testComponent
 } from "./test-component";
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
+import {Component, EventEmitter, Input, Output} from "@angular/core";
 import {expect} from 'chai';
-import {TestBed} from "@angular/core/testing";
 import {By} from "@angular/platform-browser";
 
-
 describe("TestSetup", () => {
+
+    afterEach(teardown);
 
     describe('selects from the subject template', () => {
 
