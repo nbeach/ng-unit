@@ -1,20 +1,10 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
-import {Component, Type} from "@angular/core";
+import {Type} from "@angular/core";
 import {concat} from 'lodash';
 import {selectComponent, selectComponents} from "./dom";
 import {mockComponent, MockSetup} from "./mock-component";
 import {selectorOf} from "./selector-of";
-const createElement = require("dom-create-element-query-selector");
-
-interface OutputWatch {
-    name: string,
-    action: (event: any) => void
-}
-
-interface MockTypeAndSetup {
-    type: Type<any>,
-    setup: MockSetup
-}
+import {default as createTestHostComponent, MockTypeAndSetup, OutputWatch} from "./test-host";
 
 let _subject: any = null;
 let _subjectElement: Element;
@@ -75,9 +65,8 @@ export class TestBuilder<T> {
     }
 
     public begin(): T {
-
         const mockComponents = this._mock.map(type => createComponentMock(type, this.mockSetups));
-        const TestHostComponent = createTestHostComponent(this.subject, this.inputInitializations);
+        const TestHostComponent = createTestHostComponent(this.subject, this.inputInitializations, this.outputWatches);
 
         TestBed.configureTestingModule({
             declarations: concat(TestHostComponent, this.subject, mockComponents, this._use),
@@ -88,43 +77,10 @@ export class TestBuilder<T> {
         _fixture.detectChanges();
         _subject = child(this.subject);
 
-        subscribeToOutputs(_subject, this.outputWatches);
-
         _subjectElement = _fixture.nativeElement.querySelector(selectorOf(this.subject));
         return _subject as T
     }
 
-}
-
-function subscribeToOutputs<T>(component: T, outputWatches: OutputWatch[]) {
-    outputWatches.forEach(subscription => component[subscription.name].subscribe(subscription.action))
-}
-
-function createTestHostComponent<T>(subject: Type<T>, inputInitializations: Map<string, any>) {
-    const inputsNames = Array.from(inputInitializations.keys());
-    const template = createSubjectComponentTag(subject, inputsNames);
-
-    @Component({ template: template })
-    class TestHostComponent {
-        constructor() {
-            const inputs = Array.from(inputInitializations.entries());
-            inputs.forEach(input => this[input[0]] = input[1]);
-        }
-    }
-
-    return TestHostComponent;
-}
-
-function createSubjectComponentTag<T>(subject: Type<T>, inputs: string[]): string {
-    const subjectTagName = selectorOf(subject);
-    const elementHtml = createElement(subjectTagName).outerHTML;
-
-    return addInputsToTag(elementHtml, inputs);
-}
-
-function addInputsToTag(tag: string, inputs: string[]) {
-    const inputAttributes = inputs.map(input => ` [${input}]="${input}"`).join("");
-    return tag.replace(/></, `${inputAttributes}><`);
 }
 
 function createComponentMock<T>(type: Type<T>, setup: MockTypeAndSetup[]): Type<T> {
@@ -138,3 +94,4 @@ function createComponentMock<T>(type: Type<T>, setup: MockTypeAndSetup[]): Type<
 function applyMockSetups(mock: any, mockSetups: MockSetup[]): void {
     mockSetups.forEach(setup => setup(mock));
 }
+

@@ -10,7 +10,7 @@ import {
     teardown,
     testComponent
 } from "./test-component";
-import {Component, EventEmitter, Input, Output} from "@angular/core";
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {expect} from 'chai';
 import {By} from "@angular/platform-browser";
 
@@ -234,20 +234,24 @@ describe("TestSetup", () => {
             selector: "tested",
             template: ``
         })
-        class SubjectComponent {
-            @Output() public someOutput = new EventEmitter<string>();
+        class SubjectComponent implements OnInit{
+            @Output() public outputOne = new EventEmitter<string>();
+            @Output() public outputTwo = new EventEmitter<string>();
+
+            ngOnInit(): void {
+                this.outputOne.emit("Hello World");
+                this.outputTwo.emit("Goodbye Cruel World");
+            }
         }
 
         let first = null, second = null;
-        const subject = testComponent(SubjectComponent)
-            .onOutput("someOutput", event => first = event)
-            .onOutput("someOutput", () => second = true)
+        testComponent(SubjectComponent)
+            .onOutput("outputOne", event => first = event)
+            .onOutput("outputTwo", event => second = event)
             .begin();
 
-        subject.someOutput.emit("Hello World");
-
         expect(first).to.equal("Hello World");
-        expect(second).to.equal(true);
+        expect(second).to.equal("Goodbye Cruel World");
     });
 
 
