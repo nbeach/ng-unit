@@ -81,6 +81,7 @@
   },
   "dependencies": {
     "dom-create-element-query-selector": "^1.0.5",
+    "function-composition": "^1.0.5",
     "lodash": "^4.17.4",
     "sinon": "^4.0.1"
   },
