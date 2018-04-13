@@ -1,4 +1,5 @@
 --recursive
 --require ts-node/register
 --require mocha-shim.ts
+--watch-extensions ts
 src/**/*.spec.ts
