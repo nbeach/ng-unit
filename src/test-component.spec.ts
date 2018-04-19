@@ -8,29 +8,29 @@ import {
     subject,
     subjectElement,
     teardown,
-    testComponent
-} from "./test-component";
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {expect} from 'chai';
-import {By} from "@angular/platform-browser";
+    testComponent,
+} from "./test-component"
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
+import {expect} from "chai"
+import {By} from "@angular/platform-browser"
 
 describe("TestSetup", () => {
 
-    afterEach(teardown);
+    afterEach(teardown)
 
-    describe('selects from the subject template', () => {
+    describe("selects from the subject template", () => {
 
         it("a single element", () => {
             @Component({
                 selector: "tested",
-                template: `<span id="greeting">Hello World</span>`
+                template: `<span id="greeting">Hello World</span>`,
             })
             class SubjectComponent {}
 
-            testComponent(SubjectComponent).begin();
+            testComponent(SubjectComponent).begin()
 
             expect(element("#greeting")).to.have.text("Hello World")
-        });
+        })
 
         it("multiple elements", () => {
             @Component({
@@ -38,39 +38,39 @@ describe("TestSetup", () => {
                 template: `
                     <span>Hello World</span>
                     <span>Goodbye Cruel World</span>
-                `
+                `,
             })
             class SubjectComponent {}
 
-            testComponent(SubjectComponent).begin();
+            testComponent(SubjectComponent).begin()
 
-            const messages = elements("span");
-            expect(messages[0]).to.have.text("Hello World");
-            expect(messages[1]).to.have.text("Goodbye Cruel World");
-        });
+            const messages = elements("span")
+            expect(messages[0]).to.have.text("Hello World")
+            expect(messages[1]).to.have.text("Goodbye Cruel World")
+        })
 
         it("a single child component instance", () => {
             @Component({
                 selector: "tested",
                 template: `
-                    <child></child>`
+                    <child></child>`,
             })
             class SubjectComponent {}
 
             @Component({
                 selector: "child",
-                template: ``
+                template: ``,
             })
             class ChildComponent {
-                public invokeMe = () => "Hey there!";
+                public invokeMe = () => "Hey there!"
             }
 
             testComponent(SubjectComponent)
                 .use([ChildComponent])
-                .begin();
+                .begin()
 
-            expect(child(ChildComponent).invokeMe()).to.equal("Hey there!");
-        });
+            expect(child(ChildComponent).invokeMe()).to.equal("Hey there!")
+        })
 
         it("multiple child component instances", () => {
             @Component({
@@ -78,107 +78,107 @@ describe("TestSetup", () => {
                 template: `
                     <child></child>
                     <child></child>
-                `
+                `,
             })
             class SubjectComponent {}
 
             @Component({
                 selector: "child",
-                template: ``
+                template: ``,
             })
             class ChildComponent {
-                public invokeMe = () => "Hey there!";
+                public invokeMe = () => "Hey there!"
             }
 
             testComponent(SubjectComponent)
                 .use([ChildComponent])
-                .begin();
+                .begin()
 
-            const childComponents = children<ChildComponent>("child");
-            expect(childComponents[0].invokeMe()).to.equal("Hey there!");
-            expect(childComponents[1].invokeMe()).to.equal("Hey there!");
-        });
+            const childComponents = children<ChildComponent>("child")
+            expect(childComponents[0].invokeMe()).to.equal("Hey there!")
+            expect(childComponents[1].invokeMe()).to.equal("Hey there!")
+        })
 
-    });
+    })
 
     describe("gives access to the subject", () => {
         @Component({
             selector: "tested",
-            template: `<p id="message">{{message}}</p>`
+            template: `<p id="message">{{message}}</p>`,
         })
         class SubjectComponent {
-            public message = "foo";
+            public message = "foo"
         }
 
-        let subject: SubjectComponent;
+        let subject: SubjectComponent
 
         beforeEach(() => {
-            subject = testComponent(SubjectComponent).begin();
-        });
+            subject = testComponent(SubjectComponent).begin()
+        })
 
         it("instance", () => {
-            expect(subject.message).to.equal("foo");
-        });
+            expect(subject.message).to.equal("foo")
+        })
 
         it("element", () => {
-            expect(subjectElement().querySelector("#message")).to.not.be.null;
-        });
+            expect(subjectElement().querySelector("#message")).to.not.be.null
+        })
 
         it("test fixture", () => {
-            const messageElement = fixture().debugElement.query(By.css("#message"));
-            expect(messageElement).to.not.be.null;
-        });
+            const messageElement = fixture().debugElement.query(By.css("#message"))
+            expect(messageElement).to.not.be.null
+        })
 
-    });
+    })
 
     it("triggers change detection", () => {
         @Component({
             selector: "tested",
-            template: `<p id="message">{{message}}</p>`
+            template: `<p id="message">{{message}}</p>`,
         })
         class SubjectComponent {
-            public message = "foo";
+            public message = "foo"
         }
 
-        const subject = testComponent(SubjectComponent).begin();
+        const subject = testComponent(SubjectComponent).begin()
 
-        subject.message = "Bam!";
-        detectChanges();
-        expect(element("#message")).to.have.text("Bam!");
-    });
+        subject.message = "Bam!"
+        detectChanges()
+        expect(element("#message")).to.have.text("Bam!")
+    })
 
     it("accesses subject after setup", () => {
         @Component({
             selector: "tested",
-            template: `<p id="message">{{message}}</p>`
+            template: `<p id="message">{{message}}</p>`,
         })
         class SubjectComponent {
-            public message = "foo";
+            public message = "foo"
         }
 
-        testComponent(SubjectComponent).begin();
+        testComponent(SubjectComponent).begin()
 
-        subject<SubjectComponent>().message = "Bam!";
-        detectChanges();
-        expect(element("#message")).to.have.text("Bam!");
-    });
+        subject<SubjectComponent>().message = "Bam!"
+        detectChanges()
+        expect(element("#message")).to.have.text("Bam!")
+    })
 
     it("mocks child components", () => {
         @Component({
             selector: "tested",
-            template: `<child id="child-one"></child>`
+            template: `<child id="child-one"></child>`,
         })
         class SubjectComponent {
         }
 
         @Component({
             selector: "child",
-            template: ``
+            template: ``,
         })
         class ChildComponent {
 
             public invokeMe() {
-                return "Hey there!";
+                return "Hey there!"
             }
 
         }
@@ -186,21 +186,21 @@ describe("TestSetup", () => {
         testComponent(SubjectComponent)
             .mock([ChildComponent])
             .setupMock(ChildComponent, (mock: any) => mock.invokeMe.returns("I'm mocked"))
-            .begin();
+            .begin()
 
-        expect(child(ChildComponent).invokeMe()).to.equal("I'm mocked");
-    });
+        expect(child(ChildComponent).invokeMe()).to.equal("I'm mocked")
+    })
 
     it("configures providers", () => {
         class SomeService {
             public invokeMe() {
-                return "Hello World";
+                return "Hello World"
             }
         }
 
         @Component({
             selector: "tested",
-            template: `<span id="message">{{someService.invokeMe()}}</span>`
+            template: `<span id="message">{{someService.invokeMe()}}</span>`,
         })
         class SubjectComponent {
             constructor(private someService: SomeService) {}
@@ -208,119 +208,119 @@ describe("TestSetup", () => {
 
         testComponent(SubjectComponent)
             .providers([{provide: SomeService, useValue: new SomeService()}])
-            .begin();
+            .begin()
 
-        expect(element("#message")).to.have.text("Hello World");
-    });
+        expect(element("#message")).to.have.text("Hello World")
+    })
 
     it("sets initial component input values", () => {
         @Component({
             selector: "tested",
-            template: ``
+            template: ``,
         })
         class SubjectComponent {
-            @Input() public someInput = "";
+            @Input() public someInput = ""
         }
 
         const subject = testComponent(SubjectComponent)
             .setInput("someInput", "Schwoosh!")
-            .begin();
+            .begin()
 
-        expect(subject.someInput).to.equal("Schwoosh!");
-    });
+        expect(subject.someInput).to.equal("Schwoosh!")
+    })
 
     it("subscribes to component out values", () => {
         @Component({
             selector: "tested",
-            template: ``
+            template: ``,
         })
-        class SubjectComponent implements OnInit{
-            @Output() public outputOne = new EventEmitter<string>();
-            @Output() public outputTwo = new EventEmitter<string>();
+        class SubjectComponent implements OnInit {
+            @Output() public outputOne = new EventEmitter<string>()
+            @Output() public outputTwo = new EventEmitter<string>()
 
-            ngOnInit(): void {
-                this.outputOne.emit("Hello World");
-                this.outputTwo.emit("Goodbye Cruel World");
+            public ngOnInit(): void {
+                this.outputOne.emit("Hello World")
+                this.outputTwo.emit("Goodbye Cruel World")
             }
         }
 
-        let first = null, second = null;
+        let first = null, second = null
         testComponent(SubjectComponent)
             .onOutput("outputOne", event => first = event)
             .onOutput("outputTwo", event => second = event)
-            .begin();
+            .begin()
 
-        expect(first).to.equal("Hello World");
-        expect(second).to.equal("Goodbye Cruel World");
-    });
+        expect(first).to.equal("Hello World")
+        expect(second).to.equal("Goodbye Cruel World")
+    })
 
 
     describe("works with components with selectors for", () => {
 
         it("tag names", () => {
             @Component({
-                selector: 'parent',
-                template: `<span id="message">Sasquatch</span>`
+                selector: "parent",
+                template: `<span id="message">Sasquatch</span>`,
             })
             class SubjectComponent {}
 
-            testComponent(SubjectComponent).begin();
+            testComponent(SubjectComponent).begin()
 
-            expect(element('#message')).to.have.text("Sasquatch");
-        });
+            expect(element("#message")).to.have.text("Sasquatch")
+        })
 
         it("attributes", () => {
             @Component({
-                selector: '[parent]',
-                template: `<span id="message">Sasquatch</span>`
+                selector: "[parent]",
+                template: `<span id="message">Sasquatch</span>`,
             })
             class SubjectComponent {
             }
 
-            testComponent(SubjectComponent).begin();
+            testComponent(SubjectComponent).begin()
 
-            expect(element('#message')).to.have.text("Sasquatch");
-        });
+            expect(element("#message")).to.have.text("Sasquatch")
+        })
 
         it("classes", () => {
             @Component({
-                selector: '.parent',
-                template: `<span id="message">Sasquatch</span>`
+                selector: ".parent",
+                template: `<span id="message">Sasquatch</span>`,
             })
             class SubjectComponent {}
 
-            testComponent(SubjectComponent).begin();
+            testComponent(SubjectComponent).begin()
 
-            expect(element('#message')).to.have.text("Sasquatch");
-        });
+            expect(element("#message")).to.have.text("Sasquatch")
+        })
 
         it("tag names, classes, and attributes", () => {
             @Component({
-                selector: 'parent.parent[parent]',
-                template: `<span id="message">Sasquatch</span>`
+                selector: "parent.parent[parent]",
+                template: `<span id="message">Sasquatch</span>`,
             })
             class SubjectComponent {}
 
-            testComponent(SubjectComponent).begin();
+            testComponent(SubjectComponent).begin()
 
-            expect(element('#message')).to.have.text("Sasquatch");
-        });
+            expect(element("#message")).to.have.text("Sasquatch")
+        })
 
         it("attributes that are also input names", () => {
             @Component({
-                selector: '[parent]',
-                template: `<span id="message">{{parent}}</span>`
+                selector: "[parent]",
+                template: `<span id="message">{{parent}}</span>`,
             })
             class SubjectComponent {
-                @Input() private parent: string;
+                @Input() private parent: string
             }
 
             testComponent(SubjectComponent)
                 .setInput("parent", "Sasquatch")
-                .begin();
+                .begin()
 
-            expect(element('#message')).to.have.text("Sasquatch");
-        });
-    });
+            expect(element("#message")).to.have.text("Sasquatch")
+        })
+    })
 
-});
+})

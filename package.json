@@ -27,10 +27,11 @@
     "build": "npm run clean && tsc",
     "release:tag": "git tag $(node -p -e \"require('./package.json').version\") && git push origin --tags",
     "release": "npm test && npm run build && npm run release:tag && npm publish",
-    "test": "mocha --opts mocha.opts",
+    "test": "mocha --opts mocha.opts && yarn lint",
     "test:watch": "mocha --opts mocha.opts --watch --reporter progress",
     "test:coverage": "nyc mocha --opts mocha.opts --reporter progress",
-    "ci": "yarn test:coverage && nyc report --reporter=text-lcov | coveralls"
+    "lint": "tslint --project .",
+    "ci": "yarn test:coverage && yarn lint && nyc report --reporter=text-lcov | coveralls "
   },
   "nyc": {
     "extension": [
@@ -76,6 +77,8 @@
     "sinon-chai": "^3.0.0",
     "ts-helpers": "^1.1.2",
     "ts-node": "^5.0.1",
+    "tslint": "^5.9.1",
+    "tslint-no-unused-expression-chai": "^0.1.3",
     "typescript": "^2.8.1",
     "zone.js": "^0.8.17"
   },
