@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from "@angular/core"
+import {Component, DebugElement, EventEmitter, Input, Output} from "@angular/core"
 import {ComponentFixture, TestBed} from "@angular/core/testing"
 import {expect} from "chai"
 import {mockComponent} from "./mock-component"
@@ -159,7 +159,7 @@ describe("mockComponent", () => {
         const fixture = TestBed.createComponent(ParentComponent)
         fixture.detectChanges()
 
-        const components = fixture.debugElement.queryAll(By.css("child")).map(element => element.componentInstance)
+        const components = fixture.debugElement.queryAll(By.css("child")).map((element: DebugElement) => element.componentInstance)
         expect(components).to.have.length(3)
         expect(components[0].input).to.equal(0)
         expect(components[1].input).to.equal(1)
@@ -188,7 +188,7 @@ describe("mockComponent", () => {
          })
 
         it("components with no inputs or outputs", () => {
-            const components = fixture.debugElement.queryAll(By.css("child")).map(element => element.componentInstance)
+            const components = fixture.debugElement.queryAll(By.css("child")).map((element: DebugElement) => element.componentInstance)
             expect(components).to.have.length(1)
         })
 

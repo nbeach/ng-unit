@@ -1,15 +1,11 @@
 import {Type} from "@angular/core"
 import "reflect-metadata"
 
-function postV5Annotations(object: any): any | null {
-    return Reflect.getMetadata("annotations", object)
-}
-
-function preV5Annotations(object: any): any | null {
-    return object.__annotations__
-}
-
 export function getAnnotation(object: Type<any>, annotation: any): any {
-    const annotations = preV5Annotations(object) || postV5Annotations(object)
+    const annotations = (object as any).__annotations__ ||  Reflect.getMetadata("annotations", object)
     return annotations.filter((attachedAnnotation: any) => attachedAnnotation instanceof annotation)[0]
+}
+
+export function propertyMetadata(object: Type<any>): any {
+    return (object as any).__prop__metadata__ ||  Reflect.getMetadata("propMetadata", object)
 }
