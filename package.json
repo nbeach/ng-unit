@@ -1,6 +1,6 @@
 {
   "name": "ng-unit",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Testing utilities for Angular",
   "main": "src/index.js",
   "types": "src/index.d.ts",
