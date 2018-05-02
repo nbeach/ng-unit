@@ -7,3 +7,4 @@ yarn-error.log
 **/*.js.map
 **/*.d.ts
 coverage/
+v4-test/

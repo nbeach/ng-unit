@@ -1,8 +1,8 @@
-import {Component} from "@angular/core"
+import {getAnnotation} from "./reflection"
+import {Component, Type} from "@angular/core"
 
-export function selectorOf(component: any) {
-    const [componentDecorator] = component.__annotations__
-        .filter((annotation: any) => annotation.ngMetadataName === "Component")
-
-    return componentDecorator.selector
+export function selectorOf(component: Type<any>) {
+    return getAnnotation(component, Component).selector
 }
+
+

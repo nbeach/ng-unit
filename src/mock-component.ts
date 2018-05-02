@@ -1,27 +1,28 @@
 import {Component, EventEmitter, Input, Output, Type} from "@angular/core"
 import {selectorOf} from "./selector-of"
-import {extend, keys, keysIn, reduce, set, some} from "lodash"
+import {extend, keys, keysIn, reduce, set, some, defaultTo} from "lodash"
 import {stub} from "sinon"
+import {propertyMetadata} from "./reflection"
 
-function propertiesDecoratedWith(decoratorName: string, propertyMetadata: any): string[] {
-    return keys(propertyMetadata)
-        .filter(key => propertyMetadataIncludesDecorator(decoratorName, propertyMetadata[key]))
+function propertiesDecoratedWith(decorator: any, propertyMetadata: any): string[] {
+    const metadata = defaultTo(propertyMetadata, {})
+    return keys(metadata).filter((key: any) => instanceExistsIn(decorator, propertyMetadata[key]))
 }
 
-function propertyMetadataIncludesDecorator( decoratorName: string, propertyMetadata: any) {
-    return some(propertyMetadata, decorator =>  decorator.ngMetadataName === decoratorName)
+function instanceExistsIn<T>(object: Type<T>, list: any[]): boolean {
+    return some(list, (dec: any) => dec instanceof object)
 }
 
 export type MockSetup = (mock: any) => void
 
 export function mockComponent<T>(constructor: Type<T>, mockSetup: MockSetup = () => {}, mockProvider: () => any = stub): any {
-    const propertyMetadata = (constructor as any).__prop__metadata__
+    const componentPropertyMetadata = propertyMetadata(constructor)
 
     const options = {
         selector: selectorOf(constructor),
         template: "<ng-content></ng-content>",
-        inputs: propertiesDecoratedWith("Input", propertyMetadata),
-        outputs: propertiesDecoratedWith("Output", propertyMetadata),
+        inputs: propertiesDecoratedWith(Input, componentPropertyMetadata),
+        outputs: propertiesDecoratedWith(Output, componentPropertyMetadata),
     }
 
     const MockComponent = () => {

@@ -1,7 +1,6 @@
-import {Component, EventEmitter, Input, Output} from "@angular/core"
+import {Component, DebugElement, EventEmitter, Input, Output} from "@angular/core"
 import {ComponentFixture, TestBed} from "@angular/core/testing"
 import {expect} from "chai"
-import {where} from "mocha-where"
 import {mockComponent} from "./mock-component"
 import {range} from "lodash"
 import {By} from "@angular/platform-browser"
@@ -14,61 +13,153 @@ describe("mockComponent", () => {
     })
 
     describe("can communicate with it's parent by", () => {
-        let subject: CommunicatingParent,
-            subjectElement: any,
-            fixture: ComponentFixture<CommunicatingParent>,
-            mockChildComponent: any
 
-        beforeEach(() => {
-            mockChildComponent = mockComponent(CommunicatingChildComponent)
+        it("receiving input bindings", () => {
+            @Component({ selector: "child" })
+            class ChildComponent {
+                @Input() private input: string
+            }
 
+            @Component({
+                selector: "parent",
+                template: `<child [input]="boundToInput"></child>`,
+            })
+            class ParentComponent {
+                public boundToInput: string
+            }
+
+            const mockChildComponent = mockComponent(ChildComponent)
             TestBed.configureTestingModule({
-                declarations: [CommunicatingParent, mockChildComponent],
+                declarations: [ParentComponent, mockChildComponent],
             })
 
-            fixture = TestBed.createComponent(CommunicatingParent)
-            subject = fixture.componentInstance
-            subjectElement = fixture.debugElement.nativeElement
+            const fixture = TestBed.createComponent(ParentComponent)
+            const subject = fixture.componentInstance
             fixture.detectChanges()
-        })
 
-        where([
-            ["name",                 "bindingMethod",    "childProperty"],
-            ["input bindings",       "bindToInput",      "input"        ],
-            ["named input bindings", "bindToNamedInput", "namedInput"   ],
-        ])
-        .it("receiving #name", (scenario: any) => {
-            subject[scenario.bindingMethod]("foo")
+            subject.boundToInput = "foo"
             fixture.detectChanges()
 
             const component = fixture.debugElement.query(By.css("child")).componentInstance
-            expect(component[scenario.childProperty]).to.equal("foo")
+            expect(component.input).to.equal("foo")
         })
 
-        where([
-            ["name",                "childOutput", "parentTagSelector"    ],
-            ["output events",       "output",      "#outputFromChild"     ],
-            ["named output events", "namedOutput", "#namedOutputFromChild"],
-        ])
-        .it("emitting #name", (scenario: any) => {
-            const component = fixture.debugElement.query(By.css("child")).componentInstance
-            component[scenario.childOutput].emit("bar")
+        it("receiving named input bindings", () => {
+            @Component({ selector: "child" })
+            class ChildComponent {
+                @Input("differentInput") private namedInput: string
+            }
+
+            @Component({
+                selector: "parent",
+                template: `<child [namedInput]="boundToInput"></child>`,
+            })
+            class ParentComponent {
+                public boundToInput: string
+            }
+
+
+            const mockChildComponent = mockComponent(ChildComponent)
+            TestBed.configureTestingModule({
+                declarations: [ParentComponent, mockChildComponent],
+            })
+
+            const fixture = TestBed.createComponent(ParentComponent)
+            const subject = fixture.componentInstance
             fixture.detectChanges()
-            expect(subjectElement.querySelector(scenario.parentTagSelector)).to.have.text("bar")
+
+            subject.boundToInput = "foo"
+            fixture.detectChanges()
+
+            const component = fixture.debugElement.query(By.css("child")).componentInstance
+            expect(component.namedInput).to.equal("foo")
+        })
+
+
+        it("emitting output events", () => {
+            @Component({ selector: "child" })
+            class ChildComponent {
+                @Output() private output = new EventEmitter<any>()
+            }
+
+            @Component({
+                selector: "parent",
+                template: `<child (output)="outputFromChild = $event"></child>`,
+            })
+            class ParentComponent {
+                public outputFromChild: string
+            }
+
+            const mockChildComponent = mockComponent(ChildComponent)
+            TestBed.configureTestingModule({
+                declarations: [ParentComponent, mockChildComponent],
+            })
+
+            const fixture = TestBed.createComponent(ParentComponent)
+            const subject = fixture.componentInstance
+            fixture.detectChanges()
+
+            const component = fixture.debugElement.query(By.css("child")).componentInstance
+            component.output.emit("bar")
+            fixture.detectChanges()
+            expect(subject.outputFromChild).to.equal("bar")
+        })
+
+        it("emitting named output events", () => {
+            @Component({ selector: "child" })
+            class ChildComponent {
+                @Output("differentOutput") private namedOutput = new EventEmitter<any>()
+            }
+
+            @Component({
+                selector: "parent",
+                template: `<child (namedOutput)="namedOutputFromChild = $event"></child>`,
+            })
+            class ParentComponent {
+                public namedOutputFromChild: string
+            }
+
+            const mockChildComponent = mockComponent(ChildComponent)
+            TestBed.configureTestingModule({
+                declarations: [ParentComponent, mockChildComponent],
+            })
+
+            const fixture = TestBed.createComponent(ParentComponent)
+            const subject = fixture.componentInstance
+            fixture.detectChanges()
+
+
+            const component = fixture.debugElement.query(By.css("child")).componentInstance
+            component.namedOutput.emit("bar")
+            fixture.detectChanges()
+            expect(subject.namedOutputFromChild).to.equal("bar")
         })
 
     })
 
     it("allows multiple instantiations of the mock", () => {
-        const mockChildComponent = mockComponent(CommunicatingChildComponent)
+        @Component({ selector: "child" })
+        class ChildComponent {
+            @Input() private input: string
+        }
+
+        @Component({
+            selector: "parent",
+            template: `<child *ngFor="let input of childInputs" [input]="input"></child>`,
+        })
+        class ParentComponent {
+            private childInputs = range(3)
+        }
+
+        const mockChildComponent = mockComponent(ChildComponent)
         TestBed.configureTestingModule({
-            declarations: [MultiChildParentComponent, mockChildComponent],
+            declarations: [ParentComponent, mockChildComponent],
         })
 
-        const fixture = TestBed.createComponent(MultiChildParentComponent)
+        const fixture = TestBed.createComponent(ParentComponent)
         fixture.detectChanges()
 
-        const components = fixture.debugElement.queryAll(By.css("child")).map(element => element.componentInstance)
+        const components = fixture.debugElement.queryAll(By.css("child")).map((element: DebugElement) => element.componentInstance)
         expect(components).to.have.length(3)
         expect(components[0].input).to.equal(0)
         expect(components[1].input).to.equal(1)
@@ -76,20 +167,28 @@ describe("mockComponent", () => {
     })
 
     describe("mocks", () => {
-        let fixture: ComponentFixture<NonCommunicatingParent>
+        let fixture: ComponentFixture<any>
 
         beforeEach(() => {
-             const mockChildComponent = mockComponent(NonCommunicatingChildComponent)
-             TestBed.configureTestingModule({
+            @Component({ selector: "parent", template: `<child></child>` })
+            class NonCommunicatingParent {}
+
+            @Component({ selector: "child" })
+            class NonCommunicatingChildComponent {
+                public someMethod() {}
+            }
+
+            const mockChildComponent = mockComponent(NonCommunicatingChildComponent)
+            TestBed.configureTestingModule({
                  declarations: [NonCommunicatingParent, mockChildComponent],
              })
 
-             fixture = TestBed.createComponent(NonCommunicatingParent)
-             fixture.detectChanges()
+            fixture = TestBed.createComponent(NonCommunicatingParent)
+            fixture.detectChanges()
          })
 
         it("components with no inputs or outputs", () => {
-            const components = fixture.debugElement.queryAll(By.css("child")).map(element => element.componentInstance)
+            const components = fixture.debugElement.queryAll(By.css("child")).map((element: DebugElement) => element.componentInstance)
             expect(components).to.have.length(1)
         })
 
@@ -102,6 +201,14 @@ describe("mockComponent", () => {
     })
 
     it("allows use of a custom mock factory", () => {
+        @Component({ selector: "parent", template: `<child></child>` })
+        class NonCommunicatingParent {}
+
+        @Component({ selector: "child" })
+        class NonCommunicatingChildComponent {
+            public someMethod() {}
+        }
+
         let called = false
         const mockFactory = stub().returns(() => called = true)
 
@@ -118,7 +225,12 @@ describe("mockComponent", () => {
     })
 
     it("creates unique event emitters for each instance", () => {
-        const MockComponent = mockComponent(CommunicatingChildComponent)
+        @Component({ selector: "component" })
+        class SomeComponent {
+            @Output() private output = new EventEmitter<any>()
+        }
+
+        const MockComponent = mockComponent(SomeComponent)
         const first = new MockComponent()
         const second = new MockComponent()
 
@@ -126,7 +238,12 @@ describe("mockComponent", () => {
     })
 
     it("creates unique method mocks for each instance", () => {
-        const MockComponent = mockComponent(CommunicatingChildComponent)
+        @Component({ selector: "component" })
+        class SomeComponent {
+            public foo() { }
+        }
+
+        const MockComponent = mockComponent(SomeComponent)
         const first = new MockComponent()
         const second = new MockComponent()
 
@@ -134,7 +251,12 @@ describe("mockComponent", () => {
     })
 
     it("allows for mock setup to be passed", () => {
-        const MockComponent = mockComponent(CommunicatingChildComponent, mock => {
+        @Component({ selector: "component" })
+        class SomeComponent {
+            public foo() { }
+        }
+
+        const MockComponent = mockComponent(SomeComponent, mock => {
             mock.foo.returns("sasquatch")
         })
         const mock = new MockComponent()
@@ -143,7 +265,6 @@ describe("mockComponent", () => {
     })
 
     it("supports rendering transcluded content", () => {
-
         @Component({ selector: "child" })
         class ChildComponent {}
 
@@ -153,7 +274,6 @@ describe("mockComponent", () => {
         })
         class ParentComponent {}
 
-
         const MockChildComponent = mockComponent(ChildComponent)
         TestBed.configureTestingModule({
             declarations: [ParentComponent, MockChildComponent],
@@ -161,59 +281,6 @@ describe("mockComponent", () => {
 
         const fixture = TestBed.createComponent(ParentComponent)
         fixture.detectChanges()
-
         expect(fixture.nativeElement.querySelector("#message")).to.have.text("Sasquatch")
     })
 })
-
-@Component({ selector: "child" })
-class CommunicatingChildComponent {
-    @Input() private input: string
-    @Input("differentInput") private namedInput: string
-    @Output() private output = new EventEmitter<any>()
-    @Output("differentOutput") private namedOutput = new EventEmitter<any>()
-
-    public foo() { }
-}
-
-@Component({
-    selector: "parent",
-    template: `
-                <child [input]="boundToInput"
-                       [namedInput]="boundToNamedInput"
-                       (output)="outputFromChild = $event"
-                       (namedOutput)="namedOutputFromChild = $event"></child>
-                <div id="outputFromChild">{{outputFromChild}}</div>
-                <div id="namedOutputFromChild">{{namedOutputFromChild}}</div>
-            `,
-})
-class CommunicatingParent {
-    private boundToInput: string
-    private boundToNamedInput: string
-    private outputFromChild: string
-    private namedOutputFromChild: string
-
-    public bindToInput(value: string): void {
-        this.boundToInput = value
-    }
-
-    public bindToNamedInput(value: string): void {
-        this.boundToNamedInput = value
-    }
-}
-
-@Component({
-    selector: "parent",
-    template: `<child *ngFor="let input of childInputs" [input]="input"></child>`,
-})
-class MultiChildParentComponent {
-    private childInputs = range(3)
-}
-
-@Component({ selector: "parent", template: `<child></child>` })
-class NonCommunicatingParent {}
-
-@Component({ selector: "child" })
-class NonCommunicatingChildComponent {
-    public someMethod() {}
-}
