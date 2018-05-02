@@ -2,6 +2,63 @@
 
 The boilerplate reducing test utility for Angular.
 
+## What is ng-unit?
+ng-unit seeks to simplify unit testing of Angular components by providing automated mocking of child components,
+streamlined test setup, and easier DOM interaction to drastically the amount of boilerplate code needed. 
+
+
+#### An example
+Suppose we want to mock out the child component used in the below component so we can assert that the component under 
+test binds the correct value to its input.
+```typescript
+@Component({
+    selector: "parent",
+    template: `<child [input]="boundToInput"></child>`,
+})
+class ComponentUnderTest {
+    public boundToInput: string
+}
+```
+
+Normally you would have to do something like this:
+```typescript
+it("sets the child components input", () => {
+    @Component({ selector: "child" })
+    class MockChildComponent {
+        @Input() private input: string
+    }
+    
+    TestBed.configureTestingModule({
+        declarations: [ParentComponent, MockChildComponent],
+    })
+    
+    const fixture = TestBed.createComponent(ParentComponent)
+    const subject = fixture.componentInstance
+    fixture.detectChanges()
+    
+    subject.boundToInput = "foo"
+    fixture.detectChanges()
+    
+    const component = fixture.debugElement.query(By.css("child")).componentInstance
+    expect(component.input).to.equal("foo")
+})
+```
+
+With ng-unit this simply becomes:
+
+```typescript
+it("sets the child components input", () => {
+    const subject = testComponent(ComponentUnderTest)
+      .mock([ChildComponent])
+      .begin();
+
+    subject.boundToInput = "foo"
+    detectChanges()
+    
+    expect(child(ChildComponent).input).to.equal("foo")
+})
+```
+
 ## Installation
     npm install --save-dev ng-unit
 
