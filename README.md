@@ -27,7 +27,6 @@ import {TestBed} from "@angular/core/testing"
 import {By} from "@angular/platform-browser"
 
 it("sets the child components input", () => {
-    
     @Component({ selector: "child" })
     class MockChildComponent {
         @Input() private input: string
@@ -56,9 +55,9 @@ import {testComponent, detectChanges, child} from "ng-unit"
 
 it("sets the child components input", () => {
     const subject = testComponent(ComponentUnderTest)
-      .mock([ChildComponent])
-      .begin();
-
+        .mock([ChildComponent])
+        .begin();
+    
     subject.boundToInput = "foo"
     detectChanges()
     
@@ -70,8 +69,8 @@ it("sets the child components input", () => {
     npm install --save-dev ng-unit
 
 ## Guide
-* [Basic Testing](#basic-testing)
-  * [A simple test](#a-simple-test)
+* [Basics](#basics)
+  * [Selecting DOM elements](#selecting-dom-elements)
   * [Simulating DOM events](#simulating-dom-events)
   * [Interacting with DOM inputs](#interacting-with-DOM-inputs)
   * [Using real child components](#using-real-child-components)
@@ -85,23 +84,23 @@ it("sets the child components input", () => {
 * [Setting component inputs](#setting-component-inputs)
 * [Watching component outputs](#watching-component-outputs)
 
-## Basic Testing
+## Basics
 
-#### A simple test
+#### Selecting DOM elements
 ng-unit greatly simplifies setup and mocking for Angular TestBed tests. In the simplest scenario you simply need to pass the component to be tested to `testComponent()` and invoke `.begin()` to instantiate your component. You can then use `element()` to query the DOM for elements.
 
 ```typescript
 import {testComponent, element} from 'ng-unit';
 
- @Component({
+@Component({
     selector: "tested",
     template: `<span id="greeting">Hello World</span>`
 })
 class SubjectComponent { }
 
 it("has a greeting message", () => {
-  testComponent(SubjectComponent).begin();
-  expect(element("#greeting")).to.have.text("Hello World");
+    testComponent(SubjectComponent).begin();
+    expect(element("#greeting")).to.have.text("Hello World");
 });
 ```
 
@@ -122,12 +121,12 @@ class SubjectComponent {
 }
 
 it("fires a click event handler", () => {
-  const {subject} = testComponent(SubjectComponent).begin();
-
-  trigger(element('input'), 'click');
-  detectChanges();
-
-  expect(subject.clicked).to.be.true;
+    const {subject} = testComponent(SubjectComponent).begin();
+    
+    trigger(element('input'), 'click');
+    detectChanges();
+    
+    expect(subject.clicked).to.be.true;
 });
 ```
 
@@ -149,21 +148,21 @@ If you want your test to utilize a real instances of child components configure 
 
 ```typescript
 testComponent(SubjectComponent)
-  .use([FooComponent, BarComponent])
-  .begin();
+    .use([FooComponent, BarComponent])
+    .begin();
 ```
 
 #### Providing providers
 Providers can be registered with `.providers()`
 
-  ```typescript
-  testComponent(SubjectComponent)
+```typescript
+testComponent(SubjectComponent)
     .providers([
       { provide: FooService, useValue: mockFooService },
       { provide: BarService, useValue: new BarService() },
     ])
     .begin();
-  ```
+```
 
 ## Mocking Components
 
@@ -179,29 +178,29 @@ import {testComponent, element, detectChanges} from 'ng-unit';
 @Component({
     selector: 'tested',
     template: `
-      <child-component>
-        <span id="transcluded">This is transcluded!</span>
-      </child-component>
+        <child-component>
+            <span id="transcluded">This is transcluded!</span>
+        </child-component>
     `
 })
 class SubjectComponent {
 }
 
 it("renders transcluded content", () => {
-  testComponent(SubjectComponent).begin();
-
-  expect(element('#transcluded')).to.have.text("This is transcluded!");
+    testComponent(SubjectComponent).begin();
+    
+    expect(element('#transcluded')).to.have.text("This is transcluded!");
 });
 ```
 
 #### Automatic component mocking
 Mock child components be can automatically created for you with `.mock()`.
 
-  ```typescript
-  testComponent(SubjectComponent)
+```typescript
+testComponent(SubjectComponent)
     .mock([FooComponent, BarComponent])
     .begin();
-  ```
+```
 
 ## Configuring mock components
 
@@ -219,19 +218,19 @@ testComponent(SubjectComponent)
 ## Setting component inputs
 Initial values for component inputs can be set prior to component instantiation (so they are properly present at OnInit time) with `.setInput()`.
 
-  ```typescript
-  testComponent(SubjectComponent)
+```typescript  
+testComponent(SubjectComponent)
     .setInput("label", "presents")
     .begin();
-  ```
+```
 
 Once the component is instantiated you can directly mutate the inputs on the test subject.
 
 ## Watching component outputs
 Component outputs can be watched prior to component instantiation (so values emitted at OnInit time are not missed) with `.onOutput()`.
 
-  ```typescript
-  testComponent(SubjectComponent)
+```typescript
+testComponent(SubjectComponent)
     .onOutput("save", event => persist(event))
     .begin();
-  ```
+```
