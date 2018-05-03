@@ -166,8 +166,23 @@ testComponent(SubjectComponent)
 
 ## Mocking Components
 
-#### Mocking child components
-By default uses sinon for mocking. You provide a factory for your own mocks.
+#### Automatic child component mocking
+Mock child components be can automatically created for you with `.mock()`.
+
+```typescript
+testComponent(SubjectComponent)
+    .mock([FooComponent, BarComponent])
+    .begin();
+```
+
+## Configuring mock components
+
+```typescript
+testComponent(SubjectComponent)
+  .mock([FooComponent])
+  .setupMock(FooComponent, fooMock => fooMock.getValue.returns("cake"))
+  .begin();
+```
 
 #### Mocked components and transclusion
 Mocked components render any transcluded content
@@ -193,22 +208,16 @@ it("renders transcluded content", () => {
 });
 ```
 
-#### Automatic component mocking
+
+#### Custom mock factory
+By default uses sinon for mocking. You provide a factory for your own mocks.
+
+
+#### Manual component mocking
 Mock child components be can automatically created for you with `.mock()`.
 
 ```typescript
-testComponent(SubjectComponent)
-    .mock([FooComponent, BarComponent])
-    .begin();
-```
 
-## Configuring mock components
-
-```typescript
-testComponent(SubjectComponent)
-  .mock([FooComponent])
-  .setupMock(FooComponent, fooMock => fooMock.getValue.returns("cake"))
-  .begin();
 ```
 
 #### Interacting with real or mock child components
