@@ -4,6 +4,8 @@ import {extend, keys, keysIn, reduce, set, some, defaultTo} from "lodash"
 import {stub} from "sinon"
 import {propertyMetadata} from "./reflection"
 
+let _mockProvider = stub
+
 function propertiesDecoratedWith(decorator: any, propertyMetadata: any): string[] {
     const metadata = defaultTo(propertyMetadata, {})
     return keys(metadata).filter((key: any) => instanceExistsIn(decorator, propertyMetadata[key]))
@@ -15,7 +17,12 @@ function instanceExistsIn<T>(object: Type<T>, list: any[]): boolean {
 
 export type MockSetup = (mock: any) => void
 
-export function mockComponent<T>(constructor: Type<T>, mockSetup: MockSetup = () => {}, mockProvider: () => any = stub): any {
+
+export function mockProvider(mockProvider: () => any) {
+    _mockProvider = mockProvider
+}
+
+export function mockComponent<T>(constructor: Type<T>, mockSetup: MockSetup = () => {}): any {
     const componentPropertyMetadata = propertyMetadata(constructor)
 
     const options = {
@@ -27,7 +34,7 @@ export function mockComponent<T>(constructor: Type<T>, mockSetup: MockSetup = ()
 
     const MockComponent = () => {
         const outputs = reduce(options.outputs, (obj, property) => set(obj, property, new EventEmitter<any>()), {})
-        const mockedMethods = keysIn(constructor.prototype).reduce((obj, property) => set(obj, property, mockProvider()), {})
+        const mockedMethods = keysIn(constructor.prototype).reduce((obj, property) => set(obj, property, _mockProvider()), {})
 
         const mocked = extend({}, outputs, mockedMethods)
         mockSetup(mocked)
