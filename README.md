@@ -22,7 +22,12 @@ class ComponentUnderTest {
 
 Normally you would have to do something like this:
 ```typescript
+import {Component, Input, Output} from "@angular/core"
+import {TestBed} from "@angular/core/testing"
+import {By} from "@angular/platform-browser"
+
 it("sets the child components input", () => {
+    
     @Component({ selector: "child" })
     class MockChildComponent {
         @Input() private input: string
@@ -47,6 +52,8 @@ it("sets the child components input", () => {
 With ng-unit this simply becomes:
 
 ```typescript
+import {testComponent, detectChanges, child} from "ng-unit"
+
 it("sets the child components input", () => {
     const subject = testComponent(ComponentUnderTest)
       .mock([ChildComponent])
