@@ -1,7 +1,7 @@
 import {Component, DebugElement, EventEmitter, Input, Output} from "@angular/core"
 import {ComponentFixture, TestBed} from "@angular/core/testing"
 import {expect} from "chai"
-import {mockComponent} from "./mock-component"
+import {mockComponent, mockProvider} from "./mock-component"
 import {range} from "lodash"
 import {By} from "@angular/platform-browser"
 import {stub} from "sinon"
@@ -211,8 +211,9 @@ describe("mockComponent", () => {
 
         let called = false
         const mockFactory = stub().returns(() => called = true)
+        mockProvider(mockFactory)
 
-        const mockChildComponent = mockComponent(NonCommunicatingChildComponent, () => {}, mockFactory)
+        const mockChildComponent = mockComponent(NonCommunicatingChildComponent, () => {})
         TestBed.configureTestingModule({
             declarations: [NonCommunicatingParent, mockChildComponent],
         })
@@ -222,6 +223,8 @@ describe("mockComponent", () => {
         const component = fixture.debugElement.query(By.css("child")).componentInstance
         component.someMethod()
         expect(called).to.be.true
+
+        mockProvider(stub)
     })
 
     it("creates unique event emitters for each instance", () => {

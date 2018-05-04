@@ -28,11 +28,12 @@
     "release:tag": "git tag $(node -p -e \"require('./package.json').version\") && git push origin --tags",
     "release": "npm test && npm run build && npm run release:tag && npm publish",
     "test": "mocha --opts mocha.opts && yarn lint",
-    "test:watch": "mocha --opts mocha.opts --watch --reporter progress",
-    "test:coverage": "nyc mocha --opts mocha.opts --reporter progress",
-    "test:v4": "./v4-test.sh",
+    "test:no-lint": "mocha --opts mocha.opts",
+    "test:watch": "mocha --opts mocha.opts --watch",
+    "test:coverage": "nyc mocha --opts mocha.opts",
+    "test:prior-versions": "./test-angular-version.sh ^5.2.9 && ./test-angular-version.sh ^4.4.7 && ./test-angular-version.sh ^2.4.10",
     "lint": "tslint --project .",
-    "ci": "yarn test:coverage && yarn lint && yarn test:v4 && nyc report --reporter=text-lcov | coveralls "
+    "ci": "yarn test:coverage && yarn lint && yarn test:prior-versions && nyc report --reporter=text-lcov | coveralls "
   },
   "nyc": {
     "extension": [
@@ -52,12 +53,12 @@
     "all": true
   },
   "devDependencies": {
-    "@angular/common": "^5.2.9",
-    "@angular/compiler": "^5.2.9",
-    "@angular/core": "^5.2.9",
-    "@angular/forms": "^5.2.9",
-    "@angular/platform-browser": "^5.2.9",
-    "@angular/platform-browser-dynamic": "^5.2.9",
+    "@angular/common": "^6.0.0",
+    "@angular/compiler": "^6.0.0",
+    "@angular/core": "^6.0.0",
+    "@angular/forms": "^6.0.0",
+    "@angular/platform-browser": "^6.0.0",
+    "@angular/platform-browser-dynamic": "^6.0.0",
     "@types/chai": "^4.0.4",
     "@types/chai-dom": "0.0.6",
     "@types/lodash": "^4.14.74",
@@ -74,7 +75,7 @@
     "mocha-where": "^1.0.3",
     "nyc": "^11.6.0",
     "rimraf": "^2.6.2",
-    "rxjs": "^5.4.3",
+    "rxjs": "^6.0.0",
     "sinon-chai": "^3.0.0",
     "ts-helpers": "^1.1.2",
     "ts-node": "^5.0.1",
@@ -91,6 +92,6 @@
     "sinon": "^4.0.1"
   },
   "peerDependencies": {
-    "@angular/core": ">= 4.4.7"
+    "@angular/core": ">= 2.4.10"
   }
 }
