@@ -1,8 +1,6 @@
 # ng-unit &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/nbeach/ng-unit/blob/master/LICENSE) [![npm version](https://img.shields.io/npm/v/ng-unit.svg?style=flat)](https://www.npmjs.com/package/ng-unit) [![Build Status](https://travis-ci.org/nbeach/ng-unit.svg?branch=master)](https://travis-ci.org/nbeach/ng-unit) [![Coverage Status](https://coveralls.io/repos/github/nbeach/ng-unit/badge.svg?branch=coverage)](https://coveralls.io/github/nbeach/ng-unit?branch=coverage)
 
-The boilerplate reducing test utility for Angular.
-
-Supports Angular version 2.4.10 and greater
+The boilerplate reducing test utility for Angular. Supports Angular version 2.4.10 and greater.
 
 ## What is ng-unit?
 ng-unit seeks to simplify unit testing of Angular components by providing automated mocking of child components,
@@ -216,6 +214,15 @@ testComponent(SubjectComponent)
 #### Interacting with real or mock child components
 
 
+## Custom mock provider
+By default ng-unit uses sinon stubs for mocking functions. You can setup your own mock provider if you prefer to use 
+Jasmine spys or other mocking libraries.
+
+```typescript
+import {mockProvider} from "ng-unit"
+
+mockProvider(() => jasmine.createSpy())
+```
 
 ## Setting component inputs
 Initial values for component inputs can be set prior to component instantiation (so they are properly present at OnInit time) with `.setInput()`.
