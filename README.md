@@ -2,6 +2,8 @@
 
 The boilerplate reducing test utility for Angular.
 
+Supports Angular version 2.4.10 and greater
+
 ## Installation
     npm install --save-dev ng-unit
 

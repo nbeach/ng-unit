@@ -7,5 +7,6 @@ Object.keys(packageJson.devDependencies)
     .filter(key => key.startsWith("@angular"))
     .forEach(key => packageJson.devDependencies[key] = version)
 
+packageJson.devDependencies.rxjs = "^5.5.10"
 
 writeFileSync("package.json", JSON.stringify(packageJson))
