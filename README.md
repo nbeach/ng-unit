@@ -56,7 +56,7 @@ import {testComponent, detectChanges, child} from "ng-unit"
 it("sets the child components input", () => {
     const subject = testComponent(ComponentUnderTest)
         .mock([ChildComponent])
-        .begin();
+        .begin()
     
     subject.boundToInput = "foo"
     detectChanges()
@@ -90,7 +90,7 @@ it("sets the child components input", () => {
 ng-unit greatly simplifies setup and mocking for Angular TestBed tests. In the simplest scenario you simply need to pass the component to be tested to `testComponent()` and invoke `.begin()` to instantiate your component. You can then use `element()` to query the DOM for elements.
 
 ```typescript
-import {testComponent, element} from 'ng-unit';
+import {testComponent, element} from 'ng-unit'
 
  @Component({
     selector: "tested",
@@ -99,8 +99,8 @@ import {testComponent, element} from 'ng-unit';
 class SubjectComponent { }
 
 it("has a greeting message", () => {
-  testComponent(SubjectComponent).begin();
-  expect(element("#greeting")).to.have.text("Hello World");
+  testComponent(SubjectComponent).begin()
+  expect(element("#greeting")).to.have.text("Hello World")
 });
 ```
 
@@ -110,35 +110,35 @@ You can also select multiple elements with `elements('.selector')`.
 You can simulate DOM events by using `trigger()`.
 
 ```typescript
-import {testComponent, element, trigger, detectChanges} from 'ng-unit';
+import {testComponent, element, trigger, detectChanges} from "ng-unit"
 
 @Component({
-    selector: 'tested',
+    selector: "tested",
     template: `<button (click)="clicked = true">Click Me</button>`
 })
 class SubjectComponent {
-    public clicked = false;
+    public clicked = false
 }
 
 it("fires a click event handler", () => {
-  const {subject} = testComponent(SubjectComponent).begin();
+  const {subject} = testComponent(SubjectComponent).begin()
 
-  trigger(element('input'), 'click');
-  detectChanges();
+  trigger(element('input'), 'click')
+  detectChanges()
 
-  expect(subject.clicked).to.be.true;
-});
+  expect(subject.clicked).to.be.true
+})
 ```
 
 #### Interacting with DOM inputs
 Value setter convenience methods for DOM inputs are provided. They automatically fire the appropriate change/input events on the input being set.
 
 ```typescript
-setInputValue(element("input[type=text]"), "Sasquatch"); //Text field now has value "Sasquatch"
-setTextAreaValue(element("textarea"), "Sasquatch"); //Text area now has value "Sasquatch"
-setCheckboxValue(element("input[type=check]"), true); //Checkbox is now checked
-setRadioButton(element("input[type=radio]"), true); //Radio button is now selected
-setSelectValue(element("select"), "Hancock"); //Dropdown list now has the value "Hancock" selected
+setInputValue(element("input[type=text]"), "Sasquatch") //Text field now has value "Sasquatch"
+setTextAreaValue(element("textarea"), "Sasquatch") //Text area now has value "Sasquatch"
+setCheckboxValue(element("input[type=check]"), true) //Checkbox is now checked
+setRadioButton(element("input[type=radio]"), true) //Radio button is now selected
+setSelectValue(element("select"), "Hancock") //Dropdown list now has the value "Hancock" selected
 ```
 
 These work with any DOM element reference, not just those returned by ng-units selection methods, so they can be used in traditional TestBed tests if desired.
@@ -149,7 +149,7 @@ If you want your test to utilize a real instances of child components configure 
 ```typescript
 testComponent(SubjectComponent)
   .use([FooComponent, BarComponent])
-  .begin();
+  .begin()
 ```
 
 #### Providing providers
@@ -161,7 +161,7 @@ Providers can be registered with `.providers()`
       { provide: FooService, useValue: mockFooService },
       { provide: BarService, useValue: new BarService() },
     ])
-    .begin();
+    .begin()
   ```
 
 ## Mocking Components
@@ -173,10 +173,10 @@ By default uses sinon for mocking. You provide a factory for your own mocks.
 Mocked components render any transcluded content
 
 ```typescript
-import {testComponent, element, detectChanges} from 'ng-unit';
+import {testComponent, element, detectChanges} from "ng-unit"
 
 @Component({
-    selector: 'tested',
+    selector: "tested",
     template: `
       <child-component>
         <span id="transcluded">This is transcluded!</span>
@@ -187,10 +187,10 @@ class SubjectComponent {
 }
 
 it("renders transcluded content", () => {
-  testComponent(SubjectComponent).begin();
+  testComponent(SubjectComponent).begin()
 
-  expect(element('#transcluded')).to.have.text("This is transcluded!");
-});
+  expect(element("#transcluded")).to.have.text("This is transcluded!")
+})
 ```
 
 #### Automatic component mocking
@@ -199,7 +199,7 @@ Mock child components be can automatically created for you with `.mock()`.
   ```typescript
   testComponent(SubjectComponent)
     .mock([FooComponent, BarComponent])
-    .begin();
+    .begin()
   ```
 
 ## Configuring mock components
@@ -208,15 +208,15 @@ Mock child components be can automatically created for you with `.mock()`.
 testComponent(SubjectComponent)
   .mock([FooComponent])
   .setupMock(FooComponent, fooMock => fooMock.getValue.returns("cake"))
-  .begin();
+  .begin()
 ```
 
 #### Interacting with real or mock child components
 
 
 ## Custom mock provider
-By default ng-unit uses sinon stubs for mocking functions. You can setup your own mock provider if you prefer to use 
-Jasmine spys or other mocking libraries.
+By default ng-unit uses sinon stubs for mocking functions. You can configure your own mock provider if you prefer to use 
+Jasmine spys or another mocking framework.
 
 ```typescript
 import {mockProvider} from "ng-unit"
@@ -230,7 +230,7 @@ Initial values for component inputs can be set prior to component instantiation 
   ```typescript
   testComponent(SubjectComponent)
     .setInput("label", "presents")
-    .begin();
+    .begin()
   ```
 
 Once the component is instantiated you can directly mutate the inputs on the test subject.
@@ -241,5 +241,5 @@ Component outputs can be watched prior to component instantiation (so values emi
   ```typescript
   testComponent(SubjectComponent)
     .onOutput("save", event => persist(event))
-    .begin();
+    .begin()
   ```

@@ -12,6 +12,7 @@ function doIfElementPresent<T>(element: T | null, action: (item: T) => void) {
     }
 }
 
+// TODO: look at element type to determine proper action so some of these can be collapsed to less methods?
 export function setInputValue(input: HTMLInputElement | null, value: string): void {
     doIfElementPresent(input, input => {
         input.value = value
