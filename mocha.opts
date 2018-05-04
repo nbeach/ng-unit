@@ -2,4 +2,5 @@
 --require ts-node/register
 --require mocha-shim.ts
 --watch-extensions ts
+--reporter progress
 src/**/*.spec.ts

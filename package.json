@@ -28,11 +28,13 @@
     "release:tag": "git tag $(node -p -e \"require('./package.json').version\") && git push origin --tags",
     "release": "npm test && npm run build && npm run release:tag && npm publish",
     "test": "mocha --opts mocha.opts && yarn lint",
-    "test:watch": "mocha --opts mocha.opts --watch --reporter progress",
-    "test:coverage": "nyc mocha --opts mocha.opts --reporter progress",
-    "test:v4": "./v4-test.sh",
+    "test:no-lint": "mocha --opts mocha.opts",
+    "test:watch": "mocha --opts mocha.opts --watch",
+    "test:coverage": "nyc mocha --opts mocha.opts",
+    "test:angular-4": "./test-angular-version.sh ^4.4.7",
+    "test:angular-2": "./test-angular-version.sh ^2.4.10",
     "lint": "tslint --project .",
-    "ci": "yarn test:coverage && yarn lint && yarn test:v4 && nyc report --reporter=text-lcov | coveralls "
+    "ci": "yarn test:coverage && yarn lint && yarn test:angular-4 && yarn test:angular-2 && nyc report --reporter=text-lcov | coveralls "
   },
   "nyc": {
     "extension": [
@@ -91,6 +93,6 @@
     "sinon": "^4.0.1"
   },
   "peerDependencies": {
-    "@angular/core": ">= 4.4.7"
+    "@angular/core": ">= 2.4.10"
   }
 }
