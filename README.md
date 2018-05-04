@@ -122,7 +122,7 @@ class SubjectComponent {
     public clicked = false;
 }
 
-it("fires a click event handler, () => {
+it("fires a click event handler", () => {
   const {subject} = testComponent(SubjectComponent).begin();
 
   trigger(element('input'), 'click');
