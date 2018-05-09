@@ -1,5 +1,3 @@
-import "ts-helpers"
-
 import "core-js/client/shim"
 import "zone.js/dist/zone-node"
 
