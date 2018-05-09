@@ -893,9 +893,9 @@ fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
 
-function-composition@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/function-composition/-/function-composition-1.0.6.tgz#aba7693e2e147e0cdb5d63799ffc5aee1854fac4"
+function-composition@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/function-composition/-/function-composition-1.0.7.tgz#070de7478fd41557c1d73443c6e242ff7f1889ea"
 
 get-caller-file@^1.0.1:
   version "1.0.2"
@@ -1601,9 +1601,9 @@ mkdirp@0.5.1, mkdirp@^0.5.0, mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
-mocha-where@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/mocha-where/-/mocha-where-1.1.1.tgz#4582c56458650896fc7daae53cb6f6dac635e056"
+mocha-where@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/mocha-where/-/mocha-where-1.1.2.tgz#e0e65084effc092f09dd28d8c26c17bc7f5b3a41"
   dependencies:
     lodash "^4.17.4"
 
