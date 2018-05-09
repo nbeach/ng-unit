@@ -12,7 +12,7 @@ import {
 } from "./dom"
 import {FormsModule} from "@angular/forms"
 import {expect} from "chai"
-import {where} from "mocha-where/src/where"
+import {where} from "mocha-where"
 
 describe("DOM", () => {
 
