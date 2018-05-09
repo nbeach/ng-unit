@@ -13,6 +13,8 @@ import {
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
 import {expect} from "chai"
 import {By} from "@angular/platform-browser"
+import {FormsModule} from "@angular/forms"
+import {setInputValue} from "./dom"
 
 describe("TestSetup", () => {
 
@@ -189,6 +191,30 @@ describe("TestSetup", () => {
             .begin()
 
         expect(child(ChildComponent).invokeMe()).to.equal("I'm mocked")
+    })
+
+    it("specifies imports", () => {
+        class SomeService {
+            public invokeMe() {
+                return "Hello World"
+            }
+        }
+
+        @Component({
+            selector: "tested",
+            template: `<input type="text" [(ngModel)]="value">`,
+        })
+        class SubjectComponent {
+           public value: string = ""
+        }
+
+        const subject = testComponent(SubjectComponent)
+            .import([FormsModule])
+            .begin()
+
+        setInputValue(element("input"), "foo")
+
+        expect(subject.value).to.equal("foo")
     })
 
     it("configures providers", () => {
