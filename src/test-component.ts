@@ -25,6 +25,7 @@ export const testComponent = <T>(subject: Type<T>) => new TestBuilder(subject)
 
 export class TestBuilder<T> {
     private _providers: any[] = []
+    private _imports: any[] = []
     private _use: Type<any>[] = []
     private _mock: Type<any>[] = []
 
@@ -64,6 +65,11 @@ export class TestBuilder<T> {
         return this
     }
 
+    public import(imports: any[]) {
+        this._imports = imports
+        return this
+    }
+
     public begin(): T {
         const mockComponents = this._mock.map(type => createComponentMock(type, this.mockSetups))
         const TestHostComponent = createTestHostComponent(this.subject, this.inputInitializations, this.outputWatches)
@@ -71,6 +77,7 @@ export class TestBuilder<T> {
         TestBed.configureTestingModule({
             declarations: concat(TestHostComponent, this.subject, mockComponents, this._use),
             providers: this._providers,
+            imports: this._imports,
         })
 
         _fixture = TestBed.createComponent(TestHostComponent)
