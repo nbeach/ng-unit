@@ -11,7 +11,7 @@ let _subjectElement: Element
 let _fixture: ComponentFixture<any>
 
 export const element = (selector: string): Element | null => subjectElement().querySelector(selector)
-export const elements = (selector: string): NodeListOf<Element> => subjectElement().querySelectorAll(selector)
+export const elements = (selector: string): Element[] => Array.from(subjectElement().querySelectorAll(selector))
 export const child = <T>(selectorOrType: string | Type<T>): T => selectComponent(selectorOrType, _fixture)
 export const children = <T>(selectorOrType: string | Type<T>): T[] => selectComponents(selectorOrType, _fixture)
 export const detectChanges = (): void => _fixture.detectChanges()
