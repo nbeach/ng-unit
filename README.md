@@ -222,7 +222,37 @@ testComponent(SubjectComponent)
 ```
 
 #### Interacting with real or mock child components
+Mocked components can be accessed with the  `child() and children() function. You can query for children using either 
+CSS selector of the Component type.
 
+```typescript
+import {testComponent, element} from 'ng-unit'
+
+@Component({
+    selector: "child",
+    template: `<span">{{message}}</span>`
+})
+class ChildComponent { 
+    @Input() public message: string
+}
+
+@Component({
+    selector: "tested",
+    template: `<child class="greeting" [message]="greeting"></child>`
+})
+class SubjectComponent { 
+    private greeting = "Hello World!"
+}
+
+it("has a greeting message", () => {
+  testComponent(SubjectComponent)
+      .mock([ChildComponent])
+      .begin()
+      
+  expect(child(ChildComponent)).to.equal("Hello World")
+  expect(child(".greeting")).to.equal("Hello World")
+});
+```
 
 ## Custom mock provider
 By default ng-unit uses sinon stubs for mocking functions. You can configure your own mock provider if you prefer to use 
