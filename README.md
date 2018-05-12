@@ -163,6 +163,16 @@ Providers can be registered with `.providers()`
     ])
     .begin()
   ```
+  
+#### Importing other modules providers
+Other modules can be imported using `.import()`
+
+```typescript
+testComponent(SubjectComponent)
+  .import([FormsModule, ReactiveFormsModule])
+  .begin()
+```
+
 
 ## Mocking Components
 
