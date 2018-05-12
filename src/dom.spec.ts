@@ -12,7 +12,7 @@ import {
 } from "./dom"
 import {FormsModule} from "@angular/forms"
 import {expect} from "chai"
-import {where} from "mocha-where/src/where"
+import {where} from "mocha-where"
 
 describe("DOM", () => {
 
@@ -73,26 +73,60 @@ describe("DOM", () => {
         expect(subject.textValue).to.equal("hello world!")
     })
 
-    it("setSelectValue() sets the value of <select> elements", () => {
-        @Component({
-            selector: "parent",
-            template: `
+    describe("setSelectValue() sets the value of select elements", () => {
+
+        it("when options have no value attributes", () => {
+            @Component({
+                selector: "parent",
+                template: `
                 <select [(ngModel)]="selectValue">
                     <option></option>
-                    <option>Hello</option>
+                    <option selected>Hello</option>
                     <option>Goodbye</option>
                 </select>
             `,
+            })
+            class TestComponent {
+                public selectValue: string
+            }
+            const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
+
+
+            setSelectValue(subjectElement.querySelector("select"), "Goodbye")
+            fixture.detectChanges()
+
+            expect(subject.selectValue).to.equal("Goodbye")
+            const selectedOptions = subjectElement.querySelectorAll("option[selected]")
+            expect(selectedOptions).to.have.length(1)
+            expect(selectedOptions[0]).to.have.text("Goodbye")
         })
-        class TestComponent {
-            public selectValue: string
-        }
-        const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
 
-        setSelectValue(subjectElement.querySelector("select"), "Goodbye")
-        fixture.detectChanges()
+        it("when options have value attributes", () => {
+            @Component({
+                selector: "parent",
+                template: `
+                <select [(ngModel)]="selectValue">
+                    <option></option>
+                    <option value="Hola" selected>Hello</option>
+                    <option value="Adios">Goodbye</option>
+                </select>
+            `,
+            })
+            class TestComponent {
+                public selectValue: string
+            }
+            const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
 
-        expect(subject.selectValue).to.equal("Goodbye")
+
+            setSelectValue(subjectElement.querySelector("select"), "Adios")
+            fixture.detectChanges()
+
+            expect(subject.selectValue).to.equal("Adios")
+            const selectedOptions = subjectElement.querySelectorAll("option[selected]")
+            expect(selectedOptions).to.have.length(1)
+            expect(selectedOptions[0]).to.have.text("Goodbye")
+        })
+
     })
 
     it('setRadioButton() sets the value of <input type="radio"> elements', () => {

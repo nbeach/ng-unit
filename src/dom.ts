@@ -1,5 +1,5 @@
 import {ComponentFixture} from "@angular/core/testing"
-import {isString, isNil} from "lodash"
+import {isNil, isString} from "lodash"
 import {By} from "@angular/platform-browser"
 import {selectorOf} from "./selector-of"
 import {Type} from "@angular/core"
@@ -12,25 +12,35 @@ function doIfElementPresent<T>(element: T | null, action: (item: T) => void) {
     }
 }
 
-// TODO: look at element type to determine proper action so some of these can be collapsed to less methods?
-export function setInputValue(input: HTMLInputElement | null, value: string): void {
+export function setInputValue(input: Element | null, value: string): void {
     doIfElementPresent(input, input => {
-        input.value = value
+        (input as HTMLInputElement).value = value
         trigger(input, "input")
         trigger(input, "change")
     })
 }
 
-export function setSelectValue(selecBox: HTMLSelectElement | null, value: string): void {
-    doIfElementPresent(selecBox, selectBox => {
-        selectBox.value = value
+function optionMatchingValue(options: HTMLOptionElement[], value: string): HTMLOptionElement {
+   const [match] = options.filter(option =>
+       option.getAttribute("value") === value || option.textContent === value)
+   return match
+}
+
+export function setSelectValue(selectBox: Element | null, value: string): void {
+    doIfElementPresent(selectBox, selectBox => {
+        (selectBox as HTMLInputElement).value = value
+
+        const options = Array.from(selectBox.children) as HTMLOptionElement[]
+        options.forEach(option => option.removeAttribute("selected"))
+        optionMatchingValue(options, value).setAttribute("selected", "")
+
         trigger(selectBox, "change")
     })
 }
 
 export const setTextAreaValue = setInputValue
 
-export function setCheckboxValue(input: HTMLInputElement | null, checked: boolean): void {
+export function setCheckboxValue(input: Element | null, checked: boolean): void {
     doIfElementPresent(input, input => {
         if (checked) {
             input.setAttribute("checked", "")
@@ -42,9 +52,9 @@ export function setCheckboxValue(input: HTMLInputElement | null, checked: boolea
     })
 }
 
-export function setRadioButton(radioButton: HTMLInputElement | null, selected: boolean): void {
+export function setRadioButton(radioButton: Element | null, selected: boolean): void {
     doIfElementPresent(radioButton, radioButton => {
-        radioButton.checked = selected
+        (radioButton as HTMLInputElement).checked = selected
         trigger(radioButton, "change")
     })
 }
@@ -55,13 +65,17 @@ export function trigger(element: Element | null, eventType: string): void {
     })
 }
 
+function resolveSelector(selectorOrConstructor: string | Type<any>): string {
+    return isString(selectorOrConstructor) ? selectorOrConstructor : selectorOf(selectorOrConstructor)
+}
+
 export function selectComponent<T, S>(selectorOrConstructor: string | Type<S>, fixture: ComponentFixture<T>): S | any {
-    const selector = isString(selectorOrConstructor) ? selectorOrConstructor : selectorOf(selectorOrConstructor)
+    const selector = resolveSelector(selectorOrConstructor)
     return fixture.debugElement.query(By.css(selector)).componentInstance
 }
 
 export function selectComponents<T, S>(selectorOrConstructor: string | Type<S>, fixture: ComponentFixture<T>): (S | any)[] {
-    const selector = isString(selectorOrConstructor) ? selectorOrConstructor : selectorOf(selectorOrConstructor)
+    const selector = resolveSelector(selectorOrConstructor)
     return fixture.debugElement.queryAll(By.css(selector)).map(element => element.componentInstance)
 }
 
