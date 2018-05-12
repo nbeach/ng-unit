@@ -1,5 +1,5 @@
 import {ComponentFixture} from "@angular/core/testing"
-import {isString, isNil} from "lodash"
+import {isNil, isString} from "lodash"
 import {By} from "@angular/platform-browser"
 import {selectorOf} from "./selector-of"
 import {Type} from "@angular/core"
@@ -20,9 +20,20 @@ export function setInputValue(input: Element | null, value: string): void {
     })
 }
 
-export function setSelectValue(selecBox: Element | null, value: string): void {
-    doIfElementPresent(selecBox, selectBox => {
+function optionMatchingValue(options: HTMLOptionElement[], value: string): HTMLOptionElement {
+   const [match] = options.filter(option =>
+       option.getAttribute("value") === value || option.textContent === value)
+   return match
+}
+
+export function setSelectValue(selectBox: Element | null, value: string): void {
+    doIfElementPresent(selectBox, selectBox => {
         (selectBox as HTMLInputElement).value = value
+
+        const options = Array.from(selectBox.children) as HTMLOptionElement[]
+        options.forEach(option => option.removeAttribute("selected"))
+        optionMatchingValue(options, value).setAttribute("selected", "")
+
         trigger(selectBox, "change")
     })
 }
@@ -54,13 +65,17 @@ export function trigger(element: Element | null, eventType: string): void {
     })
 }
 
+function resolveSelector(selectorOrConstructor: string | Type<any>): string {
+    return isString(selectorOrConstructor) ? selectorOrConstructor : selectorOf(selectorOrConstructor)
+}
+
 export function selectComponent<T, S>(selectorOrConstructor: string | Type<S>, fixture: ComponentFixture<T>): S | any {
-    const selector = isString(selectorOrConstructor) ? selectorOrConstructor : selectorOf(selectorOrConstructor)
+    const selector = resolveSelector(selectorOrConstructor)
     return fixture.debugElement.query(By.css(selector)).componentInstance
 }
 
 export function selectComponents<T, S>(selectorOrConstructor: string | Type<S>, fixture: ComponentFixture<T>): (S | any)[] {
-    const selector = isString(selectorOrConstructor) ? selectorOrConstructor : selectorOf(selectorOrConstructor)
+    const selector = resolveSelector(selectorOrConstructor)
     return fixture.debugElement.queryAll(By.css(selector)).map(element => element.componentInstance)
 }
 
