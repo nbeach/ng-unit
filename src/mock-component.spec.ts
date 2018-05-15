@@ -1,7 +1,7 @@
 import {Component, DebugElement, EventEmitter, Input, Output} from "@angular/core"
 import {ComponentFixture, TestBed} from "@angular/core/testing"
 import {expect} from "chai"
-import {mockComponent, mockProvider} from "./mock-component"
+import {mockComponent, mockProvider} from "./index"
 import {range} from "lodash"
 import {By} from "@angular/platform-browser"
 import {stub} from "sinon"

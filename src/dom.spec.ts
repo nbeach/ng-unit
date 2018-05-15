@@ -9,7 +9,7 @@ import {
     setSelectValue,
     setTextAreaValue,
     trigger,
-} from "./dom"
+} from "./index"
 import {FormsModule} from "@angular/forms"
 import {expect} from "chai"
 import {where} from "mocha-where"
