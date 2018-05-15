@@ -59,9 +59,9 @@ export function setRadioButton(radioButton: Element | null, selected: boolean): 
     })
 }
 
-export function trigger(element: Element | null, eventType: string): void {
+export function trigger(element: Node | null, eventType: string): void {
     doIfElementPresent(element, element => {
-        element.dispatchEvent(new Event(eventType))
+        element.dispatchEvent(new Event(eventType, { bubbles: true }))
     })
 }
 
@@ -69,9 +69,10 @@ function resolveSelector(selectorOrConstructor: string | Type<any>): string {
     return isString(selectorOrConstructor) ? selectorOrConstructor : selectorOf(selectorOrConstructor)
 }
 
-export function selectComponent<T, S>(selectorOrConstructor: string | Type<S>, fixture: ComponentFixture<T>): S | any {
+export function selectComponent<T, S>(selectorOrConstructor: string | Type<S>, fixture: ComponentFixture<T>): S | any | null {
     const selector = resolveSelector(selectorOrConstructor)
-    return fixture.debugElement.query(By.css(selector)).componentInstance
+    const element = fixture.debugElement.query(By.css(selector))
+    return isNil(element) ? null : element.componentInstance
 }
 
 export function selectComponents<T, S>(selectorOrConstructor: string | Type<S>, fixture: ComponentFixture<T>): (S | any)[] {

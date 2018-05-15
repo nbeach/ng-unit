@@ -9,7 +9,7 @@ import {
     setSelectValue,
     setTextAreaValue,
     trigger,
-} from "./dom"
+} from "./index"
 import {FormsModule} from "@angular/forms"
 import {expect} from "chai"
 import {where} from "mocha-where"
@@ -186,17 +186,8 @@ describe("DOM", () => {
         expect(subject.checked).to.be.false
     })
 
-    describe("selectComponent() selects a component by", () => {
+    describe("selectComponent()", () => {
         let fixture: ComponentFixture<any>
-
-        @Component({
-            selector: "parent",
-            template: `
-                    <child id="first-born"></child>
-                    <child id="second-born"></child>
-                `,
-        })
-        class TestComponent {}
 
         @Component({
             selector: "child",
@@ -206,16 +197,41 @@ describe("DOM", () => {
             public message = "I'm the child!"
         }
 
-        beforeEach(() => {
+        describe("selects a component by", () => {
+
+            @Component({
+                selector: "parent",
+                template: `
+                    <child id="first-born"></child>
+                    <child id="second-born"></child>
+                `,
+            })
+            class TestComponent {}
+
+            beforeEach(() => {
+                fixture = setupTestModule(TestComponent, [ChildComponent]).fixture
+            })
+
+            it("CSS selector", () => {
+                expect(selectComponent("#second-born", fixture).message).to.equal("I'm the child!")
+            })
+
+            it("type", () => {
+                expect(selectComponent(ChildComponent, fixture).message).to.equal("I'm the child!")
+            })
+
+        })
+
+        it("when the component does not exist returns null", () => {
+            @Component({
+                selector: "parent",
+                template: `<div></div>`,
+            })
+            class TestComponent {}
+
             fixture = setupTestModule(TestComponent, [ChildComponent]).fixture
-        })
 
-        it("CSS selector", () => {
-            expect(selectComponent("#first-born", fixture).message).to.equal("I'm the child!")
-        })
-
-        it("type", () => {
-            expect(selectComponent(ChildComponent, fixture).message).to.equal("I'm the child!")
+            expect(selectComponent(ChildComponent, fixture)).to.be.null
         })
 
     })
@@ -224,15 +240,6 @@ describe("DOM", () => {
         let fixture: ComponentFixture<any>
 
         @Component({
-            selector: "parent",
-            template: `
-                    <child id="first-born"></child>
-                    <child id="second-born"></child>
-                `,
-        })
-        class TestComponent {}
-
-        @Component({
             selector: "child",
             template: "",
         })
@@ -240,37 +247,114 @@ describe("DOM", () => {
             public message = "I'm the child!"
         }
 
-        beforeEach(() => {
+        describe("selects a components by", () => {
+            @Component({
+                selector: "parent",
+                template: `
+                <child id="first-born"></child>
+                <child id="second-born"></child>
+            `,
+            })
+            class TestComponent {}
+
+            beforeEach(() => {
+                fixture = setupTestModule(TestComponent, [ChildComponent]).fixture
+            })
+
+            it("CSS selector", () => {
+                const children = selectComponents("child", fixture)
+                expect(children[0].message).to.equal("I'm the child!")
+                expect(children[1].message).to.equal("I'm the child!")
+            })
+
+            it("type", () => {
+                const children = selectComponents(ChildComponent, fixture)
+                expect(children[0].message).to.equal("I'm the child!")
+                expect(children[1].message).to.equal("I'm the child!")
+            })
+
+        })
+
+        it("when the component does not exist returns an empty array", () => {
+            @Component({
+                selector: "parent",
+                template: `<div></div>`,
+            })
+            class TestComponent {}
+
             fixture = setupTestModule(TestComponent, [ChildComponent]).fixture
-        })
 
-        it("CSS selector", () => {
-            const children = selectComponents("child", fixture)
-            expect(children[0].message).to.equal("I'm the child!")
-            expect(children[1].message).to.equal("I'm the child!")
-        })
-
-        it("type", () => {
-            const children = selectComponents(ChildComponent, fixture)
-            expect(children[0].message).to.equal("I'm the child!")
-            expect(children[1].message).to.equal("I'm the child!")
+            expect(selectComponents(ChildComponent, fixture)).to.deep.equal([])
         })
 
     })
 
-    it("trigger() triggers triggers the provided event on the element", () => {
-        @Component({
-            selector: "parent",
-            template: `<input type="text"  (focus)="focused = true">`,
-        })
-        class TestComponent {
-            public focused = false
-        }
-        const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
+    describe("trigger()", () => {
 
-        trigger(subjectElement.querySelector("input"), "focus")
-        fixture.detectChanges()
-        expect(subject.focused).to.be.true
+        it("triggers the provided event on the element", () => {
+            @Component({
+                selector: "parent",
+                template: `<input type="text"  (focus)="focused = true">`,
+            })
+            class TestComponent {
+                public focused = false
+            }
+            const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
+
+            trigger(subjectElement.querySelector("input"), "focus")
+            fixture.detectChanges()
+            expect(subject.focused).to.be.true
+        })
+
+        it("trigger() bubbles events up the DOM tree", () => {
+            @Component({
+                selector: "parent",
+                template: `
+                    <div (click)="clicked = true">
+                        <div>
+                            <input type="text">
+                        </div>
+                    </div>
+                `,
+            })
+            class TestComponent {
+                public clicked = false
+            }
+            const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
+
+            trigger(subjectElement.querySelector("input"), "click")
+            fixture.detectChanges()
+            expect(subject.clicked).to.be.true
+        })
+
+        it("trigger() allows stopping propagation of event bubbling", () => {
+            @Component({
+                selector: "parent",
+                template: `
+                    <div (click)="parentClicked = true">
+                        <div>
+                            <input type="text" (click)="setTargetClicked($event)">
+                        </div>
+                    </div>
+                `,
+            })
+            class TestComponent {
+                public targetClicked = false
+                public parentClicked = false
+
+                private setTargetClicked(event: Event): void {
+                    this.targetClicked = true
+                    event.stopPropagation()
+                }
+            }
+            const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
+
+            trigger(subjectElement.querySelector("input"), "click")
+            fixture.detectChanges()
+            expect(subject.targetClicked).to.be.true
+            expect(subject.parentClicked).to.be.false
+        })
+
     })
 
     where([

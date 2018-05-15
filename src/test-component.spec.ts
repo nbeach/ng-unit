@@ -1,6 +1,6 @@
 import {
-    child,
-    children,
+    component,
+    components,
     detectChanges,
     element,
     elements,
@@ -9,7 +9,7 @@ import {
     subjectElement,
     teardown,
     testComponent,
-} from "./test-component"
+} from "./index"
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
 import {expect} from "chai"
 import {By} from "@angular/platform-browser"
@@ -71,7 +71,7 @@ describe("TestSetup", () => {
                 .use([ChildComponent])
                 .begin()
 
-            expect(child(ChildComponent).invokeMe()).to.equal("Hey there!")
+            expect(component(ChildComponent).invokeMe()).to.equal("Hey there!")
         })
 
         it("multiple child component instances", () => {
@@ -96,7 +96,7 @@ describe("TestSetup", () => {
                 .use([ChildComponent])
                 .begin()
 
-            const childComponents = children<ChildComponent>("child")
+            const childComponents = components<ChildComponent>("child")
             expect(childComponents[0].invokeMe()).to.equal("Hey there!")
             expect(childComponents[1].invokeMe()).to.equal("Hey there!")
         })
@@ -190,7 +190,7 @@ describe("TestSetup", () => {
             .setupMock(ChildComponent, (mock: any) => mock.invokeMe.returns("I'm mocked"))
             .begin()
 
-        expect(child(ChildComponent).invokeMe()).to.equal("I'm mocked")
+        expect(component(ChildComponent).invokeMe()).to.equal("I'm mocked")
     })
 
     it("specifies imports", () => {

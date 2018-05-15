@@ -1,5 +1,5 @@
 import {Component} from "@angular/core"
-import {selectorOf} from "./selector-of"
+import {selectorOf} from "./index"
 import {expect} from "chai"
 
 describe("selectorOf", () => {

@@ -12,8 +12,8 @@ let _fixture: ComponentFixture<any>
 
 export const element = (selector: string): Element | null => subjectElement().querySelector(selector)
 export const elements = (selector: string): Element[] => Array.from(subjectElement().querySelectorAll(selector))
-export const child = <T>(selectorOrType: string | Type<T>): T => selectComponent(selectorOrType, _fixture)
-export const children = <T>(selectorOrType: string | Type<T>): T[] => selectComponents(selectorOrType, _fixture)
+export const component = <T>(selectorOrType: string | Type<T>): T => selectComponent(selectorOrType, _fixture)
+export const components = <T>(selectorOrType: string | Type<T>): T[] => selectComponents(selectorOrType, _fixture)
 export const detectChanges = (): void => _fixture.detectChanges()
 export const teardown = (): void => { TestBed.resetTestingModule() }
 
@@ -82,7 +82,7 @@ export class TestBuilder<T> {
 
         _fixture = TestBed.createComponent(TestHostComponent)
         _fixture.detectChanges()
-        _subject = child(this.subject)
+        _subject = component(this.subject)
 
         _subjectElement = _fixture.nativeElement.querySelector(selectorOf(this.subject))
         return _subject as T
