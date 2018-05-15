@@ -83,6 +83,7 @@ it("sets the child components input", () => {
 * [Interacting with child components](#interacting-with-child-components)
 * [Setting component inputs](#setting-component-inputs)
 * [Watching component outputs](#watching-component-outputs)
+* [Testing without test setup](#testing-without-test-setup)
 
 ## Basic Testing
 
@@ -283,3 +284,9 @@ Component outputs can be watched prior to component instantiation (so values emi
     .onOutput("save", event => persist(event))
     .begin()
   ```
+
+
+
+## Usage without test setup
+
+Even if you don't wish to use ng-units test setup, you can still take advantage of it's mocking and selection methods.
