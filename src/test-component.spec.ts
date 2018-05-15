@@ -9,7 +9,7 @@ import {
     subjectElement,
     teardown,
     testComponent,
-} from "./test-component"
+} from "./index"
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
 import {expect} from "chai"
 import {By} from "@angular/platform-browser"
