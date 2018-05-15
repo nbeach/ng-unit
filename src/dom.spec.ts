@@ -186,17 +186,8 @@ describe("DOM", () => {
         expect(subject.checked).to.be.false
     })
 
-    describe("selectComponent() selects a component by", () => {
+    describe("selectComponent()", () => {
         let fixture: ComponentFixture<any>
-
-        @Component({
-            selector: "parent",
-            template: `
-                    <child id="first-born"></child>
-                    <child id="second-born"></child>
-                `,
-        })
-        class TestComponent {}
 
         @Component({
             selector: "child",
@@ -206,16 +197,41 @@ describe("DOM", () => {
             public message = "I'm the child!"
         }
 
-        beforeEach(() => {
+        describe("selects a component by", () => {
+
+            @Component({
+                selector: "parent",
+                template: `
+                    <child id="first-born"></child>
+                    <child id="second-born"></child>
+                `,
+            })
+            class TestComponent {}
+
+            beforeEach(() => {
+                fixture = setupTestModule(TestComponent, [ChildComponent]).fixture
+            })
+
+            it("CSS selector", () => {
+                expect(selectComponent("#second-born", fixture).message).to.equal("I'm the child!")
+            })
+
+            it("type", () => {
+                expect(selectComponent(ChildComponent, fixture).message).to.equal("I'm the child!")
+            })
+
+        })
+
+        it("when the component does not exist returns null", () => {
+            @Component({
+                selector: "parent",
+                template: `<div></div>`,
+            })
+            class TestComponent {}
+
             fixture = setupTestModule(TestComponent, [ChildComponent]).fixture
-        })
 
-        it("CSS selector", () => {
-            expect(selectComponent("#first-born", fixture).message).to.equal("I'm the child!")
-        })
-
-        it("type", () => {
-            expect(selectComponent(ChildComponent, fixture).message).to.equal("I'm the child!")
+            expect(selectComponent(ChildComponent, fixture)).to.be.null
         })
 
     })
@@ -224,15 +240,6 @@ describe("DOM", () => {
         let fixture: ComponentFixture<any>
 
         @Component({
-            selector: "parent",
-            template: `
-                    <child id="first-born"></child>
-                    <child id="second-born"></child>
-                `,
-        })
-        class TestComponent {}
-
-        @Component({
             selector: "child",
             template: "",
         })
@@ -240,20 +247,44 @@ describe("DOM", () => {
             public message = "I'm the child!"
         }
 
-        beforeEach(() => {
+        describe("selects a components by", () => {
+            @Component({
+                selector: "parent",
+                template: `
+                <child id="first-born"></child>
+                <child id="second-born"></child>
+            `,
+            })
+            class TestComponent {}
+
+            beforeEach(() => {
+                fixture = setupTestModule(TestComponent, [ChildComponent]).fixture
+            })
+
+            it("CSS selector", () => {
+                const children = selectComponents("child", fixture)
+                expect(children[0].message).to.equal("I'm the child!")
+                expect(children[1].message).to.equal("I'm the child!")
+            })
+
+            it("type", () => {
+                const children = selectComponents(ChildComponent, fixture)
+                expect(children[0].message).to.equal("I'm the child!")
+                expect(children[1].message).to.equal("I'm the child!")
+            })
+
+        })
+
+        it("when the component does not exist returns an empty array", () => {
+            @Component({
+                selector: "parent",
+                template: `<div></div>`,
+            })
+            class TestComponent {}
+
             fixture = setupTestModule(TestComponent, [ChildComponent]).fixture
-        })
 
-        it("CSS selector", () => {
-            const children = selectComponents("child", fixture)
-            expect(children[0].message).to.equal("I'm the child!")
-            expect(children[1].message).to.equal("I'm the child!")
-        })
-
-        it("type", () => {
-            const children = selectComponents(ChildComponent, fixture)
-            expect(children[0].message).to.equal("I'm the child!")
-            expect(children[1].message).to.equal("I'm the child!")
+            expect(selectComponents(ChildComponent, fixture)).to.deep.equal([])
         })
 
     })
