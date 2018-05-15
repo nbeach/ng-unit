@@ -51,7 +51,7 @@ it("sets the child components input", () => {
 With ng-unit this simply becomes:
 
 ```typescript
-import {testComponent, detectChanges, child} from "ng-unit"
+import {testComponent, detectChanges, component} from "ng-unit"
 
 it("sets the child components input", () => {
     const subject = testComponent(ComponentUnderTest)
@@ -61,7 +61,7 @@ it("sets the child components input", () => {
     subject.boundToInput = "foo"
     detectChanges()
     
-    expect(child(ChildComponent).input).to.equal("foo")
+    expect(component(ChildComponent).input).to.equal("foo")
 })
 ```
 
@@ -222,7 +222,7 @@ testComponent(SubjectComponent)
 ```
 
 #### Interacting with real or mock child components
-Mocked components can be accessed with the  `child() and children() function. You can query for children using either 
+Mocked components can be accessed with the  `component()` and `components()` functions. You can query for children using either 
 CSS selector of the Component type.
 
 ```typescript
@@ -249,8 +249,8 @@ it("has a greeting message", () => {
       .mock([ChildComponent])
       .begin()
       
-  expect(child(ChildComponent)).to.equal("Hello World")
-  expect(child(".greeting")).to.equal("Hello World")
+  expect(component(ChildComponent)).to.equal("Hello World")
+  expect(component(".greeting")).to.equal("Hello World")
 });
 ```
 
