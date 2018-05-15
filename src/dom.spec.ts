@@ -258,19 +258,72 @@ describe("DOM", () => {
 
     })
 
-    it("trigger() triggers triggers the provided event on the element", () => {
-        @Component({
-            selector: "parent",
-            template: `<input type="text"  (focus)="focused = true">`,
-        })
-        class TestComponent {
-            public focused = false
-        }
-        const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
+    describe("trigger()", () => {
 
-        trigger(subjectElement.querySelector("input"), "focus")
-        fixture.detectChanges()
-        expect(subject.focused).to.be.true
+        it("triggers the provided event on the element", () => {
+            @Component({
+                selector: "parent",
+                template: `<input type="text"  (focus)="focused = true">`,
+            })
+            class TestComponent {
+                public focused = false
+            }
+            const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
+
+            trigger(subjectElement.querySelector("input"), "focus")
+            fixture.detectChanges()
+            expect(subject.focused).to.be.true
+        })
+
+        it("trigger() bubbles events up the DOM tree", () => {
+            @Component({
+                selector: "parent",
+                template: `
+                    <div (click)="clicked = true">
+                        <div>
+                            <input type="text">
+                        </div>
+                    </div>
+                `,
+            })
+            class TestComponent {
+                public clicked = false
+            }
+            const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
+
+            trigger(subjectElement.querySelector("input"), "click")
+            fixture.detectChanges()
+            expect(subject.clicked).to.be.true
+        })
+
+        it("trigger() allows stopping propagation of event bubbling", () => {
+            @Component({
+                selector: "parent",
+                template: `
+                    <div (click)="parentClicked = true">
+                        <div>
+                            <input type="text" (click)="setTargetClicked($event)">
+                        </div>
+                    </div>
+                `,
+            })
+            class TestComponent {
+                public targetClicked = false
+                public parentClicked = false
+
+                private setTargetClicked(event: Event): void {
+                    this.targetClicked = true
+                    event.stopPropagation()
+                }
+            }
+            const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
+
+            trigger(subjectElement.querySelector("input"), "click")
+            fixture.detectChanges()
+            expect(subject.targetClicked).to.be.true
+            expect(subject.parentClicked).to.be.false
+        })
+
     })
 
     where([
