@@ -1,43 +1,63 @@
-export default function createElement(querySelector: string, ...content: any[]) {
-    const nodeType = querySelector.match(/^[a-z0-9\-]+/i)
-    const id = querySelector.match(/#([a-z]+[a-z0-9-]*)/gi)
-    const classes = querySelector.match(/\.([a-z]+[a-z0-9-]*)/gi)
-    const attributes = querySelector.match(/\[([a-z][a-z-]+)(=['|"]?([^\]]*)['|"]?)?\]/gi)
-    const node = (nodeType) ? nodeType[0] : "div"
+import {isNil} from "lodash"
+import {first} from "function-composition"
 
-    const element = document.createElement(node)
+function match(value: string, regex: RegExp): string[] {
+    const matches = value.match(regex)
+    return matches === null ? [] : matches
+}
 
-    if (id) {
-        if (id.length > 1) {
-            throw new Error("CreateElementException: only 1 ID is allowed")
+function createNode(tagName?: string) {
+    return document.createElement(tagName ? tagName : "div")
+}
+
+function addId(id?: string) {
+    return (element: HTMLElement) => {
+        if (!isNil(id)) {
+            element.id = id
         }
-        element.id = id[0].replace("#", "")
+        return element
     }
+}
 
-    if (classes) {
-        const attrClasses = classes.join(" ").replace(/\./g, "")
-        element.setAttribute("class", attrClasses)
+function remove(removal: string) {
+    return (value: string) => value.replace(removal, "")
+}
+
+function addClasses(classes: string[]) {
+    return (element: HTMLElement) => {
+        element.setAttribute("class", classes.join(" "))
+        return element
     }
+}
 
-    if (attributes) {
+function addAttributes(attributes: string[]) {
+    return (element: HTMLElement) => {
         attributes.forEach(item => {
             item = item.slice(0, -1).slice(1)
-            let [label, value] = item.split("=")
+
+            const itemParts = item.split("=")
+            const label = itemParts[0]
+            let value = itemParts[1]
+
             if (value) {
                 value = value.replace(/^['"](.*)['"]$/, "$1")
             }
             element.setAttribute(label, value || "")
         })
+        return element
     }
+}
 
-    content.forEach(item => {
-        if (typeof item === "string" || typeof item === "number") {
-            element.appendChild(document.createTextNode(item))
-        } else if (item.nodeType === document.ELEMENT_NODE) {
-            element.appendChild(item)
-        }
-    })
+export default function createElement(querySelector: string): Element {
+    const [tagName] = match(querySelector, /^[a-z0-9-]+/i)
+    const [id] = match(querySelector, /#([a-z]+[a-z0-9-]*)/gi).map(remove("#"))
+    const classes = match(querySelector, /\.([a-z]+[a-z0-9-]*)/gi).map(remove("."))
+    const attributes = match(querySelector, /\[([a-z][a-z-]+)(=['|"]?([^\]]*)['|"]?)?\]/gi)
 
-    return element
+    return first(createNode)
+        .then(addId(id))
+        .then(addClasses(classes))
+        .then(addAttributes(attributes))
+        .apply(tagName)
 }
 

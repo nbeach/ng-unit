@@ -11,28 +11,27 @@ describe("createElement()", () => {
         })
 
         it("ids", () => {
-            const element = createElement("#foo")
-            expect(element).to.have.id("foo")
+            const element = createElement("#foo-bar")
+            expect(element).to.have.id("foo-bar")
         })
 
-
         it("classes", () => {
-            const element = createElement(".foo.bar")
-            expect(element).to.have.class("foo")
-            expect(element).to.have.class("bar")
+            const element = createElement(".foo-bar.cake-pie")
+            expect(element).to.have.class("foo-bar")
+            expect(element).to.have.class("cake-pie")
         })
 
         describe("attributes", () => {
 
             it("without values", () => {
-                const element = createElement("[foo]")
-                expect(element).to.have.attribute("foo", "")
+                const element = createElement("[foo-bar]")
+                expect(element).to.have.attribute("foo-bar", "")
             })
 
 
             it("with values", () => {
-                const element = createElement("[foo='bar']")
-                expect(element).to.have.attribute("foo", "bar")
+                const element = createElement("[foo-bar='cake']")
+                expect(element).to.have.attribute("foo-bar", "cake")
             })
 
         })
@@ -47,7 +46,5 @@ describe("createElement()", () => {
         })
 
     })
-
-
 
 })
