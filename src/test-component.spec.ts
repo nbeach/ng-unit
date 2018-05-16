@@ -241,7 +241,7 @@ describe("TestSetup", () => {
 
     it("sets initial component input values", () => {
         @Component({
-            selector: "tested",
+            selector: "tested-component",
             template: ``,
         })
         class SubjectComponent {
@@ -257,7 +257,7 @@ describe("TestSetup", () => {
 
     it("subscribes to component out values", () => {
         @Component({
-            selector: "tested",
+            selector: "tested-component",
             template: ``,
         })
         class SubjectComponent implements OnInit {
