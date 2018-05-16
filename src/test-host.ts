@@ -3,8 +3,7 @@ import {MockSetup} from "./mock-component"
 import {selectorOf} from "./selector-of"
 import {first} from "function-composition/src/function-composition"
 import {uniq, chain} from "lodash"
-
-const createElement: (html: string) => Element = require("dom-create-element-query-selector")
+import createElement from "./element-creator"
 
 export interface OutputWatch {
     name: string,
