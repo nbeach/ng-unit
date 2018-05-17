@@ -94,7 +94,6 @@
     "zone.js": "^0.8.17"
   },
   "dependencies": {
-    "dom-create-element-query-selector": "^1.0.5",
     "function-composition": "^1.0.12",
     "lodash": "^4.17.4",
     "reflect-metadata": "^0.1.12",
