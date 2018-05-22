@@ -61,7 +61,11 @@ export function setRadioButton(radioButton: Element | null, selected: boolean): 
 
 export function trigger(element: Node | null, eventType: string): void {
     doIfElementPresent(element, element => {
-        element.dispatchEvent(new Event(eventType, { bubbles: true }))
+        if (eventType === "click") {
+            (element as HTMLElement).click()
+        } else {
+            element.dispatchEvent(new Event(eventType, { bubbles: true }))
+        }
     })
 }
 
