@@ -24,14 +24,16 @@ describe("createElement()", () => {
         describe("attributes", () => {
 
             it("without values", () => {
-                const element = createElement("[foo-bar]")
+                const element = createElement("[foo-bar][fizz-buzz]")
                 expect(element).to.have.attribute("foo-bar", "")
+                expect(element).to.have.attribute("fizz-buzz", "")
             })
 
 
             it("with values", () => {
-                const element = createElement("[foo-bar='cake']")
+                const element = createElement("[foo-bar='cake'][fizz-buzz=\"pie\"]")
                 expect(element).to.have.attribute("foo-bar", "cake")
+                expect(element).to.have.attribute("fizz-buzz", "pie")
             })
 
         })
