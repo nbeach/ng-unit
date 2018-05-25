@@ -10,7 +10,7 @@ import {
     setTextAreaValue,
     trigger,
 } from "./index"
-import {FormsModule} from "@angular/forms"
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms"
 import {expect} from "chai"
 import {where} from "mocha-where"
 
@@ -19,7 +19,7 @@ describe("DOM", () => {
     function setupTestModule(parent: Type<any>, children: Type<any>[] = []): any {
         TestBed.configureTestingModule({
             declarations: [parent, ...children],
-            imports: [FormsModule],
+            imports: [FormsModule, ReactiveFormsModule],
         })
 
         const fixture = TestBed.createComponent(parent)
@@ -169,21 +169,25 @@ describe("DOM", () => {
         @Component({
             selector: "parent",
             template: `
-                <input type="checkbox" [checked]="checked" (change)="checked = !checked">
+                <div [formGroup]="form">
+                    <input type="checkbox" formControlName="checkbox">
+                </div>
             `,
         })
         class TestComponent {
-            private checked: boolean
+            public form = new FormGroup( {
+                checkbox: new FormControl(false),
+            })
         }
         const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
 
         setCheckboxValue(subjectElement.querySelector("input[type=checkbox]"), true)
         fixture.detectChanges()
-        expect(subject.checked).to.be.true
+        expect(subject.form.value.checkbox).to.be.true
 
         setCheckboxValue(subjectElement.querySelector("input[type=checkbox]"), false)
         fixture.detectChanges()
-        expect(subject.checked).to.be.false
+        expect(subject.form.value.checkbox).to.be.false
     })
 
     describe("selectComponent()", () => {

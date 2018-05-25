@@ -42,12 +42,7 @@ export const setTextAreaValue = setInputValue
 
 export function setCheckboxValue(input: Element | null, checked: boolean): void {
     doIfElementPresent(input, input => {
-        if (checked) {
-            input.setAttribute("checked", "")
-        } else {
-            input.removeAttribute("checked")
-        }
-
+        (input as HTMLInputElement).checked = checked
         trigger(input, "change")
     })
 }
