@@ -42,12 +42,7 @@ export const setTextAreaValue = setInputValue
 
 export function setCheckboxValue(input: Element | null, checked: boolean): void {
     doIfElementPresent(input, input => {
-        if (checked) {
-            input.setAttribute("checked", "")
-        } else {
-            input.removeAttribute("checked")
-        }
-
+        (input as HTMLInputElement).checked = checked
         trigger(input, "change")
     })
 }
@@ -61,7 +56,11 @@ export function setRadioButton(radioButton: Element | null, selected: boolean): 
 
 export function trigger(element: Node | null, eventType: string): void {
     doIfElementPresent(element, element => {
-        element.dispatchEvent(new Event(eventType, { bubbles: true }))
+        if (eventType === "click") {
+            (element as HTMLElement).click()
+        } else {
+            element.dispatchEvent(new Event(eventType, { bubbles: true }))
+        }
     })
 }
 

@@ -241,7 +241,7 @@ describe("TestSetup", () => {
 
     it("sets initial component input values", () => {
         @Component({
-            selector: "tested",
+            selector: "tested-component",
             template: ``,
         })
         class SubjectComponent {
@@ -257,7 +257,7 @@ describe("TestSetup", () => {
 
     it("subscribes to component out values", () => {
         @Component({
-            selector: "tested",
+            selector: "tested-component",
             template: ``,
         })
         class SubjectComponent implements OnInit {
@@ -285,7 +285,7 @@ describe("TestSetup", () => {
 
         it("tag names", () => {
             @Component({
-                selector: "parent",
+                selector: "parent-component",
                 template: `<span id="message">Sasquatch</span>`,
             })
             class SubjectComponent {}
@@ -297,7 +297,7 @@ describe("TestSetup", () => {
 
         it("attributes", () => {
             @Component({
-                selector: "[parent]",
+                selector: "[parent-component]",
                 template: `<span id="message">Sasquatch</span>`,
             })
             class SubjectComponent {
@@ -310,7 +310,7 @@ describe("TestSetup", () => {
 
         it("classes", () => {
             @Component({
-                selector: ".parent",
+                selector: ".parent-component",
                 template: `<span id="message">Sasquatch</span>`,
             })
             class SubjectComponent {}
@@ -322,7 +322,7 @@ describe("TestSetup", () => {
 
         it("tag names, classes, and attributes", () => {
             @Component({
-                selector: "parent.parent[parent]",
+                selector: "parent-component.parent-component[parent-component]",
                 template: `<span id="message">Sasquatch</span>`,
             })
             class SubjectComponent {}
@@ -334,7 +334,7 @@ describe("TestSetup", () => {
 
         it("attributes that are also input names", () => {
             @Component({
-                selector: "[parent]",
+                selector: "[parent-component]",
                 template: `<span id="message">{{parent}}</span>`,
             })
             class SubjectComponent {
