@@ -88,7 +88,9 @@ it("sets the child components input", () => {
 ## Basic Testing
 
 #### A simple test
-ng-unit greatly simplifies setup and mocking for Angular TestBed tests. In the simplest scenario you simply need to pass the component to be tested to `testComponent()` and invoke `.begin()` to instantiate your component. You can then use `element()` to query the DOM for elements.
+ng-unit greatly simplifies setup and mocking for Angular TestBed tests. In the simplest scenario you simply need to
+pass the component to be tested to `testComponent()` and invoke `.begin()` to instantiate your component. You can then
+use `element()` to query the DOM for elements.
 
 ```typescript
 import {testComponent, element} from 'ng-unit'
@@ -107,7 +109,7 @@ it("has a greeting message", () => {
 
 You can also select multiple elements with `elements('.selector')`.
 
-#### Simulating DOM events
+#### Simulating events
 You can simulate DOM events by using `trigger()`.
 
 ```typescript
@@ -131,8 +133,9 @@ it("fires a click event handler", () => {
 })
 ```
 
-#### Interacting with DOM inputs
-Value setter convenience methods for DOM inputs are provided. They automatically fire the appropriate change/input events on the input being set.
+#### Setting inputs element values
+Value setter convenience methods for DOM inputs are provided. They automatically fire the appropriate change/input 
+events on the input being set.
 
 ```typescript
 setInputValue(element("input[type=text]"), "Sasquatch") //Text field now has value "Sasquatch"
@@ -142,28 +145,43 @@ setRadioButton(element("input[type=radio]"), true) //Radio button is now selecte
 setSelectValue(element("select"), "Hancock") //Dropdown list now has the value "Hancock" selected
 ```
 
-These work with any DOM element reference, not just those returned by ng-units selection methods, so they can be used in traditional TestBed tests if desired.
+These work with any DOM element reference, not just those returned by ng-units selection methods, so they can be used 
+in traditional TestBed tests if desired.
 
-#### Using real child components
-If you want your test to utilize a real instances of child components configure them with `.use()`.
+## Setting component inputs
+Initial values for component inputs can be set prior to component instantiation (so they are properly present at 
+OnInit time) with `.setInput()`.
 
 ```typescript
 testComponent(SubjectComponent)
-  .use([FooComponent, BarComponent])
-  .begin()
+.setInput("label", "presents")
+.begin()
 ```
+
+Once the component is instantiated you can directly mutate the inputs on the test subject.
+
+## Watching component outputs
+Component outputs can be watched prior to component instantiation (so values emitted at OnInit time are not missed) 
+with `.onOutput()`.
+
+```typescript
+testComponent(SubjectComponent)
+.onOutput("save", event => persist(event))
+.begin()
+```
+
 
 #### Providing providers
 Providers can be registered with `.providers()`
 
-  ```typescript
-  testComponent(SubjectComponent)
-    .providers([
-      { provide: FooService, useValue: mockFooService },
-      { provide: BarService, useValue: new BarService() },
-    ])
-    .begin()
-  ```
+```typescript
+testComponent(SubjectComponent)
+.providers([
+  { provide: FooService, useValue: mockFooService },
+  { provide: BarService, useValue: new BarService() },
+])
+.begin()
+```
   
 #### Importing other modules providers
 Other modules can be imported using `.import()`
@@ -174,14 +192,9 @@ testComponent(SubjectComponent)
   .begin()
 ```
 
+## Mocking child components
 
-## Mocking Components
-
-#### Mocking child components
-By default uses sinon for mocking. You provide a factory for your own mocks.
-
-#### Mocked components and transclusion
-Mocked components render any transcluded content
+Child components can be mocked dueing test setup with `.mock()`
 
 ```typescript
 import {testComponent, element, detectChanges} from "ng-unit"
@@ -189,42 +202,27 @@ import {testComponent, element, detectChanges} from "ng-unit"
 @Component({
     selector: "tested",
     template: `
-      <child-component>
-        <span id="transcluded">This is transcluded!</span>
-      </child-component>
+      <child-component [someInput]=""></child-component>
     `
 })
 class SubjectComponent {
 }
 
 it("renders transcluded content", () => {
-  testComponent(SubjectComponent).begin()
+  testComponent(SubjectComponent)
+    .mock([ChildComponent])
+    .begin()
 
-  expect(element("#transcluded")).to.have.text("This is transcluded!")
+  expect(component("#transcluded").someInput).to.equal("")
 })
 ```
 
-#### Automatic component mocking
-Mock child components be can automatically created for you with `.mock()`.
+By default uses sinon for mocking functions. You can provide a factory for your own mocks.
 
-  ```typescript
-  testComponent(SubjectComponent)
-    .mock([FooComponent, BarComponent])
-    .begin()
-  ```
 
-## Configuring mock components
-
-```typescript
-testComponent(SubjectComponent)
-  .mock([FooComponent])
-  .setupMock(FooComponent, fooMock => fooMock.getValue.returns("cake"))
-  .begin()
-```
-
-#### Interacting with real or mock child components
-Mocked components can be accessed with the  `component()` and `components()` functions. You can query for children using either 
-CSS selector of the Component type.
+#### Interacting with mocked child components
+Child components can be accessed with the  `component()` and `components()` functions. You can query for children 
+using either CSS selector of the Component type.
 
 ```typescript
 import {testComponent, element} from 'ng-unit'
@@ -255,9 +253,42 @@ it("has a greeting message", () => {
 });
 ```
 
+#### Mocked components and transclusion
+Mocked components render any transcluded content
+
+```typescript
+import {testComponent, element, detectChanges} from "ng-unit"
+
+@Component({
+    selector: "tested",
+    template: `
+      <child-component>
+        <span id="transcluded">This is transcluded!</span>
+      </child-component>
+    `
+})
+class SubjectComponent {
+}
+
+it("renders transcluded content", () => {
+  testComponent(SubjectComponent).begin()
+
+  expect(element("#transcluded")).to.have.text("This is transcluded!")
+})
+```
+
+## Configuring mock components
+
+```typescript
+testComponent(SubjectComponent)
+  .mock([FooComponent])
+  .setupMock(FooComponent, fooMock => fooMock.getValue.returns("cake"))
+  .begin()
+```
+
 ## Custom mock provider
-By default ng-unit uses sinon stubs for mocking functions. You can configure your own mock provider if you prefer to use 
-Jasmine spys or another mocking framework.
+By default ng-unit uses sinon stubs for mocking functions. You can configure your own mock provider if you prefer to 
+use Jasmine spys or another mocking framework.
 
 ```typescript
 import {mockProvider} from "ng-unit"
@@ -265,28 +296,16 @@ import {mockProvider} from "ng-unit"
 mockProvider(() => jasmine.createSpy())
 ```
 
-## Setting component inputs
-Initial values for component inputs can be set prior to component instantiation (so they are properly present at OnInit time) with `.setInput()`.
+## Using real child components
+If you want your test to utilize a real instances of child components configure them with `.use()`.
 
-  ```typescript
-  testComponent(SubjectComponent)
-    .setInput("label", "presents")
-    .begin()
-  ```
-
-Once the component is instantiated you can directly mutate the inputs on the test subject.
-
-## Watching component outputs
-Component outputs can be watched prior to component instantiation (so values emitted at OnInit time are not missed) with `.onOutput()`.
-
-  ```typescript
-  testComponent(SubjectComponent)
-    .onOutput("save", event => persist(event))
-    .begin()
-  ```
-
-
+```typescript
+testComponent(SubjectComponent)
+  .use([FooComponent, BarComponent])
+  .begin()
+```
 
 ## Usage without test setup
 
-Even if you don't wish to use ng-units test setup, you can still take advantage of it's mocking and selection methods.
+Even if you don't wish to use ng-units test setup, you can still take advantage of it's mocking, selection, and 
+assignment methods.
