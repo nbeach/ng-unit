@@ -33,10 +33,10 @@ it("sets the child components input", () => {
     }
     
     TestBed.configureTestingModule({
-        declarations: [ParentComponent, MockChildComponent],
+        declarations: [ComponentUnderTest, MockChildComponent],
     })
     
-    const fixture = TestBed.createComponent(ParentComponent)
+    const fixture = TestBed.createComponent(ComponentUnderTest)
     const subject = fixture.componentInstance
     fixture.detectChanges()
     
@@ -154,8 +154,8 @@ OnInit time) with `.setInput()`.
 
 ```typescript
 testComponent(SubjectComponent)
-.setInput("label", "presents")
-.begin()
+    .setInput("label", "presents")
+    .begin()
 ```
 
 Once `.begin()` is called you can set the input with the `setInput()` method. Take note that, in order to change an 
@@ -165,8 +165,8 @@ input after after `.begin()` is called you must have given it an initial value w
 import {testComponent, setInput} from "ng-unit"
 
 testComponent(SubjectComponent)
-.setInput("label", "fizz")
-.begin()
+    .setInput("label", "fizz")
+    .begin()
 
 setInput("label", "buzz")
 ```
@@ -177,8 +177,8 @@ with `.onOutput()`.
 
 ```typescript
 testComponent(SubjectComponent)
-.onOutput("save", event => persist(event))
-.begin()
+    .onOutput("save", event => persist(event))
+    .begin()
 ```
 
 Once `.begin()` is called you can add new output watches with `onChanges()` 
@@ -187,8 +187,8 @@ Once `.begin()` is called you can add new output watches with `onChanges()`
 import {testComponent, onChanges} from "ng-unit"
 
 testComponent(SubjectComponent)
-.onOutput("save", event => persist(event))
-.begin()
+    .onOutput("save", event => persist(event))
+    .begin()
 
 onChanges("save", event => console.log(event))
 ```
@@ -198,11 +198,11 @@ Providers can be registered with `.providers()`
 
 ```typescript
 testComponent(SubjectComponent)
-.providers([
-  { provide: FooService, useValue: mockFooService },
-  { provide: BarService, useValue: new BarService() },
-])
-.begin()
+    .providers([
+      { provide: FooService, useValue: mockFooService },
+      { provide: BarService, useValue: new BarService() },
+    ])
+    .begin()
 ```
   
 #### Importing other modules providers
