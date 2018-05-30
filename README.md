@@ -138,7 +138,7 @@ Value setter convenience methods for DOM inputs are provided. They automatically
 events on the input being set.
 
 ```typescript
-setInputValue(element("input[type=text]"), "Sasquatch") //Text field now has value "Sasquatch"
+setTextInputValue(element("input[type=text]"), "Sasquatch") //Text field now has value "Sasquatch"
 setTextAreaValue(element("textarea"), "Sasquatch") //Text area now has value "Sasquatch"
 setCheckboxValue(element("input[type=check]"), true) //Checkbox is now checked
 setRadioButton(element("input[type=radio]"), true) //Radio button is now selected
@@ -158,7 +158,18 @@ testComponent(SubjectComponent)
 .begin()
 ```
 
-Once the component is instantiated you can directly mutate the inputs on the test subject.
+Once `.begin()` is called you can set the input with the `setInput()` method. Take note that, in order to change an 
+input after after `.begin()` is called you must have given it an initial value while setting up the test.
+
+```typescript
+import {testComponent, setInput} from "ng-unit"
+
+testComponent(SubjectComponent)
+.setInput("label", "fizz")
+.begin()
+
+setInput("label", "buzz")
+```
 
 ## Watching component outputs
 Component outputs can be watched prior to component instantiation (so values emitted at OnInit time are not missed) 
@@ -170,6 +181,17 @@ testComponent(SubjectComponent)
 .begin()
 ```
 
+Once `.begin()` is called you can add new output watches with `onChanges()` 
+
+```typescript
+import {testComponent, onChanges} from "ng-unit"
+
+testComponent(SubjectComponent)
+.onOutput("save", event => persist(event))
+.begin()
+
+onChanges("save", event => console.log(event))
+```
 
 #### Providing providers
 Providers can be registered with `.providers()`

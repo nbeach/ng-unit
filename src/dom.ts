@@ -12,7 +12,7 @@ function doIfElementPresent<T>(element: T | null, action: (item: T) => void) {
     }
 }
 
-export function setInputValue(input: Element | null, value: string): void {
+export function setTextInputValue(input: Element | null, value: string): void {
     doIfElementPresent(input, input => {
         (input as HTMLInputElement).value = value
         trigger(input, "input")
@@ -38,7 +38,7 @@ export function setSelectValue(selectBox: Element | null, value: string): void {
     })
 }
 
-export const setTextAreaValue = setInputValue
+export const setTextAreaValue = setTextInputValue
 
 export function setCheckboxValue(input: Element | null, checked: boolean): void {
     doIfElementPresent(input, input => {

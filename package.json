@@ -1,6 +1,6 @@
 {
   "name": "ng-unit",
-  "version": "0.7.10",
+  "version": "0.8.10",
   "description": "Testing utilities for Angular",
   "main": "src/index.js",
   "types": "src/index.d.ts",
@@ -36,7 +36,7 @@
     "clean": "rimraf src/**/*.js src/**/*.js.map src/**/*.d.ts",
     "build": "npm run clean && tsc",
     "release:tag": "git tag $(node -p -e \"require('./package.json').version\") && git push origin --tags",
-    "release": "npm test && npm run build && npm run release:tag && npm publish",
+    "release": "npm test && npm run build && npm run release:tag && npm publish && npm run clean",
     "test": "mocha --opts mocha.opts && yarn lint",
     "test:no-lint": "mocha --opts mocha.opts",
     "test:watch": "mocha --opts mocha.opts --watch",

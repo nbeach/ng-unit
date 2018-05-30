@@ -4,10 +4,10 @@ import {
     selectComponent,
     selectComponents,
     setCheckboxValue,
-    setInputValue,
     setRadioButton,
     setSelectValue,
     setTextAreaValue,
+    setTextInputValue,
     trigger,
 } from "./index"
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms"
@@ -36,7 +36,7 @@ describe("DOM", () => {
         TestBed.resetTestingModule()
     })
 
-    it('setInputValue() sets the value of <input type="text"> elements', () => {
+    it('setTextInputValue() sets the value of <input type="text"> elements', () => {
         @Component({
             selector: "parent",
             template: `
@@ -49,7 +49,7 @@ describe("DOM", () => {
         }
         const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
 
-        setInputValue(subjectElement.querySelector("input"), "hello world!")
+        setTextInputValue(subjectElement.querySelector("input"), "hello world!")
         fixture.detectChanges()
 
         expect(subject.textValue).to.equal("hello world!")
@@ -362,13 +362,13 @@ describe("DOM", () => {
     })
 
     where([
-        ["name",                "method"        ],
-        [setInputValue.name,    setInputValue   ],
-        [setSelectValue.name,   setSelectValue  ],
-        [setTextAreaValue.name, setTextAreaValue],
-        [setCheckboxValue.name, setCheckboxValue],
-        [setRadioButton.name,   setRadioButton  ],
-        [trigger.name,          trigger         ],
+        ["name",                    "method"            ],
+        [setTextInputValue.name,    setTextInputValue   ],
+        [setSelectValue.name,       setSelectValue      ],
+        [setTextAreaValue.name,     setTextAreaValue    ],
+        [setCheckboxValue.name,     setCheckboxValue    ],
+        [setRadioButton.name,       setRadioButton      ],
+        [trigger.name,              trigger             ],
     ])
     .it("#name() throws an error when the element is null", (scenario) => {
         expect(() => scenario.method(null, "")).to.throw("Element is not present")
