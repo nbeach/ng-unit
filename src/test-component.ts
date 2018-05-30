@@ -1,6 +1,6 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing"
 import {Type} from "@angular/core"
-import {concat} from "lodash"
+import {concat, includes} from "lodash"
 import {selectComponent, selectComponents} from "./dom"
 import {mockComponent, MockSetup} from "./mock-component"
 import {selectorOf} from "./selector-of"
@@ -9,11 +9,20 @@ import {default as createTestHostComponent, MockTypeAndSetup, OutputWatch} from 
 let _subject: any = null
 let _subjectElement: Element
 let _fixture: ComponentFixture<any>
+let _initializedInputs: string[] = []
 
 export const element = (selector: string): Element | null => subjectElement().querySelector(selector)
 export const elements = (selector: string): Element[] => Array.from(subjectElement().querySelectorAll(selector))
 export const component = <T>(selectorOrType: string | Type<T>): T => selectComponent(selectorOrType, _fixture)
 export const components = <T>(selectorOrType: string | Type<T>): T[] => selectComponents(selectorOrType, _fixture)
+export const setInput = (inputName: string, value: any) => {
+    if (!includes(_initializedInputs, inputName)) {
+        throw new Error("In order to set an input after begin() is called you must provide an initial value with .setInput() at test setup time.")
+    }
+
+    return _fixture.componentInstance[inputName] = value
+}
+export const onOutput = (outputName: string, action: (event: any) => void) => _subject[outputName].subscribe(action)
 export const detectChanges = (): void => _fixture.detectChanges()
 export const teardown = (): void => { TestBed.resetTestingModule() }
 
@@ -83,6 +92,7 @@ export class TestBuilder<T> {
         _fixture = TestBed.createComponent(TestHostComponent)
         _fixture.detectChanges()
         _subject = component(this.subject)
+        _initializedInputs = Array.from(this.inputInitializations.keys())
 
         _subjectElement = _fixture.nativeElement.querySelector(selectorOf(this.subject))
         return _subject as T

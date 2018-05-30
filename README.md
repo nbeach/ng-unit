@@ -73,7 +73,7 @@ it("fires a click event handler, () => {
 Value setter convenience methods for DOM inputs are provided. They automatically fire the appropriate change/input events on the input being set.
 
 ```typescript
-setInputValue(element("input[type=text]"), "Sasquatch"); //Text field now has value "Sasquatch"
+setTextInputValue(element("input[type=text]"), "Sasquatch"); //Text field now has value "Sasquatch"
 setTextAreaValue(element("textarea"), "Sasquatch"); //Text area now has value "Sasquatch"
 setCheckboxValue(element("input[type=check]"), true); //Checkbox is now checked
 setRadioButton(element("input[type=radio]"), true); //Radio button is now selected

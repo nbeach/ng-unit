@@ -5,6 +5,8 @@ import {
     element,
     elements,
     fixture,
+    onOutput,
+    setInput,
     subject,
     subjectElement,
     teardown,
@@ -14,7 +16,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
 import {expect} from "chai"
 import {By} from "@angular/platform-browser"
 import {FormsModule} from "@angular/forms"
-import {setInputValue} from "./dom"
+import {setTextInputValue} from "./dom"
 
 describe("TestSetup", () => {
 
@@ -212,7 +214,7 @@ describe("TestSetup", () => {
             .import([FormsModule])
             .begin()
 
-        setInputValue(element("input"), "foo")
+        setTextInputValue(element("input"), "foo")
 
         expect(subject.value).to.equal("foo")
     })
@@ -255,7 +257,46 @@ describe("TestSetup", () => {
         expect(subject.someInput).to.equal("Schwoosh!")
     })
 
-    it("subscribes to component out values", () => {
+    it("sets component values input after instantiation", () => {
+        @Component({
+            selector: "tested-component",
+            template: ``,
+        })
+        class SubjectComponent {
+            @Input() public someInput = ""
+        }
+
+        const subject = testComponent(SubjectComponent)
+            .setInput("someInput", null)
+            .begin()
+
+        detectChanges()
+        setInput("someInput", "Boom!")
+
+        detectChanges()
+
+        expect(subject.someInput).to.equal("Boom!")
+    })
+
+    describe("when setting an input that was not initialized in test setup", () => {
+
+        it("an exception is thrown", () => {
+            @Component({
+                selector: "tested-component",
+                template: ``,
+            })
+            class SubjectComponent {
+                @Input() public someInput = ""
+            }
+
+            testComponent(SubjectComponent).begin()
+
+            expect(() => setInput("someInput", "Boom!")).to.throw()
+        })
+
+    })
+
+    it("subscribes to component output values", () => {
         @Component({
             selector: "tested-component",
             template: ``,
@@ -278,6 +319,24 @@ describe("TestSetup", () => {
 
         expect(first).to.equal("Hello World")
         expect(second).to.equal("Goodbye Cruel World")
+    })
+
+    it("subscribes to component output values after initial instantiation", () => {
+        @Component({
+            selector: "tested-component",
+            template: ``,
+        })
+        class SubjectComponent {
+            @Output() public someOutput = new EventEmitter<string>()
+        }
+
+        const subject = testComponent(SubjectComponent).begin()
+
+        let outputValue = null
+        onOutput("someOutput", value => outputValue = value)
+        subject.someOutput.emit("Hello World")
+
+        expect(outputValue).to.equal("Hello World")
     })
 
 
