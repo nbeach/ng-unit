@@ -54,10 +54,15 @@ function extractActions(watches: OutputWatch[]) {
     return watches.map(watch => watch.action)
 }
 
+export function stripXmlTag(html: string) {
+    return html.replace(/<\?XML.+?\/>/, "")
+}
+
 function createComponentTag<T>(component: Type<T>, inputs: string[], outputs: string[]): string {
     return first(selectorOf)
         .then(createElement)
         .then(element => element.outerHTML)
+        .then(stripXmlTag) // IE11 Fix
         .then(addAttributes(inputs, input => `[${input}]="${input}"`))
         .then(addAttributes(outputs, output => `(${output})="${output}($event)"`))
         .apply(component)
@@ -69,5 +74,7 @@ function addAttributes(attributeNames: string[], pattern: (attribute: string) =>
         return tag.replace(/></, ` ${attributes}><`)
     }
 }
+
+
 
 

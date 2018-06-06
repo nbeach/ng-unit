@@ -56,7 +56,7 @@ export function setRadioButton(radioButton: Element | null, selected: boolean): 
 
 export function trigger(element: Node | null, eventType: string): void {
     doIfElementPresent(element, element => {
-        if (eventType === "click") {
+        if (eventType === "click") { // IE11 Fix
             (element as HTMLElement).click()
         } else {
             element.dispatchEvent(new Event(eventType, { bubbles: true }))
