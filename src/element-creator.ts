@@ -1,6 +1,5 @@
-import {isNil, isNull} from "lodash"
+import {isNil, isNull, isUndefined} from "lodash"
 import {first} from "function-composition"
-import isUndefined = require("lodash/fp/isUndefined")
 
 function match(value: string, regex: RegExp): string[] {
     const matches = value.match(regex)

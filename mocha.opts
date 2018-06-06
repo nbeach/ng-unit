@@ -1,6 +1,6 @@
 --recursive
 --require ts-node/register
---require mocha-shim.ts
+--require mocha-init.ts
 --watch-extensions ts
 --reporter progress
 src/**/*.spec.ts
