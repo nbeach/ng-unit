@@ -9,8 +9,7 @@ module.exports = (config: any) => {
             "./karma-init.ts": [ "webpack" ],
         },
         webpack:  {
-            mode: "none",
-            // devtool: "inline-source-map",
+            mode: "development",
             resolve: {
                 extensions: [".js", ".ts"],
             },
