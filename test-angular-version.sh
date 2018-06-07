@@ -13,7 +13,7 @@ cd ${test_folder}
 node ../node_modules/.bin/ts-node change-angular-version.ts $1
 yarn install
 echo "TESTING AGAINST ANGULAR "${version}
-yarn test:no-lint
+yarn test:browsers
 result=$?
 
 cd ..

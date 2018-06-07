@@ -1,7 +1,7 @@
 import {Component, Type} from "@angular/core"
 import {MockSetup} from "./mock-component"
 import {selectorOf} from "./selector-of"
-import {first} from "function-composition/src/function-composition"
+import {first} from "function-composition"
 import {uniq, chain} from "lodash"
 import createElement from "./element-creator"
 

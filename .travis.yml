@@ -3,6 +3,9 @@ node_js:
 - lts/*
 script:
 - yarn ci
+addons:
+  chrome: "stable"
+  firefox: "latest"
 env:
   global:
   - secure: pXbq0SqaH/RrU8U/uPBfdEyKmXZsawXDv/d16MC2N74GIpY9Pkbe6/qJWWNVcNkpGTJufFEcD94BP1KGpQ6ExuXxt7LNv6eFIhRot6mwjwBponE74qsUaPz4KgacIb2tv+2b2O9Mm5efnxPfw7JJwsjhEagY8XNdYyH1PN9EdFYG1QUIpJFSQ4sICwpncmsLQPbgEZEWg+xTGBn+M+FGhXOoccC56TWppSe+lkWOenAbQYc7fplRzbt3jcdetWBFvKqSwAEykT5Y0CLWijtkIqWyYk8Mg+BPMP1W/FhgqY6PW4wqOmuxRJwq5ADu665/6HuNaR4AOHgQlRUYp39Fbws5B2ZNhIBa5bCZqhd0+A+ZLoRj2PEP5O0Sy5c3+7lifDc9GWHij9Lg6w5cbopV2SSE4OQKAdszautpmgIhNQrtIoqH/23vwQAGI5wfE8Qis3KONCk6Pbj9i2Dg8iGVK6gY6y3VwMW9FE2L+1VT04eoD9BMFVZ3nuivBlyQX0kYhlESqaNWqjh+Gc38tbckWHuur5JmljNPkaawKOTYPFyPdaTpkeBYrdvT7XFNxCQtyxj+J3nxUwqQ3AwbqhZXnp6ISGdQ3w5EqFE6u2GvVgK3JU6cBt4NOhjtjXtLrDcFOUpWbijNrZlddQt30K3nYkWA3w6oxI7Vn3Qme1IaIrA=
