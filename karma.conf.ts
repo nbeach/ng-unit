@@ -4,7 +4,7 @@ module.exports = (config: any) => {
         files: ["./karma-init.ts"],
         frameworks: ["mocha"],
         reporters: ["dots"],
-        browsers: ["ChromeHeadlessNoSandbox", "FirefoxHeadless"],
+        browsers: ["ChromeHeadlessNoSandbox", "FirefoxHeadless", "Edge", "IE"],
         preprocessors: {
             "./karma-init.ts": [ "webpack" ],
         },
