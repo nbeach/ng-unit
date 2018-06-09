@@ -81,7 +81,7 @@ describe("DOM", () => {
                 template: `
                 <select [(ngModel)]="selectValue">
                     <option></option>
-                    <option selected>Hello</option>
+                    <option>Hello</option>
                     <option>Goodbye</option>
                 </select>
             `,
@@ -91,14 +91,9 @@ describe("DOM", () => {
             }
             const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
 
-
             setSelectValue(subjectElement.querySelector("select"), "Goodbye")
             fixture.detectChanges()
-
             expect(subject.selectValue).to.equal("Goodbye")
-            const selectedOptions = subjectElement.querySelectorAll("option[selected]")
-            expect(selectedOptions).to.have.length(1)
-            expect(selectedOptions[0]).to.have.text("Goodbye")
         })
 
         it("when options have value attributes", () => {
@@ -107,7 +102,7 @@ describe("DOM", () => {
                 template: `
                 <select [(ngModel)]="selectValue">
                     <option></option>
-                    <option value="Hola" selected>Hello</option>
+                    <option value="Hola">Hello</option>
                     <option value="Adios">Goodbye</option>
                 </select>
             `,
@@ -122,9 +117,6 @@ describe("DOM", () => {
             fixture.detectChanges()
 
             expect(subject.selectValue).to.equal("Adios")
-            const selectedOptions = subjectElement.querySelectorAll("option[selected]")
-            expect(selectedOptions).to.have.length(1)
-            expect(selectedOptions[0]).to.have.text("Goodbye")
         })
 
     })
@@ -293,28 +285,50 @@ describe("DOM", () => {
 
     })
 
-    describe("trigger()", () => {
+    const mouseEvents = [
+        "mouseenter", "mouseover", "mousemove", "mouseup", "auxclick", "click", "dblclick",
+        "contextmenu", "wheel", "mouseleave", "mouseout", "select", "pointerlockchange", "pointerlockerror",
+    ]
+    const keyboardEvents = ["keydown", "keypress", "keyup", "input"]
+    const focusEvents = ["focus", "blur"]
+    const formEvents = ["reset", "submit"]
+    const dragAndDropEvents = ["dragstart", "drag", "dragend", "dragenter", "dragover", "dragleave", "drop"]
+    const clipBoardEvents = ["cut", "copy", "paste"]
+
+    where([
+        ["event"],
+        ["change"],
+        ...[
+            ...mouseEvents,
+            ...keyboardEvents,
+            ...focusEvents,
+            ...formEvents,
+            ...dragAndDropEvents,
+            ...clipBoardEvents,
+        ].map(event => [event]),
+
+    ]).describe("trigger() with #event", (scenario) => {
 
         it("triggers the provided event on the element", () => {
             @Component({
                 selector: "parent",
-                template: `<input type="text"  (focus)="focused = true">`,
+                template: `<input type="text" (${scenario.event})="triggered = true">`,
             })
             class TestComponent {
-                public focused = false
+                public triggered = false
             }
             const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
 
-            trigger(subjectElement.querySelector("input"), "focus")
+            trigger(subjectElement.querySelector("input"), scenario.event)
             fixture.detectChanges()
-            expect(subject.focused).to.be.true
+            expect(subject.triggered).to.be.true
         })
 
-        it("trigger() bubbles events up the DOM tree", () => {
+        it("bubbles up the DOM tree", () => {
             @Component({
                 selector: "parent",
                 template: `
-                    <div (click)="clicked = true">
+                    <div (${scenario.event})="triggered = true">
                         <div>
                             <input type="text">
                         </div>
@@ -322,41 +336,41 @@ describe("DOM", () => {
                 `,
             })
             class TestComponent {
-                public clicked = false
+                public triggered = false
             }
             const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
 
-            trigger(subjectElement.querySelector("input"), "click")
+            trigger(subjectElement.querySelector("input"), scenario.event)
             fixture.detectChanges()
-            expect(subject.clicked).to.be.true
+            expect(subject.triggered).to.be.true
         })
 
-        it("trigger() allows stopping propagation of event bubbling", () => {
+        it("allows stopping propagation of event bubbling", () => {
             @Component({
                 selector: "parent",
                 template: `
-                    <div (click)="parentClicked = true">
+                    <div (${scenario.event})="parentTriggered = true">
                         <div>
-                            <input type="text" (click)="setTargetClicked($event)">
+                            <input type="text" (${scenario.event})="setTargetTriggered($event)">
                         </div>
                     </div>
                 `,
             })
             class TestComponent {
-                public targetClicked = false
-                public parentClicked = false
+                public targetTriggered = false
+                public parentTriggered = false
 
-                private setTargetClicked(event: Event): void {
-                    this.targetClicked = true
+                private setTargetTriggered(event: Event): void {
+                    this.targetTriggered = true
                     event.stopPropagation()
                 }
             }
             const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
 
-            trigger(subjectElement.querySelector("input"), "click")
+            trigger(subjectElement.querySelector("input"), scenario.event)
             fixture.detectChanges()
-            expect(subject.targetClicked).to.be.true
-            expect(subject.parentClicked).to.be.false
+            expect(subject.targetTriggered).to.be.true
+            expect(subject.parentTriggered).to.be.false
         })
 
     })

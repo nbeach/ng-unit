@@ -5,6 +5,7 @@ module.exports = (config: any) => {
         frameworks: ["mocha"],
         reporters: ["dots"],
         browsers: ["ChromeHeadlessNoSandbox", "FirefoxHeadless"],
+        // browsers: ["Edge", "IE"],
         preprocessors: {
             "./karma-init.ts": [ "webpack" ],
         },
