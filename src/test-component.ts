@@ -6,29 +6,54 @@ import {mockComponent, MockSetup} from "./mock-component"
 import {selectorOf} from "./selector-of"
 import {default as createTestHostComponent, MockTypeAndSetup, OutputWatch} from "./test-host"
 
+const testNotStartedError = new Error("You must first start a test using .begin() before using this method")
+
+function throwIfNull(value: any, error: Error) {
+    if (value === null) {
+        throw error
+    }
+}
+
 let _subject: any = null
-let _subjectElement: Element
-let _fixture: ComponentFixture<any>
+let _subjectElement: Element | null = null
+let _fixture: ComponentFixture<any> | null = null
 let _initializedInputs: string[] = []
 
 export const element = (selector: string): Element | null => subjectElement().querySelector(selector)
 export const elements = (selector: string): Element[] => Array.from(subjectElement().querySelectorAll(selector))
-export const component = <T>(selectorOrType: string | Type<T>): T => selectComponent(selectorOrType, _fixture)
-export const components = <T>(selectorOrType: string | Type<T>): T[] => selectComponents(selectorOrType, _fixture)
+export const component = <T>(selectorOrType: string | Type<T>): T => selectComponent(selectorOrType, fixture())
+export const components = <T>(selectorOrType: string | Type<T>): T[] => selectComponents(selectorOrType, fixture())
 export const setInput = (inputName: string, value: any) => {
+    const testFixture = fixture()
     if (!includes(_initializedInputs, inputName)) {
         throw new Error("In order to set an input after begin() is called you must provide an initial value with .setInput() at test setup time.")
     }
 
-    return _fixture.componentInstance[inputName] = value
+    return testFixture.componentInstance[inputName] = value
 }
-export const onOutput = (outputName: string, action: (event: any) => void) => _subject[outputName].subscribe(action)
-export const detectChanges = (): void => _fixture.detectChanges()
-export const teardown = (): void => { TestBed.resetTestingModule() }
+export const onOutput = (outputName: string, action: (event: any) => void) => subject()[outputName].subscribe(action)
+export const detectChanges = (): void => fixture().detectChanges()
+export const teardown = (): void => {
+    TestBed.resetTestingModule()
+    _subject = null
+    _subjectElement = null
+    _fixture = null
+    _initializedInputs = []
+}
 
-export const subject = <T>(): T => _subject
-export const subjectElement = (): Element => _subjectElement
-export const fixture = (): ComponentFixture<any> => _fixture
+export function subject<T>(): T {
+    throwIfNull(_subject, testNotStartedError)
+    return _subject
+}
+export function subjectElement(): Element {
+    throwIfNull(_subjectElement, testNotStartedError)
+    return _subjectElement!
+}
+export function fixture(): ComponentFixture<any> {
+    throwIfNull(_fixture, testNotStartedError)
+    return _fixture!
+}
+
 
 export const testComponent = <T>(subject: Type<T>) => new TestBuilder(subject)
 

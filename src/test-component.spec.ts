@@ -18,6 +18,7 @@ import {By} from "@angular/platform-browser"
 import {FormsModule} from "@angular/forms"
 import {setTextInputValue} from "./dom"
 import {stripXmlTag} from "./test-host"
+import {where} from "mocha-where"
 
 describe("TestSetup", () => {
 
@@ -412,6 +413,22 @@ describe("TestSetup", () => {
 
             expect(element("#message")).to.have.text("Sasquatch")
         })
+    })
+
+    where([
+        ["name",           "method"      ],
+        ["element",        element       ],
+        ["elements",       elements      ],
+        ["component",      component     ],
+        ["components",     components    ],
+        ["setInput",       setInput      ],
+        ["onOutput",       onOutput      ],
+        ["detectChanges",  detectChanges ],
+        ["subject",        subject       ],
+        ["subjectElement", subjectElement],
+        ["fixture",        fixture       ],
+    ]).it("#name() throws an exception when used before a test has begun", (scenario: any) => {
+        expect(scenario.method).to.throw("You must first start a test using .begin() before using this method")
     })
 
 })
