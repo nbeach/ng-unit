@@ -17,17 +17,11 @@ import {expect} from "chai"
 import {By} from "@angular/platform-browser"
 import {FormsModule} from "@angular/forms"
 import {setTextInputValue} from "./dom"
-import {stripXmlTag} from "./test-host"
 import {where} from "mocha-where"
 
 describe("TestSetup", () => {
 
     afterEach(teardown)
-
-    // TODO: Remove once SauceLabs test running implemented
-    it("stripXmlTag() strips XML tags", () => {
-        expect(stripXmlTag('<?XML:NAMESPACE PREFIX = "PUBLIC" NS = "URN:COMPONENT" /><test-component></test-component>')).to.equal("<test-component></test-component>")
-    })
 
     describe("selects from the subject template", () => {
 

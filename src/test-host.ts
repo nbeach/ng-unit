@@ -54,7 +54,7 @@ function extractActions(watches: OutputWatch[]) {
     return watches.map(watch => watch.action)
 }
 
-export function stripXmlTag(html: string) {
+function stripXmlTag(html: string) {
     return html.replace(/<\?XML.+?\/>/, "")
 }
 
