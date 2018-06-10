@@ -1,7 +1,7 @@
 import {Component, Type} from "@angular/core"
 import {MockSetup} from "./mock-component"
 import {selectorOf} from "./selector-of"
-import {first} from "function-composition/src/function-composition"
+import {first} from "function-composition"
 import {uniq, chain} from "lodash"
 import createElement from "./element-creator"
 
@@ -54,10 +54,15 @@ function extractActions(watches: OutputWatch[]) {
     return watches.map(watch => watch.action)
 }
 
+function stripXmlTag(html: string) {
+    return html.replace(/<\?XML.+?\/>/, "")
+}
+
 function createComponentTag<T>(component: Type<T>, inputs: string[], outputs: string[]): string {
     return first(selectorOf)
         .then(createElement)
         .then(element => element.outerHTML)
+        .then(stripXmlTag) // IE11 Fix
         .then(addAttributes(inputs, input => `[${input}]="${input}"`))
         .then(addAttributes(outputs, output => `(${output})="${output}($event)"`))
         .apply(component)
@@ -69,5 +74,7 @@ function addAttributes(attributeNames: string[], pattern: (attribute: string) =>
         return tag.replace(/></, ` ${attributes}><`)
     }
 }
+
+
 
 

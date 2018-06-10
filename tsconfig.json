@@ -13,11 +13,7 @@
     "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
     "lib": ["es6", "dom"],
-    "types": ["node", "mocha", "chai-dom", "sinon-chai"],
+    "types": ["node", "mocha", "chai-dom", "sinon-chai",  "webpack-env"],
     "declaration" : true
-  },
-  "exclude": [
-    "mocha-shim.ts"
-  ]
-
+  }
 }

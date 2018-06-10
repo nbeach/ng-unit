@@ -1,5 +1,5 @@
 import {ComponentFixture} from "@angular/core/testing"
-import {isNil, isString} from "lodash"
+import {isNil, isString, findIndex} from "lodash"
 import {By} from "@angular/platform-browser"
 import {selectorOf} from "./selector-of"
 import {Type} from "@angular/core"
@@ -20,19 +20,11 @@ export function setTextInputValue(input: Element | null, value: string): void {
     })
 }
 
-function optionMatchingValue(options: HTMLOptionElement[], value: string): HTMLOptionElement {
-   const [match] = options.filter(option =>
-       option.getAttribute("value") === value || option.textContent === value)
-   return match
-}
 
 export function setSelectValue(selectBox: Element | null, value: string): void {
     doIfElementPresent(selectBox, selectBox => {
-        (selectBox as HTMLInputElement).value = value
-
-        const options = Array.from(selectBox.children) as HTMLOptionElement[]
-        options.forEach(option => option.removeAttribute("selected"))
-        optionMatchingValue(options, value).setAttribute("selected", "")
+        (selectBox as any).selectedIndex = findIndex(selectBox.children, option =>
+            option.getAttribute("value") === value || option.textContent === value)
 
         trigger(selectBox, "change")
     })
@@ -56,10 +48,33 @@ export function setRadioButton(radioButton: Element | null, selected: boolean): 
 
 export function trigger(element: Node | null, eventType: string): void {
     doIfElementPresent(element, element => {
-        if (eventType === "click") {
-            (element as HTMLElement).click()
-        } else {
+        try {
             element.dispatchEvent(new Event(eventType, { bubbles: true }))
+        } catch (exception) {
+            // IE11 Fix
+            if (exception.description === "Object doesn't support this action") {
+                const event = document.createEvent("MouseEvent")
+                event.initMouseEvent(
+                    eventType,
+                    true,
+                    true,
+                    window,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    false,
+                    false,
+                    false,
+                    false,
+                    0,
+                    null)
+                element.dispatchEvent(event)
+
+            } else {
+                throw exception
+            }
         }
     })
 }
