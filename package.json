@@ -36,7 +36,7 @@
     "clean": "rimraf src/**/*.js src/**/*.js.map src/**/*.d.ts",
     "build": "npm run clean && tsc",
     "release:tag": "git tag $(node -p -e \"require('./package.json').version\") && git push origin --tags",
-    "release": "npm test:browsers && npm run build && npm run release:tag && npm publish && npm run clean",
+    "release": "npm run test:browsers && npm run build && npm run release:tag && npm publish && npm run clean",
     "test": "mocha --opts mocha.opts --watch",
     "test:coverage": "nyc mocha --opts mocha.opts",
     "test:browsers": "karma start",
