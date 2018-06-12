@@ -1,11 +1,15 @@
-# ng-unit &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/nbeach/ng-unit/blob/master/LICENSE) [![npm version](https://img.shields.io/npm/v/ng-unit.svg?style=flat)](https://www.npmjs.com/package/ng-unit) [![Build Status](https://travis-ci.org/nbeach/ng-unit.svg?branch=master)](https://travis-ci.org/nbeach/ng-unit) [![Coverage Status](https://coveralls.io/repos/github/nbeach/ng-unit/badge.svg?branch=coverage)](https://coveralls.io/github/nbeach/ng-unit?branch=coverage)
+# ng-unit &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/nbeach/ng-unit/blob/master/LICENSE) [![npm version](https://img.shields.io/npm/v/ng-unit.svg?style=flat)](https://www.npmjs.com/package/ng-unit) [![Build Status](https://travis-ci.org/nbeach/ng-unit.svg?branch=master)](https://travis-ci.org/nbeach/ng-unit) [![Coverage Status](https://coveralls.io/repos/github/nbeach/ng-unit/badge.svg?branch=coverage)](https://coveralls.io/github/nbeach/ng-unit?branch=coverage)<a href="https://saucelabs.com" target="_blank"><img src="saucelabs.svg" alt="SauceLabs" align="right" height="45"></a>
+
 
 The boilerplate reducing test utility for Angular.
 
 Supports Angular version 2.4.10 and greater
 
+
 ## Installation
     npm install --save-dev ng-unit
+    
+
 
 ## Guide
 * [Basic Testing](#basic-testing)
@@ -22,6 +26,7 @@ Supports Angular version 2.4.10 and greater
 * [Interacting with child components](#interacting-with-child-components)
 * [Setting component inputs](#setting-component-inputs)
 * [Watching component outputs](#watching-component-outputs)
+* [Thanks to](#thanks-to)
 
 ## Basic Testing
 
@@ -173,3 +178,8 @@ Component outputs can be watched prior to component instantiation (so values emi
     .onOutput("save", event => persist(event))
     .begin();
   ```
+
+
+## Thanks to
+Cross-browser Testing Platform and Open Source <3 Provided by [SauceLabs](https://saucelabs.com/)
+
