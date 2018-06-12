@@ -1,4 +1,5 @@
-# ng-unit &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/nbeach/ng-unit/blob/master/LICENSE) [![npm version](https://img.shields.io/npm/v/ng-unit.svg?style=flat)](https://www.npmjs.com/package/ng-unit) [![Build Status](https://travis-ci.org/nbeach/ng-unit.svg?branch=master)](https://travis-ci.org/nbeach/ng-unit) [![Coverage Status](https://coveralls.io/repos/github/nbeach/ng-unit/badge.svg?branch=coverage)](https://coveralls.io/github/nbeach/ng-unit?branch=coverage)
+# ng-unit &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/nbeach/ng-unit/blob/master/LICENSE) [![npm version](https://img.shields.io/npm/v/ng-unit.svg?style=flat)](https://www.npmjs.com/package/ng-unit) [![Build Status](https://travis-ci.org/nbeach/ng-unit.svg?branch=master)](https://travis-ci.org/nbeach/ng-unit) [![Coverage Status](https://coveralls.io/repos/github/nbeach/ng-unit/badge.svg?branch=coverage)](https://coveralls.io/github/nbeach/ng-unit?branch=coverage)<a href="https://saucelabs.com" target="_blank"><img src="saucelabs.svg" alt="SauceLabs" align="right" height="45"></a>
+
 
 The boilerplate reducing test utility for Angular. Supports Angular version 2.4.10 and greater, and running tests in in Chrome, Firefox, Edge, IE11, and Node (via JSDOM).
 
@@ -65,8 +66,11 @@ it("sets the child components input", () => {
 })
 ```
 
+
 ## Installation
     npm install --save-dev ng-unit
+    
+
 
 ## Guide
 * [Basic Testing](#basic-testing)
@@ -84,6 +88,7 @@ it("sets the child components input", () => {
 * [Setting component inputs](#setting-component-inputs)
 * [Watching component outputs](#watching-component-outputs)
 * [Testing without test setup](#testing-without-test-setup)
+* [Thanks to](#thanks-to)
 
 ## Basic Testing
 
@@ -331,3 +336,7 @@ testComponent(SubjectComponent)
 
 Even if you don't wish to use ng-units test setup, you can still take advantage of it's mocking, selection, and 
 assignment methods.
+
+## Thanks to
+Cross-browser Testing Platform and Open Source <3 Provided by [SauceLabs](https://saucelabs.com/)
+
