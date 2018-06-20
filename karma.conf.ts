@@ -1,11 +1,13 @@
+const seconds = (time: number) => time * 1000
+
 module.exports = (config: any) => {
     config.set({
         singleRun: true,
-        concurrency: 2,
+        concurrency: 5,
         browserDisconnectTolerance: 5,
-        browserDisconnectTimeout: 30 * 1000,
-        browserNoActivityTimeout: 60 * 1000,
-        captureTimeout: 30 * 1000,
+        browserDisconnectTimeout: seconds(60),
+        browserNoActivityTimeout: seconds(60),
+        captureTimeout: seconds(60),
         files: ["./karma-init.ts"],
         frameworks: ["mocha"],
         reporters: ["dots", "saucelabs"],
@@ -42,7 +44,7 @@ module.exports = (config: any) => {
             "SauceLabs:Edge": {
                 base: "SauceLabs",
                 browserName: "MicrosoftEdge",
-                version: "14",
+                version: "latest",
                 platform: "Windows 10",
             },
             "SauceLabs:Safari": {
