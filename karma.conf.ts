@@ -15,6 +15,9 @@ module.exports = (config: any) => {
         preprocessors: {
             "./karma-init.ts": [ "webpack" ],
         },
+        sauceLabs: {
+            public: "public",
+        },
         webpack:  {
             mode: "development",
             resolve: {
