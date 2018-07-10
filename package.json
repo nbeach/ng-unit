@@ -42,7 +42,7 @@
     "test:browsers": "karma start",
     "test:prior-versions": "./test-angular-version.sh ^5.2.9 && ./test-angular-version.sh ^4.4.7 && ./test-angular-version.sh ^2.4.10",
     "lint": "tslint --project .",
-    "ci": "yarn test:browsers && yarn lint && yarn test:prior-versions && yarn test:coverage && nyc report --reporter=text-lcov | coveralls "
+    "ci": "yarn test:browsers && yarn lint && yarn test:prior-versions && yarn test:coverage && yarn build && nyc report --reporter=text-lcov | coveralls "
   },
   "nyc": {
     "extension": [
