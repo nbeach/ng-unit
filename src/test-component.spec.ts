@@ -398,7 +398,7 @@ describe("TestSetup", () => {
                 template: `<span id="message">{{parent}}</span>`,
             })
             class SubjectComponent {
-                @Input() private parent: string
+                @Input() private parent = ""
             }
 
             testComponent(SubjectComponent)

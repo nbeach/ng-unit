@@ -45,7 +45,7 @@ describe("DOM", () => {
             `,
         })
         class TestComponent {
-            public textValue: string
+            public textValue = ""
         }
         const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
 
@@ -63,7 +63,7 @@ describe("DOM", () => {
             `,
         })
         class TestComponent {
-            public textValue: string
+            public textValue = ""
         }
         const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
 
@@ -87,7 +87,7 @@ describe("DOM", () => {
             `,
             })
             class TestComponent {
-                public selectValue: string
+                public selectValue = ""
             }
             const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
 
@@ -108,7 +108,7 @@ describe("DOM", () => {
             `,
             })
             class TestComponent {
-                public selectValue: string
+                public selectValue = ""
             }
             const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
 
@@ -131,7 +131,7 @@ describe("DOM", () => {
             `,
         })
         class TestComponent {
-            public radioValue: string | null
+            public radioValue: string | null = null
 
             private radioButtonChanged(event: any) {
                 if (event.target.checked) {

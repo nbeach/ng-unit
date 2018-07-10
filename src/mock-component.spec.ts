@@ -17,7 +17,7 @@ describe("mockComponent", () => {
         it("receiving input bindings", () => {
             @Component({ selector: "child" })
             class ChildComponent {
-                @Input() private input: string
+                @Input() private input = ""
             }
 
             @Component({
@@ -25,7 +25,7 @@ describe("mockComponent", () => {
                 template: `<child [input]="boundToInput"></child>`,
             })
             class ParentComponent {
-                public boundToInput: string
+                public boundToInput = ""
             }
 
             const mockChildComponent = mockComponent(ChildComponent)
@@ -47,7 +47,7 @@ describe("mockComponent", () => {
         it("receiving named input bindings", () => {
             @Component({ selector: "child" })
             class ChildComponent {
-                @Input("differentInput") private namedInput: string
+                @Input("differentInput") private namedInput = ""
             }
 
             @Component({
@@ -55,7 +55,7 @@ describe("mockComponent", () => {
                 template: `<child [namedInput]="boundToInput"></child>`,
             })
             class ParentComponent {
-                public boundToInput: string
+                public boundToInput = ""
             }
 
 
@@ -87,7 +87,7 @@ describe("mockComponent", () => {
                 template: `<child (output)="outputFromChild = $event"></child>`,
             })
             class ParentComponent {
-                public outputFromChild: string
+                public outputFromChild = ""
             }
 
             const mockChildComponent = mockComponent(ChildComponent)
@@ -116,7 +116,7 @@ describe("mockComponent", () => {
                 template: `<child (namedOutput)="namedOutputFromChild = $event"></child>`,
             })
             class ParentComponent {
-                public namedOutputFromChild: string
+                public namedOutputFromChild = ""
             }
 
             const mockChildComponent = mockComponent(ChildComponent)
@@ -140,7 +140,7 @@ describe("mockComponent", () => {
     it("allows multiple instantiations of the mock", () => {
         @Component({ selector: "child" })
         class ChildComponent {
-            @Input() private input: string
+            @Input() private input = ""
         }
 
         @Component({
