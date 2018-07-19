@@ -1,4 +1,4 @@
-# ng-unit &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/nbeach/ng-unit/blob/master/LICENSE) [![npm version](https://img.shields.io/npm/v/ng-unit.svg?style=flat)](https://www.npmjs.com/package/ng-unit) [![Build Status](https://travis-ci.org/nbeach/ng-unit.svg?branch=master)](https://travis-ci.org/nbeach/ng-unit) [![Build Status](https://saucelabs.com/buildstatus/ngunit)](https://saucelabs.com/beta/builds/6b93d9263e9b49338e56e1834170d25c) [![Coverage Status](https://coveralls.io/repos/github/nbeach/ng-unit/badge.svg?branch=coverage)](https://coveralls.io/github/nbeach/ng-unit?branch=coverage)<a href="https://saucelabs.com" target="_blank"><img src="saucelabs.svg" alt="SauceLabs" align="right" height="45"></a>
+# ng-unit &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/nbeach/ng-unit/blob/master/LICENSE) [![npm version](https://img.shields.io/npm/v/ng-unit.svg?style=flat)](https://www.npmjs.com/package/ng-unit) [![Build Status](https://travis-ci.org/nbeach/ng-unit.svg?branch=master)](https://travis-ci.org/nbeach/ng-unit) [![Build Status](https://saucelabs.com/buildstatus/ngunit)](https://saucelabs.com/open_sauce/user/ngunit) [![Coverage Status](https://coveralls.io/repos/github/nbeach/ng-unit/badge.svg?branch=coverage)](https://coveralls.io/github/nbeach/ng-unit?branch=coverage)
 
 
 The boilerplate reducing test utility for Angular. Supports Angular version 2.4.10 and greater, and running tests in in Chrome, Firefox, Edge, IE11, and Node (via JSDOM).
@@ -346,7 +346,7 @@ mockProvider(() => jasmine.createSpy())
 
 ## Using real child components
 If you want your test to utilize a real instances of child components configure them with `.use()`. This can be useful 
-for doing integration tests that test numerous components.  Take not that using a real child component also requires 
+for doing integration tests that test numerous components.  Take note that using a real child component also requires 
 you to register any imports, providers, and child components the component uses just like you were setting up a 
 traditional test bed test. 
 
