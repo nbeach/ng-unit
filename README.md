@@ -186,16 +186,16 @@ testComponent(SubjectComponent)
     .begin()
 ```
 
-Once `.begin()` is called you can add new output watches with `onChanges()` 
+Once `.begin()` is called you can add new output watches with `onOutput()` 
 
 ```typescript
-import {testComponent, onChanges} from "ng-unit"
+import {testComponent, onOutput} from "ng-unit"
 
 testComponent(SubjectComponent)
     .onOutput("save", event => persist(event))
     .begin()
 
-onChanges("save", event => console.log(event))
+onOutput("save", event => console.log(event))
 ```
 
 #### Providing providers
