@@ -12,7 +12,7 @@ import {
     teardown,
     testComponent,
 } from "./index"
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
+import {Component, Directive, EventEmitter, Input, OnInit, Output} from "@angular/core"
 import {expect} from "chai"
 import {By} from "@angular/platform-browser"
 import {FormsModule} from "@angular/forms"
@@ -423,6 +423,45 @@ describe("TestSetup", () => {
         ["fixture",        fixture       ],
     ]).it("#name() throws an exception when used before a test has begun", (scenario: any) => {
         expect(scenario.method).to.throw("You must first start a test using .begin() before using this method")
+    })
+
+    it("testComponent() throws an exception when a test is in progress", () => {
+        @Component({selector: "test-component", template: ""})
+        class SubjectComponent {}
+
+        testComponent(SubjectComponent).begin()
+
+        expect(() => testComponent(SubjectComponent)).to.throw("You cannot configure a test while a test already is in progress")
+    })
+
+    where([
+        ["method"   ],
+        ["setInput" ],
+        ["onOutput" ],
+        ["import"   ],
+        ["providers"],
+        ["use"      ],
+        ["mock"     ],
+        ["setupMock"],
+    ]).it("TestBuilder.#method() throws an exception when a test is in progress", (scenario: any) => {
+        @Component({selector: "test-component", template: ""})
+        class SubjectComponent {}
+
+        const builder = testComponent(SubjectComponent)
+        builder.begin()
+
+        expect(builder[scenario.method].bind(builder)).to.throw("You cannot configure a test while a test already is in progress")
+    })
+
+    it("throw an exception when the user attempts to mock something that isn't a Component", () => {
+        @Component({selector: "test-component", template: ""})
+        class SubjectComponent {}
+
+        @Directive({selector: "some-directive"})
+        class SomeDirective {}
+
+        expect(() => testComponent(SubjectComponent).mock([SomeDirective])).to.throw("Cannot mock SomeDirective. Only mocking of Components is supported.")
+
     })
 
 })

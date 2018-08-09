@@ -1,14 +1,13 @@
 import {Component, EventEmitter, Input, Output, Type} from "@angular/core"
 import {selectorOf} from "./selector-of"
-import {extend, keys, keysIn, reduce, set, some, defaultTo} from "lodash"
+import {extend, keys, keysIn, reduce, set, some} from "lodash"
 import {stub} from "sinon"
 import {propertyMetadata} from "./reflection"
 
 let _mockProvider = stub
 
 function propertiesDecoratedWith(decorator: any, propertyMetadata: any): string[] {
-    const metadata = defaultTo(propertyMetadata, {})
-    return keys(metadata).filter((key: any) => instanceExistsIn(decorator, propertyMetadata[key]))
+    return keys(propertyMetadata).filter((key: any) => instanceExistsIn(decorator, propertyMetadata[key]))
 }
 
 function instanceExistsIn<T>(object: Type<T>, list: any[]): boolean {
