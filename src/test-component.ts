@@ -54,6 +54,7 @@ export const testComponent = <T>(subject: Type<T>) => new TestBuilder(subject)
 export class TestBuilder<T> {
     private _providers: any[] = []
     private _imports: any[] = []
+    private _schemas: any[] = []
     private _use: Type<any>[] = []
     private _mock: Type<any>[] = []
 
@@ -108,6 +109,13 @@ export class TestBuilder<T> {
         return this
     }
 
+    public schemas(schemas: any[]) {
+        throwIfTestAlreadyInProgress()
+
+        this._schemas = schemas
+        return this
+    }
+
     public import(imports: any[]) {
         throwIfTestAlreadyInProgress()
 
@@ -123,6 +131,7 @@ export class TestBuilder<T> {
             declarations: concat(TestHostComponent, this.subject, mockComponents, this._use),
             providers: this._providers,
             imports: this._imports,
+            schemas: this._schemas,
         })
 
         _fixture = TestBed.createComponent(TestHostComponent)
