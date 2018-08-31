@@ -12,7 +12,7 @@ import {
     teardown,
     testComponent,
 } from "./index"
-import {Component, Directive, EventEmitter, Input, OnInit, Output} from "@angular/core"
+import {Component, Directive, EventEmitter, Input, OnInit, Output, CUSTOM_ELEMENTS_SCHEMA} from "@angular/core"
 import {expect} from "chai"
 import {By} from "@angular/platform-browser"
 import {FormsModule} from "@angular/forms"
@@ -240,6 +240,18 @@ describe("TestSetup", () => {
             .begin()
 
         expect(element("#message")).to.have.text("Hello World")
+    })
+
+    it("configures schemas", () => {
+        @Component({
+            selector: "tested-component",
+            template: `<unknown-tag [unkownInput]="'unknown'"></unknown-tag>`,
+          })
+          class SubjectComponent {}
+
+        expect(() => testComponent(SubjectComponent)
+            .schemas([CUSTOM_ELEMENTS_SCHEMA])
+            .begin()).to.not.throw()
     })
 
     it("sets initial component input values", () => {

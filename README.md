@@ -209,6 +209,15 @@ testComponent(SubjectComponent)
     ])
     .begin()
 ```
+
+#### Using schemas
+[Schemas](https://angular.io/api/core/NgModule#schemas) can be registered with `.schemas()`
+
+```typescript
+testComponent(SubjectComponent)
+    .schemas([CUSTOM_ELEMENTS_SCHEMA])
+    .begin()
+```
   
 #### Importing other modules providers
 Other modules that your component under test depends upon can be imported using `.import()`
