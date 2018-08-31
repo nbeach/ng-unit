@@ -39,7 +39,7 @@
     "release": "npm run test:browsers && npm run build && npm run release:tag && npm publish && npm run clean",
     "test": "mocha --opts mocha.opts --watch",
     "test:coverage": "nyc mocha --opts mocha.opts",
-    "test:browsers": "karma start",
+    "test:browsers": "./test-browsers.sh",
     "test:prior-versions": "./test-angular-version.sh ^5.2.9 && ./test-angular-version.sh ^4.4.7 && ./test-angular-version.sh ^2.4.10",
     "lint": "tslint --project .",
     "ci": "yarn test:browsers && yarn lint && yarn test:prior-versions && yarn test:coverage && yarn build && nyc report --reporter=text-lcov | coveralls "
