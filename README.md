@@ -72,20 +72,20 @@ it("sets the child components input", () => {
 ## Guide
 * [Basic Testing](#basic-testing)
   * [A simple test](#a-simple-test)
-  * [Simulating DOM events](#simulating-dom-events)
-  * [Interacting with DOM inputs](#interacting-with-DOM-inputs)
-  * [Using real child components](#using-real-child-components)
+  * [Simulating events](#simulating-events)
+  * [Setting inputs element values](#setting-inputs-element-values)
+  * [Setting component inputs](#setting-component-inputs)
+  * [Watching component outputs](#watching-component-outputs)
   * [Providing providers](#providing-providers)
-* [Mocking Components](#mocking-components)
-  * [Mocking child components](#mocking-child-components)
+  * [Importing other modules](#importing-other-modules)
+  * [Using schemas](#using-schemas)
+* [Mocking child components](#mocking-child-components)
+  * [Interacting with mocked components](#interacting-with-mocked-components)
   * [Mocked components and transclusion](#mocked-components-and-transclusion)
-  * [Automatic component mocking](#automatic-component-mocking)
-  * [Configuring mock components](#configuring-mock-components)
-* [Interacting with child components](#interacting-with-child-components)
-* [Setting component inputs](#setting-component-inputs)
-* [Watching component outputs](#watching-component-outputs)
-* [Testing without test setup](#testing-without-test-setup)
-* [Thanks to](#thanks-to)
+  * [Custom mock providers](#custom-mock-providers)
+  * [Using real child components](#using-real-child-components)
+* [Usage without test setup](#usage-without-test-setup)
+
 
 ## Basic Testing
 
@@ -150,7 +150,7 @@ setSelectValue(element("select"), "Hancock") //Dropdown list now has the value "
 These work with any DOM element reference, not just those returned by ng-units selection methods. They can be used 
 in traditional TestBed tests if desired.
 
-## Setting component inputs
+#### Setting component inputs
 Initial values for component inputs can be set prior to component instantiation (so they are properly present at 
 OnInit time) with the test builder method`.setInput()`.
 
@@ -176,7 +176,7 @@ Unlike directly setting input properties on the component under test directly, u
 lifecycle methods such as `ngOnChanges()`. Take note that, in order to change an input after after `.begin()` is called 
 you must have given it an initial value while setting up the test.
 
-## Watching component outputs
+#### Watching component outputs
 Component outputs can be watched prior to component instantiation (so values emitted at OnInit time are not missed) 
 with `.onOutput()`.
 
@@ -210,6 +210,16 @@ testComponent(SubjectComponent)
     .begin()
 ```
 
+#### Importing other modules
+Other modules that your component under test depends upon can be imported using `.import()`
+
+```typescript
+testComponent(SubjectComponent)
+  .import([FormsModule, ReactiveFormsModule])
+  .begin()
+```
+
+
 #### Using schemas
 [Schemas](https://angular.io/api/core/NgModule#schemas) can be registered with `.schemas()`
 
@@ -219,15 +229,6 @@ testComponent(SubjectComponent)
     .begin()
 ```
   
-#### Importing other modules providers
-Other modules that your component under test depends upon can be imported using `.import()`
-
-```typescript
-testComponent(SubjectComponent)
-  .import([FormsModule, ReactiveFormsModule])
-  .begin()
-```
-
 ## Mocking child components
 Child components can be mocked during test setup with `.mock()`. When mocked a component will have a blank template
 and require none of it's normal imports, providers, or child components to be registered for the test. This isolates 
@@ -259,7 +260,7 @@ By default uses sinon for mocking functions. If you use Jasmine or another mocki
 for your own mocks using `mockProvider()`.
 
 
-#### Interacting with mocked child components
+#### Interacting with mocked components
 Child components can be selected with the  `component()` and `components()` functions. You can query for children 
 using either CSS selector of the Component type.
 
@@ -343,7 +344,7 @@ it("renders transcluded content", () => {
 })
 ```
 
-## Custom mock providers
+#### Custom mock providers
 By default ng-unit uses sinon stubs for mocking functions. You can configure your own mock provider if you prefer to 
 use Jasmine spys or another mocking framework.
 
@@ -353,7 +354,7 @@ import {mockProvider} from "ng-unit"
 mockProvider(() => jasmine.createSpy())
 ```
 
-## Using real child components
+#### Using real child components
 If you want your test to utilize a real instances of child components configure them with `.use()`. This can be useful 
 for doing integration tests that test numerous components.  Take note that using a real child component also requires 
 you to register any imports, providers, and child components the component uses just like you were setting up a 
