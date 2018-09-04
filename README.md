@@ -369,7 +369,7 @@ testComponent(SubjectComponent)
 ## Usage without test setup
 
 Even if you don't wish to use ng-units test setup, you can still take advantage of it's mocking, component selection, and 
-assignment methods.
+assignment functionality.
 
 Since `setTextInputValue()` and the other input setting functions use DOM elements, it allows you to use elements 
 selected using test beds selection methods.
@@ -380,7 +380,7 @@ const input = fixture.debugElement.query(By.css("input")).nativeElement
 setTextInputValue(input, "foo")
 ```
 
-Real or mocked child components can be easily selected even when not using of ng-units `testComponent()` can be done using the `selectComponent()` and `selectComponents()`
+Real or mocked child components can be selected even when not using `testComponent()` by utilizing the `selectComponent()` and `selectComponents()`
 functions and providing the test fixture.
 
 ```typescript
