@@ -437,15 +437,6 @@ describe("TestSetup", () => {
         expect(scenario.method).to.throw("You must first start a test using .begin() before using this method")
     })
 
-    it("testComponent() throws an exception when a test is in progress", () => {
-        @Component({selector: "test-component", template: ""})
-        class SubjectComponent {}
-
-        testComponent(SubjectComponent).begin()
-
-        expect(() => testComponent(SubjectComponent)).to.throw("You cannot configure a test while a test already is in progress")
-    })
-
     where([
         ["method"   ],
         ["setInput" ],
@@ -474,6 +465,16 @@ describe("TestSetup", () => {
 
         expect(() => testComponent(SubjectComponent).mock([SomeDirective])).to.throw("Cannot mock SomeDirective. Only mocking of Components is supported.")
 
+    })
+
+    it("testComponent() tears down existing tests", () => {
+        @Component({selector: "test-component", template: ""})
+        class SubjectComponent {}
+
+        testComponent(SubjectComponent).begin()
+        testComponent(SubjectComponent)
+
+        expect(() => subject()).to.throw()
     })
 
 })

@@ -63,7 +63,7 @@ export class TestBuilder<T> {
     private outputWatches: OutputWatch[] = []
 
     constructor(private subject: Type<T>) {
-        throwIfTestAlreadyInProgress()
+        teardown()
     }
 
     public setupMock(type: Type<any>, setup: (mock: any) => void): TestBuilder<T> {
