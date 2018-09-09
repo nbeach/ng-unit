@@ -5,11 +5,17 @@ import {first} from "function-composition"
 import {uniq, chain} from "lodash"
 import createElement from "./element-creator"
 
+/**
+ * @ignore
+ */
 export interface OutputWatch {
     name: string,
     action: (event: any) => void
 }
 
+/**
+ * @ignore
+ */
 export interface MockTypeAndSetup {
     type: Type<any>,
     setup: MockSetup
@@ -17,6 +23,9 @@ export interface MockTypeAndSetup {
 
 type Consumer<T> = (val: T) => void
 
+/**
+ * @ignore
+ */
 export default function createTestHostComponent<T>(subject: Type<T>, inputInitializations: Map<string, any>, outputWatches: OutputWatch[]): Type<any> {
     const inputsNames = Array.from(inputInitializations.keys())
     const outputNames = uniq(outputWatches.map(watch => watch.name))

@@ -1,6 +1,6 @@
 {
   "name": "ng-unit",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "Testing utilities for Angular",
   "main": "src/index.js",
   "types": "src/index.d.ts",
@@ -37,6 +37,7 @@
     "build": "npm run clean && tsc",
     "release:tag": "git tag $(node -p -e \"require('./package.json').version\") && git push origin --tags",
     "release": "npm run test:browsers && npm run build && npm run release:tag && npm publish && npm run clean",
+    "document": "typedoc --mode modules --readme none --theme minimal --excludePrivate --excludeProtected --excludeNotExported --exclude **/*.spec.ts --out docs --json docs/docs.json src",
     "test": "mocha --opts mocha.opts --watch",
     "test:coverage": "nyc mocha --opts mocha.opts",
     "test:browsers": "./test-browsers.sh",
@@ -105,7 +106,8 @@
     "function-composition": "^1.0.12",
     "lodash": "^4.17.4",
     "reflect-metadata": "^0.1.12",
-    "sinon": "^4.0.1"
+    "sinon": "^4.0.1",
+    "typedoc": "^0.12.0"
   },
   "peerDependencies": {
     "@angular/core": ">=2.4.10"

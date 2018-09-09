@@ -30,7 +30,9 @@ export function setSelectValue(selectBox: Element | null, value: string): void {
     })
 }
 
-export const setTextAreaValue = setTextInputValue
+export function setTextAreaValue(input: Element | null, value: string) {
+    setTextInputValue(input, value)
+}
 
 export function setCheckboxValue(input: Element | null, checked: boolean): void {
     doIfElementPresent(input, input => {
