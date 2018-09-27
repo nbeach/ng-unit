@@ -135,6 +135,12 @@ it("fires a click event handler", () => {
 })
 ```
 
+Additionally you can optionally pass an object with properties to be added to the event object.
+
+```typescript
+trigger(element('input'), 'keydown', { charCode: 13 })
+```
+
 #### Setting inputs element values
 Value setter convenience methods for DOM inputs are provided. They automatically fire the appropriate change/input 
 events on the input being set.
@@ -399,7 +405,6 @@ TestBed.configureTestingModule({
     declarations: [ComponentUnderTest, mockComponent(ChildCmponent)],
 })
 ```
-
 
 ## Thanks to
  [SauceLabs](https://saucelabs.com/) for generously providing our platform for cross browser testing
