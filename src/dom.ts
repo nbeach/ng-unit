@@ -49,7 +49,7 @@ export function setRadioButton(radioButton: Element | null, selected: boolean): 
 export function trigger(element: Node | null, eventType: string): void {
     doIfElementPresent(element, element => {
         try {
-            element.dispatchEvent(new Event(eventType, { bubbles: true }))
+            element.dispatchEvent(new Event(eventType, { bubbles: true, cancelable: true }))
         } catch (exception) {
             // IE11 Fix
             if (exception.description === "Object doesn't support this action") {
