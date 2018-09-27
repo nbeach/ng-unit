@@ -406,7 +406,6 @@ TestBed.configureTestingModule({
 })
 ```
 
-
 ## Thanks to
  [SauceLabs](https://saucelabs.com/) for generously providing our platform for cross browser testing
 
