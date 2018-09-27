@@ -373,6 +373,23 @@ describe("DOM", () => {
             expect(subject.parentTriggered).to.be.false
         })
 
+        it("allows providing properties for the event", () => {
+            @Component({
+                selector: "parent",
+                template: `
+                        <input type="text" (${scenario.event})="event = $event">
+                `,
+            })
+            class TestComponent {
+                public event: any = {}
+            }
+            const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
+
+            trigger(subjectElement.querySelector("input"), scenario.event, { keyCode: 55 })
+            fixture.detectChanges()
+            expect(subject.event.keyCode).to.equal(55)
+        })
+
     })
 
     where([
