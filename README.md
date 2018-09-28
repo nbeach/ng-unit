@@ -84,6 +84,7 @@ it("sets the child components input", () => {
   * [Mocked components and transclusion](#mocked-components-and-transclusion)
   * [Custom mock providers](#custom-mock-providers)
   * [Using real child components](#using-real-child-components)
+* [Falling back to TestBed functionality](#falling-back-to-testbed-functionality)
 * [Usage without test setup](#usage-without-test-setup)
 
 
@@ -370,6 +371,21 @@ traditional test bed test.
 testComponent(SubjectComponent)
   .use([FooComponent, BarComponent])
   .begin()
+```
+
+## Falling back to TestBed functionality
+
+In the event that ng-unit does not allow you to test something in the desired way you can always fall back to TestBed
+functionality by accessing the component fixture using `fixture()`.
+
+```typescript
+import {testComponent, fixture} from "ng-unit"
+
+it("allows accessing the component fixture", () => {
+  testComponent(SubjectComponent).begin()
+  
+  fixture().autoDetectChanges(true);
+})
 ```
 
 ## Usage without test setup
