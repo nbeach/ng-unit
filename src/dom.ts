@@ -53,7 +53,7 @@ export interface EventProperties {
 export function trigger(element: Node | null, eventType: string, eventProperties: EventProperties = {}): void {
     doIfElementPresent(element, element => {
         try {
-            const event: any = new Event(eventType, { bubbles: true })
+            const event: any = new Event(eventType, { bubbles: true, cancelable: true  })
             element.dispatchEvent(Object.assign(event, eventProperties))
         } catch (exception) {
             // IE11 Fix

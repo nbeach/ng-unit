@@ -392,6 +392,21 @@ describe("DOM", () => {
 
     })
 
+    it("trigger() does not cause page reloads when used with submit", () => {
+        @Component({
+            selector: "parent",
+            template: `<form id="theForm" [formGroup]="form" (submit)="submitted = true"></form>`,
+        })
+        class TestComponent {
+            public submitted = false
+            public form = new FormGroup( {})
+        }
+        const {subject, subjectElement} = setupTestModule(TestComponent)
+
+        trigger(subjectElement.querySelector("#theForm"), "submit")
+        expect(subject.submitted).to.be.true
+    })
+
     where([
         ["name",                    "method"            ],
         [setTextInputValue.name,    setTextInputValue   ],
