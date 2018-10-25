@@ -69,6 +69,23 @@ it("sets the child components input", () => {
 ## Installation
     npm install --save-dev ng-unit
     
+## Setup
+ 
+If you are using jasmine for mocking then no setup is needed. ng-unit will automatically use spys when it needs to 
+mock methods. If you don't use jasmine for mocking, then you will need to register a provider for mocks before you begin
+your tests.
+
+For example to use sinon stubs you would need to do the following before your tests
+```typescript
+import {mockProvider} from "ng-unit"
+
+mockProvider(() => sinon.stub())
+```
+
+In an Angular CLI app you would put this in test.ts
+
+ng-units documentation uses sinon stubs and chai assertions in all of it's examples
+    
 ## Guide
 * [Basic Testing](#basic-testing)
   * [A simple test](#a-simple-test)

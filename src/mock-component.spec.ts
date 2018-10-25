@@ -6,6 +6,9 @@ import {range} from "lodash"
 import {By} from "@angular/platform-browser"
 import {stub} from "sinon"
 
+declare let window: any
+declare let jasmine: any
+
 describe("mockComponent", () => {
 
     afterEach(() => {
@@ -223,6 +226,53 @@ describe("mockComponent", () => {
         const component = fixture.debugElement.query(By.css("child")).componentInstance
         component.someMethod()
         expect(called).to.be.true
+
+        mockProvider(stub)
+    })
+
+    it("uses jasmine for mocks by default when present", () => {
+        mockProvider(null!)
+        window.jasmine = { createSpy: () => stub().returns("I'm a jasmine spy I swear!")}
+
+        @Component({ selector: "parent", template: `<child></child>` })
+        class ParentComponent {}
+
+        @Component({ selector: "child" })
+        class ChildComponent {
+            public someMethod() {}
+        }
+
+        const mockChildComponent = mockComponent(ChildComponent, () => {})
+        TestBed.configureTestingModule({
+            declarations: [ParentComponent, mockChildComponent],
+        })
+        const fixture = TestBed.createComponent(ParentComponent)
+
+        const component = fixture.debugElement.query(By.css("child")).componentInstance
+        expect(component.someMethod()).to.equal("I'm a jasmine spy I swear!")
+
+        delete window.jasmine
+        mockProvider(stub)
+    })
+
+    it("throws an exception when no mock provider can be detected and none is provided", () => {
+
+        @Component({ selector: "parent", template: `<child></child>` })
+        class ParentComponent {}
+
+        @Component({ selector: "child" })
+        class ChildComponent {
+            public someMethod() {}
+        }
+
+        mockProvider(null!)
+
+        const mockChildComponent = mockComponent(ChildComponent, () => {})
+        TestBed.configureTestingModule({
+            declarations: [ParentComponent, mockChildComponent],
+        })
+
+        expect(() => TestBed.createComponent(ParentComponent)).to.throw("No mocking framework could be automatically detected. You must register a mock provider using mockProvider()")
 
         mockProvider(stub)
     })
