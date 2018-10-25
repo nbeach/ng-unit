@@ -92,6 +92,7 @@
     "nyc": "^11.6.0",
     "rimraf": "^2.6.2",
     "rxjs": "^6.0.0",
+    "sinon": "^4.0.1",
     "sinon-chai": "^3.0.0",
     "ts-loader": "^4.3.1",
     "ts-node": "^5.0.1",
@@ -104,8 +105,7 @@
   "dependencies": {
     "function-composition": "^1.0.12",
     "lodash": "^4.17.4",
-    "reflect-metadata": "^0.1.12",
-    "sinon": "^4.0.1"
+    "reflect-metadata": "^0.1.12"
   },
   "peerDependencies": {
     "@angular/core": ">=2.4.10"

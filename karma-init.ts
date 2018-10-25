@@ -8,8 +8,11 @@ import "zone.js/dist/async-test"
 import "zone.js/dist/fake-async-test"
 import { getTestBed } from "@angular/core/testing"
 import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from "@angular/platform-browser-dynamic/testing"
+import {mockProvider} from "./src"
+import {stub} from "sinon"
 
 getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting())
+mockProvider(stub)
 
 
 const testsContext = require.context("./src", true, /spec\.ts$/)

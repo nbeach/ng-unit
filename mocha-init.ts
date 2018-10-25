@@ -3,6 +3,8 @@ import "zone.js/dist/zone-node"
 
 import { getTestBed } from "@angular/core/testing"
 import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from "@angular/platform-browser-dynamic/testing"
+import {mockProvider} from "./src"
+import {stub} from "sinon"
 
 getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting())
 
@@ -13,3 +15,5 @@ const window = new JSDOM("<!doctype html><html><body></body></html>").window as 
 (global as any).HTMLElement = window.HTMLElement;
 (global as any).Node = window.Node;
 (global as any).Event = window.Event
+
+mockProvider(stub)
