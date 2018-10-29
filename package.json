@@ -1,7 +1,7 @@
 {
   "name": "ng-unit",
-  "version": "0.11.0",
-  "description": "Testing utilities for Angular",
+  "version": "1.0.0",
+  "description": "Angular component testing and mocking made easy",
   "main": "src/index.js",
   "types": "src/index.d.ts",
   "files": [
@@ -28,8 +28,10 @@
     "ng",
     "test",
     "testing",
+    "testbed",
     "mock",
     "mocking",
+    "directive",
     "component"
   ],
   "scripts": {
