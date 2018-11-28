@@ -34,7 +34,7 @@ export default function createTestHostComponent<T>(subject: Type<T>, inputInitia
 
 function addInputProperties(inputInitializations: Map<string, any>, object: any) {
     const inputs = Array.from(inputInitializations.entries())
-    inputs.forEach(input => object[input[0]] = input[1])
+    inputs.forEach(([key, value]) => object[key] = value)
 }
 
 function addOutputWatches(outputWatches: OutputWatch[], object: any) {

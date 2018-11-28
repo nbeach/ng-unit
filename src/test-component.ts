@@ -1,6 +1,5 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing"
 import {Component, Type} from "@angular/core"
-import {concat} from "lodash"
 import {selectComponent, selectComponents} from "./dom"
 import {mockComponent, MockSetup} from "./mock-component"
 import {selectorOf} from "./selector-of"
@@ -128,7 +127,7 @@ export class TestBuilder<T> {
         const TestHostComponent = createTestHostComponent(this.subject, this.inputInitializations, this.outputWatches)
 
         TestBed.configureTestingModule({
-            declarations: concat(TestHostComponent, this.subject, mockComponents, this._use),
+            declarations: [TestHostComponent, this.subject, ...mockComponents, this._use],
             providers: this._providers,
             imports: this._imports,
             schemas: this._schemas,
