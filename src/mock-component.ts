@@ -1,19 +1,18 @@
 import {Component, EventEmitter, Input, Output, Type} from "@angular/core"
 import {selectorOf} from "./selector-of"
-import {extend, keys, keysIn, reduce, set, some} from "lodash"
 import {propertyMetadata} from "./reflection"
-import isNil = require("lodash/fp/isNil")
 import {resolveGlobalObject} from "./global-object"
+import isNil = require("lodash/fp/isNil")
 
 declare const window: any
 declare const global: any
 
 function propertiesDecoratedWith(decorator: any, propertyMetadata: any): string[] {
-    return keys(propertyMetadata).filter((key: any) => instanceExistsIn(decorator, propertyMetadata[key]))
+    return Object.keys(propertyMetadata).filter((key: any) => instanceExistsIn(decorator, propertyMetadata[key]))
 }
 
 function instanceExistsIn<T>(object: Type<T>, list: any[]): boolean {
-    return some(list, (dec: any) => dec instanceof object)
+    return list.some(dec => dec instanceof object)
 }
 
 export type MockSetup = (mock: any) => void
@@ -43,10 +42,12 @@ export function mockComponent<T>(constructor: Type<T>, mockSetup: MockSetup = ()
     }
 
     const MockComponent = () => {
-        const outputs = reduce(options.outputs, (obj, property) => set(obj, property, new EventEmitter<any>()), {})
-        const mockedMethods = keysIn(constructor.prototype).reduce((obj, property) => set(obj, property, getMockProvider()()), {})
+        const mockProvider = getMockProvider()
 
-        const mocked = extend({}, outputs, mockedMethods)
+        const outputs = options.outputs.reduce((obj, property) => ({...obj, [property]: new EventEmitter() }), {})
+        const mockedMethods = Object.keys(constructor.prototype).reduce((obj, property) => ({...obj, [property]: mockProvider()}), {})
+
+        const mocked = {...outputs, ...mockedMethods}
         mockSetup(mocked)
         return mocked
     }
