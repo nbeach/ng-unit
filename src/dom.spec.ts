@@ -407,6 +407,20 @@ describe("DOM", () => {
         expect(subject.submitted).to.be.true
     })
 
+    it("trigger() supports triggering (keyup.enter) style bindings", () => {
+        @Component({
+            selector: "parent",
+            template: `<input (keyup.enter)="fired = true" />`,
+        })
+        class TestComponent {
+            public fired = false
+        }
+        const {subject, subjectElement} = setupTestModule(TestComponent)
+
+        trigger(subjectElement.querySelector("input"), "keyup", { key: "enter"} )
+        expect(subject.fired).to.be.true
+    })
+
     where([
         ["name",                    "method"            ],
         [setTextInputValue.name,    setTextInputValue   ],
