@@ -45,7 +45,7 @@ export function mockComponent<T>(constructor: Type<T>, mockSetup: MockSetup = ()
         const mockProvider = getMockProvider()
 
         const outputs = options.outputs.reduce((obj, property) => ({...obj, [property]: new EventEmitter() }), {})
-        const mockedMethods = Object.keys(constructor.prototype).reduce((obj, property) => ({...obj, [property]: mockProvider()}), {})
+        const mockedMethods = getOwnAndInheritedKeys(constructor.prototype).reduce((obj, property) => ({...obj, [property]: mockProvider()}), {})
 
         const mocked = {...outputs, ...mockedMethods}
         mockSetup(mocked)
@@ -53,4 +53,12 @@ export function mockComponent<T>(constructor: Type<T>, mockSetup: MockSetup = ()
     }
 
     return Component(options as Component)(MockComponent)
+}
+
+function getOwnAndInheritedKeys(object: any | null): string[] {
+    if (object === null) {
+        return []
+    }
+
+    return [...Object.keys(object), ...getOwnAndInheritedKeys(Object.getPrototypeOf(object))]
 }

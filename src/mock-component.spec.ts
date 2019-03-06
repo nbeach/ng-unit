@@ -203,6 +203,37 @@ describe("mockComponent", () => {
 
     })
 
+    it("mocks inherited component methods", () => {
+        @Component({ selector: "parent", template: `<child></child>` })
+        class TestedComponent {}
+
+        class GrandParent {
+            public foo() {}
+        }
+
+        class Parent extends GrandParent {
+            public bar() {}
+        }
+
+        @Component({ selector: "child" })
+        class InheritingComponent extends Parent {
+        }
+
+        const mockInheritingComponent = mockComponent(InheritingComponent)
+        TestBed.configureTestingModule({
+            declarations: [TestedComponent, mockInheritingComponent],
+        })
+
+        const fixture = TestBed.createComponent(TestedComponent)
+        fixture.detectChanges()
+
+        const component = fixture.debugElement.query(By.css("child")).componentInstance
+        component.foo()
+        component.bar()
+        expect(component.foo).to.have.been.called
+        expect(component.bar).to.have.been.called
+    })
+
     it("allows use of a custom mock factory", () => {
         @Component({ selector: "parent", template: `<child></child>` })
         class NonCommunicatingParent {}
