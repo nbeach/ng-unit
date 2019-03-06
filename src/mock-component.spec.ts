@@ -1,4 +1,4 @@
-import {Component, DebugElement, EventEmitter, Input, Output} from "@angular/core"
+import {Component, DebugElement, EventEmitter, Input, Output, ViewChild} from "@angular/core"
 import {ComponentFixture, TestBed} from "@angular/core/testing"
 import {expect} from "chai"
 import {mockComponent, mockProvider} from "./index"
@@ -335,5 +335,46 @@ describe("mockComponent", () => {
         const fixture = TestBed.createComponent(ParentComponent)
         fixture.detectChanges()
         expect(fixture.nativeElement.querySelector("#message")).to.have.text("Sasquatch")
+    })
+
+
+    it("supports @ViewChild properties", () => {
+        @Component({ selector: "child", template: "" })
+        class ChildComponent {
+            public invokeMe() { }
+        }
+
+        @Component({
+            selector: "parent",
+            template: `<child #junk></child>`,
+        })
+        class ParentComponent {
+            public childInst!: ChildComponent
+
+            @ViewChild(ChildComponent)
+            set child(child: ChildComponent) {
+                this.childInst = child
+            }
+
+            get child(): ChildComponent {
+                return this.childInst
+            }
+
+            public callChild() {
+                this.child.invokeMe()
+            }
+        }
+        const MockChildComponent = mockComponent(ChildComponent)
+        TestBed.configureTestingModule({
+            declarations: [ParentComponent, ChildComponent],
+        })
+
+
+        const fixture = TestBed.createComponent(ParentComponent)
+        fixture.detectChanges()
+
+        fixture.componentInstance.callChild()
+        const child = fixture.debugElement.query(By.css("child")).componentInstance
+        expect(child.invokeMe).to.have.been.called
     })
 })

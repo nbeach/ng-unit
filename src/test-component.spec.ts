@@ -4,7 +4,7 @@ import {
     detectChanges,
     element,
     elements,
-    fixture,
+    fixture, mockComponent,
     onOutput,
     setInput,
     subject,
@@ -12,12 +12,22 @@ import {
     teardown,
     testComponent,
 } from "./index"
-import {Component, Directive, EventEmitter, Input, OnInit, Output, CUSTOM_ELEMENTS_SCHEMA} from "@angular/core"
+import {
+    Component,
+    Directive,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output,
+    CUSTOM_ELEMENTS_SCHEMA,
+    ViewChild,
+} from "@angular/core"
 import {expect} from "chai"
 import {By} from "@angular/platform-browser"
 import {FormsModule} from "@angular/forms"
 import {setTextInputValue} from "./dom"
 import {where} from "mocha-where"
+import {TestBed} from "@angular/core/testing"
 
 describe("TestSetup", () => {
 
@@ -476,5 +486,40 @@ describe("TestSetup", () => {
 
         expect(() => subject()).to.throw()
     })
+
+    // it("supports @ViewChild properties", () => {
+    //     @Component({ selector: "child", template: "" })
+    //     class ChildComponent {
+    //         public invokeMe() { }
+    //     }
+    //
+    //     @Component({
+    //         selector: "parent",
+    //         template: `<child></child>`,
+    //     })
+    //     class ParentComponent {
+    //         public childInst!: ChildComponent
+    //
+    //         @ViewChild(ChildComponent)
+    //         set child(child: ChildComponent) {
+    //             this.childInst = child
+    //         }
+    //
+    //         get child() {
+    //             return this.childInst
+    //         }
+    //
+    //         public callChild() {
+    //             this.child.invokeMe()
+    //         }
+    //     }
+    //
+    //     const subject = testComponent(ParentComponent)
+    //          .use([ChildComponent])
+    //          .begin()
+    //
+    //     subject.callChild()
+    //     expect(component(ChildComponent).invokeMe).to.have.been.called
+    // })
 
 })
