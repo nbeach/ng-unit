@@ -1,6 +1,6 @@
 {
   "name": "ng-unit",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Angular component testing and mocking made easy",
   "main": "src/index.js",
   "types": "src/index.d.ts",
