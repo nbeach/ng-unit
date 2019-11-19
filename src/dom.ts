@@ -64,17 +64,17 @@ export function trigger(element: Node | null, eventType: string, eventProperties
                     true,
                     true,
                     window,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    false,
-                    false,
-                    false,
-                    false,
-                    0,
-                    null)
+                    eventProperties.detail || 0,
+                    eventProperties.screenX || 0,
+                    eventProperties.screenY || 0,
+                    eventProperties.clientX || 0,
+                    eventProperties.clientY || 0,
+                    eventProperties.ctrlKey || false,
+                    eventProperties.altKey || false,
+                    eventProperties.shiftKey || false,
+                    eventProperties.metaKey || false,
+                    eventProperties.button || 0,
+                    eventProperties.relatedTarget || null)
 
                 element.dispatchEvent(Object.assign(event, eventProperties))
 
