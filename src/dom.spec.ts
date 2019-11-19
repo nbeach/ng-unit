@@ -390,6 +390,45 @@ describe("DOM", () => {
             expect(subject.event.keyCode).to.equal(55)
         })
 
+        it("allows providing build in properties for the event (IE Fix)", () => {
+            @Component({
+                selector: "parent",
+                template: `
+                        <input type="text" (${scenario.event})="event = $event">
+                `,
+            })
+            class TestComponent {
+                public event: any = {}
+            }
+            const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
+
+            trigger(subjectElement.querySelector("input"), scenario.event, {
+                detail: 1,
+                screenX: 2,
+                screenY: 3,
+                clientX: 4,
+                clientY: 5,
+                ctrlKey: true,
+                altKey: true,
+                shiftKey: true,
+                metaKey: true,
+                button: 6,
+                relatedTarget: "related",
+            })
+            fixture.detectChanges()
+
+            expect(subject.event.detail).to.equal(1)
+            expect(subject.event.screenX).to.equal(2)
+            expect(subject.event.screenY).to.equal(3)
+            expect(subject.event.clientX).to.equal(4)
+            expect(subject.event.clientY).to.equal(5)
+            expect(subject.event.ctrlKey).to.equal(true)
+            expect(subject.event.altKey).to.equal(true)
+            expect(subject.event.shiftKey).to.equal(true)
+            expect(subject.event.metaKey).to.equal(true)
+            expect(subject.event.button).to.equal(6)
+        })
+
     })
 
     it("trigger() does not cause page reloads when used with submit", () => {
