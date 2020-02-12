@@ -24,7 +24,7 @@ export const setInput = (inputName: string, value: any): void => {
     throwIfNotIn(inputName, _initializedInputs, "In order to set an input after begin() is called you must provide an initial value with .setInput() at test setup time.")
     testFixture.componentInstance[inputName] = value
 }
-export const onOutput = (outputName: string, action: (event: any) => void): void => subject()[outputName].subscribe(action)
+export const onOutput = (outputName: string, action: (event: any) => void): void => subject<any>()[outputName].subscribe(action)
 export const detectChanges = (): void => fixture().detectChanges()
 export const teardown = (): void => {
     TestBed.resetTestingModule()
