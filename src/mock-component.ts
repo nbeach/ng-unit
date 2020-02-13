@@ -60,5 +60,8 @@ function getOwnAndInheritedKeys(object: any | null): string[] {
         return []
     }
 
-    return [...Object.keys(object), ...getOwnAndInheritedKeys(Object.getPrototypeOf(object))]
+    return [
+        ...Object.getOwnPropertyNames(object).filter(name => name !== "constructor"),
+        ...getOwnAndInheritedKeys(Object.getPrototypeOf(object)),
+    ]
 }
