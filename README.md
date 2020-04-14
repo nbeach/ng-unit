@@ -169,10 +169,25 @@ setTextAreaValue(element("textarea"), "Sasquatch") //Text area now has value "Sa
 setCheckboxValue(element("input[type=check]"), true) //Checkbox is now checked
 setRadioButton(element("input[type=radio]"), true) //Radio button is now selected
 setSelectValue(element("select"), "Hancock") //Dropdown list now has the value "Hancock" selected
+setSelectIndex(element("select"), 1) //Dropdown list now has the second option selected
+
 ```
 
 These work with any DOM element reference, not just those returned by ng-units selection methods. They can be used 
 in traditional TestBed tests if desired.
+
+#### Select lists and `[ngValue]`
+Using `[ngValue]` for select list option bindings complicates setting a value slightly. The bound values can be things 
+other than strings, and consequently the value is not bound to the DOM. This makes determining which option to select more complicated. 
+
+If you know the index of the option you want you can use  `setSelectIndex(element("select"), index)` to select the value
+
+If you have access to a list of all the objects that are bound as option values you can use `setSelectFromOptions()` to select the value:
+```typescript
+    const listOptions = [{ message: "Hello"}, { message: "Goodbye"}]
+    setSelectFromOptions(element("select"), { message: "Goodbye"}, listOptions)
+```
+
 
 #### Setting component inputs
 Initial values for component inputs can be set prior to component instantiation (so they are properly present at 
