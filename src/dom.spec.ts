@@ -5,6 +5,8 @@ import {
     selectComponents,
     setCheckboxValue,
     setRadioButton,
+    setSelectFromOptions,
+    setSelectIndex,
     setSelectValue,
     setTextAreaValue,
     setTextInputValue,
@@ -114,6 +116,117 @@ describe("DOM", () => {
 
 
             setSelectValue(subjectElement.querySelector("select"), "Adios")
+            fixture.detectChanges()
+
+            expect(subject.selectValue).to.equal("Adios")
+        })
+
+
+    })
+
+    describe("setSelectIndex() sets the value of select elements", () => {
+
+        it("when options have value attributes", () => {
+            @Component({
+                selector: "parent",
+                template: `
+                    <select [(ngModel)]="selectValue">
+                        <option></option>
+                        <option value="Hola">Hello</option>
+                        <option value="Adios">Goodbye</option>
+                    </select>
+                `,
+            })
+            class TestComponent {
+                public selectValue = ""
+            }
+            const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
+
+
+            setSelectIndex(subjectElement.querySelector("select"), 2)
+            fixture.detectChanges()
+
+            expect(subject.selectValue).to.equal("Adios")
+        })
+
+        it("when options have ngValue attributes", () => {
+            @Component({
+                selector: "parent",
+                template: `
+                    <select [(ngModel)]="selectValue">
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="{ message: 'Hola' }">Hello</option>
+                        <option [ngValue]="{ message: 'Adios' }">Goodbye</option>
+                    </select>
+                `,
+            })
+            class TestComponent {
+                public selectValue = null
+            }
+            const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
+
+            setSelectIndex(subjectElement.querySelector("select"), 1)
+            fixture.detectChanges()
+            expect(subject.selectValue).to.deep.equal({ message: "Hola" })
+
+            setSelectIndex(subjectElement.querySelector("select"), 0)
+            fixture.detectChanges()
+            expect(subject.selectValue).to.equal(null)
+        })
+
+    })
+
+    describe("setSelectFromOptions() sets the value of select elements", () => {
+
+        it("when options have ngValue attributes", () => {
+            @Component({
+                selector: "parent",
+                template: `
+                <select [(ngModel)]="selectValue">
+                    <option *ngFor="let option of allOptions" [ngValue]="option">{{option?.label}}</option>
+                </select>
+            `,
+            })
+            class TestComponent {
+                public allOptions = [
+                    null,
+                    { label: "Hello", value: "Hola" },
+                    { bar: "Adios" },
+                ]
+
+                public selectValue = null
+            }
+            const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
+
+
+            setSelectFromOptions(subjectElement.querySelector("select"), { bar: "Adios" }, subject.allOptions)
+            fixture.detectChanges()
+
+            expect(subject.selectValue).to.deep.equal({ bar: "Adios" })
+        })
+
+        it("when options have value attributes", () => {
+            @Component({
+                selector: "parent",
+                template: `
+                <select [(ngModel)]="selectValue">
+                    <option *ngFor="let option of allOptions" value="{{option?.value}}">{{option?.label}}</option>
+                </select>
+            `,
+            })
+            class TestComponent {
+                public allOptions = [
+                    null,
+                    { label: "Hello", value: "Hola" },
+                    { label: "Goodbye", value: "Adios" },
+                ]
+
+                public selectValue = null
+            }
+            const {subject, subjectElement, fixture} = setupTestModule(TestComponent)
+
+
+            setSelectFromOptions(subjectElement.querySelector("select"), { label: "Goodbye", value: "Adios" }, subject.allOptions)
             fixture.detectChanges()
 
             expect(subject.selectValue).to.equal("Adios")
@@ -464,6 +577,8 @@ describe("DOM", () => {
         ["name",                    "method"            ],
         [setTextInputValue.name,    setTextInputValue   ],
         [setSelectValue.name,       setSelectValue      ],
+        [setSelectIndex.name,       setSelectIndex      ],
+        [setSelectFromOptions.name, setSelectFromOptions],
         [setTextAreaValue.name,     setTextAreaValue    ],
         [setCheckboxValue.name,     setCheckboxValue    ],
         [setRadioButton.name,       setRadioButton      ],

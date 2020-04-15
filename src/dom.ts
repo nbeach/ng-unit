@@ -3,6 +3,7 @@ import {isNil, isString, findIndex} from "lodash"
 import {By} from "@angular/platform-browser"
 import {selectorOf} from "./selector-of"
 import {Type} from "@angular/core"
+import { isEqual } from "lodash"
 
 function doIfElementPresent<T>(element: T | null, action: (item: T) => void) {
     if (isNil(element)) {
@@ -20,13 +21,24 @@ export function setTextInputValue(input: Element | null, value: string): void {
     })
 }
 
+export function setSelectIndex(selectBox: Element | null, index: number): void {
+    doIfElementPresent(selectBox, selectBox => {
+        (selectBox as any).selectedIndex = index
+        trigger(selectBox, "change")
+    })
+}
 
 export function setSelectValue(selectBox: Element | null, value: string): void {
     doIfElementPresent(selectBox, selectBox => {
-        (selectBox as any).selectedIndex = findIndex(selectBox.children, option =>
-            option.getAttribute("value") === value || option.textContent === value)
+        const index = findIndex(selectBox.children, option => option.getAttribute("value") === value || option.textContent === value)
+        setSelectIndex(selectBox, index)
+    })
+}
 
-        trigger(selectBox, "change")
+export function setSelectFromOptions(selectBox: Element | null, optionToSelection: any, allOptions: any[]): void {
+    doIfElementPresent(selectBox, selectBox => {
+        const index = findIndex(allOptions, option => isEqual(option, optionToSelection))
+        setSelectIndex(selectBox, index)
     })
 }
 
