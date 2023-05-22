@@ -6,8 +6,7 @@ folder_name="test-angular-version-"
 test_folder=${folder_name}${version}
 
 mkdir ${test_folder}
-cp -r src/ ${test_folder}/src
-cp *.* ${test_folder}
+cp -r ./**/* ${test_folder}/
 cd ${test_folder}
 
 node ../node_modules/.bin/ts-node change-angular-version.ts $1
