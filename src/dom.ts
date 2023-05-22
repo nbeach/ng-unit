@@ -67,7 +67,7 @@ export function trigger(element: Node | null, eventType: string, eventProperties
         try {
             const event: any = new Event(eventType, { bubbles: true, cancelable: true  })
             element.dispatchEvent(Object.assign(event, eventProperties))
-        } catch (exception) {
+        } catch (exception: any) {
             // IE11 Fix
             if (exception.description === "Object doesn't support this action") {
                 const event = document.createEvent("MouseEvent")
