@@ -38,8 +38,8 @@ describe("propertyMetadata()", () => {
 
         const actual = propertyMetadata(SomeComponent)
 
-        expect(actual.one[0].bindingPropertyName).to.equal("foo")
-        expect(actual.two[0].bindingPropertyName).to.equal("bar")
+        expect(actual.one[0].bindingPropertyName || actual.one[0].alias).to.equal("foo")
+        expect(actual.two[0].bindingPropertyName || actual.two[0].alias).to.equal("bar")
     })
 
     it("returns an empty object when no properties are decorated", () => {

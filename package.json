@@ -43,7 +43,7 @@
     "test:nowatch": "mocha",
     "test:coverage": "nyc mocha",
     "test:browsers": "./test-browsers.sh",
-    "test:prior-versions": "./test-angular-version.sh ^13.4.0 && ./test-angular-version.sh ^12.2.17 && ./test-angular-version.sh ^11.2.14 && ./test-angular-version.sh ^10.2.5 && ./test-angular-version.sh ^9.1.13 && ./test-angular-version.sh ^8.2.14 && ./test-angular-version.sh ^7.2.15 && ./test-angular-version.sh ^6.1.10",
+    "test:prior-versions": "./test-angular-version.sh ^15.2.9 && ./test-angular-version.sh ^14.3.0 && ./test-angular-version.sh ^13.4.0 && ./test-angular-version.sh ^12.2.17 && ./test-angular-version.sh ^11.2.14 && ./test-angular-version.sh ^10.2.5 && ./test-angular-version.sh ^9.1.13 && ./test-angular-version.sh ^8.2.14 && ./test-angular-version.sh ^7.2.15 && ./test-angular-version.sh ^6.1.10",
     "lint": "tslint --project .",
     "ci": "yarn test:browsers && yarn lint && yarn test:prior-versions && yarn test:coverage && yarn build && nyc report --reporter=text-lcov | coveralls "
   },
@@ -84,12 +84,12 @@
     "all": true
   },
   "devDependencies": {
-    "@angular/common": "^13.4.0",
-    "@angular/compiler": "^13.4.0",
-    "@angular/core": "^13.4.0",
-    "@angular/forms": "^13.4.0",
-    "@angular/platform-browser": "^13.4.0",
-    "@angular/platform-browser-dynamic": "^13.4.0",
+    "@angular/common": "^16.0.2",
+    "@angular/compiler": "^16.0.2",
+    "@angular/core": "^16.0.2",
+    "@angular/forms": "^16.0.2",
+    "@angular/platform-browser": "^16.0.2",
+    "@angular/platform-browser-dynamic": "^16.0.2",
     "@tsconfig/node18": "^2.0.1",
     "@types/chai": "^4.0.4",
     "@types/chai-dom": "0.0.7",
