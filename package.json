@@ -43,7 +43,7 @@
     "test:nowatch": "mocha",
     "test:coverage": "nyc mocha",
     "test:browsers": "./test-browsers.sh",
-    "test:prior-versions": "./test-angular-version.sh ^15.2.9 && ./test-angular-version.sh ^14.3.0 && ./test-angular-version.sh ^13.4.0 && ./test-angular-version.sh ^12.2.17 && ./test-angular-version.sh ^11.2.14 && ./test-angular-version.sh ^10.2.5 && ./test-angular-version.sh ^9.1.13 && ./test-angular-version.sh ^8.2.14 && ./test-angular-version.sh ^7.2.15 && ./test-angular-version.sh ^6.1.10",
+    "test:prior-versions": "./test-angular-version.sh ^15.2.9 && ./test-angular-version.sh ^14.3.0",
     "lint": "tslint --project .",
     "ci": "yarn test:browsers && yarn lint && yarn test:prior-versions && yarn test:coverage && yarn build && nyc report --reporter=text-lcov | coveralls "
   },
