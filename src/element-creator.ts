@@ -1,6 +1,6 @@
-import {isNil, isNull, isUndefined} from "lodash"
+import lodash from "lodash"
 import {first} from "function-composition"
-
+const {isNil, isNull, isUndefined} = lodash
 function match(value: string, regex: RegExp): string[] {
     const matches = value.match(regex)
     return matches === null ? [] : matches

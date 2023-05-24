@@ -1,5 +1,5 @@
-import isNil = require("lodash/fp/isNil")
-import includes = require("lodash/fp/includes")
+import lodash from "lodash"
+const {includes, isNil} = lodash
 
 export function throwIfNil(value: any, error: string): void {
     if (isNil(value)) {
@@ -8,7 +8,7 @@ export function throwIfNil(value: any, error: string): void {
 }
 
 export function throwIfNotIn(value: any, list: any[], message: string) {
-    if (!includes(value, list)) {
+    if (list.length === 0 || !includes(value, list)) {
         throw new Error(message)
     }
 }

@@ -1,6 +1,6 @@
-import {getAnnotation} from "./reflection"
+import {getAnnotation} from "./reflection.js"
 import {Component, Type} from "@angular/core"
-import {throwIfNil} from "./exception"
+import {throwIfNil} from "./exception.js"
 
 export function selectorOf(component: Type<any>) {
     const annotation = getAnnotation(component, Component)

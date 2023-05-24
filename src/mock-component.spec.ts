@@ -1,8 +1,10 @@
 import {Component, DebugElement, EventEmitter, Input, Output} from "@angular/core"
 import {ComponentFixture, TestBed} from "@angular/core/testing"
-import {expect} from "chai"
-import {mockComponent, mockProvider} from "./index"
-import {range} from "lodash"
+import * as chai from "chai"
+const {expect} = chai
+import {mockComponent, mockProvider} from "./index.js"
+import lodash from "lodash"
+const  {range} = lodash
 import {By} from "@angular/platform-browser"
 import {stub} from "sinon"
 
@@ -18,7 +20,7 @@ describe("mockComponent", () => {
     describe("can communicate with it's parent by", () => {
 
         it("receiving input bindings", () => {
-            @Component({ selector: "child" })
+            @Component({ selector: "child", template: "<span></span>" })
             class ChildComponent {
                 @Input() private input = ""
             }
@@ -48,7 +50,7 @@ describe("mockComponent", () => {
         })
 
         it("receiving named input bindings", () => {
-            @Component({ selector: "child" })
+            @Component({ selector: "child", template: "<span></span>" })
             class ChildComponent {
                 @Input("differentInput") private namedInput = ""
             }
@@ -80,7 +82,7 @@ describe("mockComponent", () => {
 
 
         it("emitting output events", () => {
-            @Component({ selector: "child" })
+            @Component({ selector: "child", template: "<span></span>" })
             class ChildComponent {
                 @Output() private output = new EventEmitter<any>()
             }
@@ -109,7 +111,7 @@ describe("mockComponent", () => {
         })
 
         it("emitting named output events", () => {
-            @Component({ selector: "child" })
+            @Component({ selector: "child", template: "<span></span>" })
             class ChildComponent {
                 @Output("differentOutput") private namedOutput = new EventEmitter<any>()
             }
@@ -141,7 +143,7 @@ describe("mockComponent", () => {
     })
 
     it("allows multiple instantiations of the mock", () => {
-        @Component({ selector: "child" })
+        @Component({ selector: "child", template: "<span></span>" })
         class ChildComponent {
             @Input() private input = ""
         }
@@ -176,7 +178,7 @@ describe("mockComponent", () => {
             @Component({ selector: "parent", template: `<child></child>` })
             class NonCommunicatingParent {}
 
-            @Component({ selector: "child" })
+            @Component({ selector: "child", template: "<span></span>" })
             class NonCommunicatingChildComponent {
                 public someMethod() {}
             }
@@ -215,7 +217,7 @@ describe("mockComponent", () => {
             public bar() {}
         }
 
-        @Component({ selector: "child" })
+        @Component({ selector: "child", template: "<span></span>" })
         class InheritingComponent extends Parent {
         }
 
@@ -238,7 +240,7 @@ describe("mockComponent", () => {
         @Component({ selector: "parent", template: `<child></child>` })
         class NonCommunicatingParent {}
 
-        @Component({ selector: "child" })
+        @Component({ selector: "child", template: "<span></span>" })
         class NonCommunicatingChildComponent {
             public someMethod() {}
         }
@@ -268,7 +270,7 @@ describe("mockComponent", () => {
         @Component({ selector: "parent", template: `<child></child>` })
         class ParentComponent {}
 
-        @Component({ selector: "child" })
+        @Component({ selector: "child", template: "<span></span>" })
         class ChildComponent {
             public someMethod() {}
         }
@@ -291,7 +293,7 @@ describe("mockComponent", () => {
         @Component({ selector: "parent", template: `<child></child>` })
         class ParentComponent {}
 
-        @Component({ selector: "child" })
+        @Component({ selector: "child", template: "<span></span>" })
         class ChildComponent {
             public someMethod() {}
         }
@@ -309,7 +311,7 @@ describe("mockComponent", () => {
     })
 
     it("creates unique event emitters for each instance", () => {
-        @Component({ selector: "component" })
+        @Component({ selector: "component", template: "<span></span>" })
         class SomeComponent {
             @Output() private output = new EventEmitter<any>()
         }
@@ -322,7 +324,7 @@ describe("mockComponent", () => {
     })
 
     it("creates unique method mocks for each instance", () => {
-        @Component({ selector: "component" })
+        @Component({ selector: "component", template: "<span></span>" })
         class SomeComponent {
             public foo() { }
         }
@@ -335,7 +337,7 @@ describe("mockComponent", () => {
     })
 
     it("allows for mock setup to be passed", () => {
-        @Component({ selector: "component" })
+        @Component({ selector: "component", template: "<span></span>" })
         class SomeComponent {
             public foo() { }
         }
@@ -349,7 +351,7 @@ describe("mockComponent", () => {
     })
 
     it("supports rendering transcluded content", () => {
-        @Component({ selector: "child" })
+        @Component({ selector: "child", template: "<span></span>" })
         class ChildComponent {}
 
         @Component({

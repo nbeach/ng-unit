@@ -1,5 +1,6 @@
 import {Component, Type} from "@angular/core"
 import {ComponentFixture, TestBed} from "@angular/core/testing"
+// @ts-ignore
 import {
     selectComponent,
     selectComponents,
@@ -11,9 +12,10 @@ import {
     setTextAreaValue,
     setTextInputValue,
     trigger,
-} from "./index"
+} from "./index.js"
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms"
-import {expect} from "chai"
+import chai from "chai"
+const {expect} = chai
 import {where} from "mocha-where"
 
 describe("DOM", () => {
@@ -420,7 +422,7 @@ describe("DOM", () => {
             ...clipBoardEvents,
         ].map(event => [event]),
 
-    ]).describe("trigger() with #event", (scenario) => {
+    ]).describe("trigger() with #event", (scenario: any) => {
 
         it("triggers the provided event on the element", () => {
             @Component({
@@ -584,7 +586,7 @@ describe("DOM", () => {
         [setRadioButton.name,       setRadioButton      ],
         [trigger.name,              trigger             ],
     ])
-    .it("#name() throws an error when the element is null", (scenario) => {
+    .it("#name() throws an error when the element is null", (scenario: any) => {
         expect(() => scenario.method(null, "")).to.throw("Element is not present")
     })
 

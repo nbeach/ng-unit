@@ -1,6 +1,5 @@
-import createElement from "./element-creator"
+import createElement from "./element-creator.js"
 import {expect} from "chai"
-
 describe("createElement()", () => {
 
     describe("creates elements with", () => {

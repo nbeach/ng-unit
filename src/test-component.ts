@@ -1,11 +1,11 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing"
 import {Component, Type} from "@angular/core"
-import {selectComponent, selectComponents} from "./dom"
-import {mockComponent, MockSetup} from "./mock-component"
-import {selectorOf} from "./selector-of"
-import {default as createTestHostComponent, MockTypeAndSetup, OutputWatch} from "./test-host"
-import {throwIfNil, throwIfNotIn} from "./exception"
-import {getAnnotation} from "./reflection"
+import {selectComponent, selectComponents} from "./dom.js"
+import {mockComponent, MockSetup} from "./mock-component.js"
+import {selectorOf} from "./selector-of.js"
+import {default as createTestHostComponent, MockTypeAndSetup, OutputWatch} from "./test-host.js"
+import {throwIfNil, throwIfNotIn} from "./exception.js"
+import {getAnnotation} from "./reflection.js"
 
 const testNotStartedMessage = "You must first start a test using .begin() before using this method"
 

@@ -1,11 +1,11 @@
 import {Component, Injectable, Input, Output} from "@angular/core"
-import {getAnnotation, propertyMetadata} from "./reflection"
+import {getAnnotation, propertyMetadata} from "./reflection.js"
 import {expect} from "chai"
 
 describe("getAnnotation()", () => {
 
     it("returns the annotation object for the class", () => {
-        @Component({ selector: "foo" })
+        @Component({ selector: "foo", template: "<span></span>" })
         class SomeComponent {}
 
         expect(getAnnotation(SomeComponent, Component).selector).to.equal("foo")

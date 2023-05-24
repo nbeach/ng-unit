@@ -1,4 +1,5 @@
-import isNil = require("lodash/fp/isNil")
+import lodash from "lodash"
+const {isNil} = lodash
 
 export function resolveGlobalObject(): any {
     try {

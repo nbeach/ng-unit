@@ -1,9 +1,11 @@
 {
   "compilerOptions": {
-    "target": "ES5",
-    "module": "commonjs",
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "NodeNext",
     "sourceMap": true,
     "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "importHelpers": true,
     "noEmitHelpers": true,

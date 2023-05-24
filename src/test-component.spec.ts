@@ -11,12 +11,12 @@ import {
     subjectElement,
     teardown,
     testComponent,
-} from "./index"
+} from "./index.js"
 import {Component, Directive, EventEmitter, Input, OnInit, Output, CUSTOM_ELEMENTS_SCHEMA} from "@angular/core"
 import {expect} from "chai"
 import {By} from "@angular/platform-browser"
 import {FormsModule} from "@angular/forms"
-import {setTextInputValue} from "./dom"
+import {setTextInputValue} from "./dom.js"
 import {where} from "mocha-where"
 
 describe("TestSetup", () => {

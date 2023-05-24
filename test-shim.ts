@@ -15,8 +15,8 @@ import "core-js/es6/reflect"
 import "core-js/es7/reflect"
 
 import * as chai from "chai"
-import * as sinonChai from "sinon-chai"
-import * as chaiDom from "chai-dom"
+import sinonChai from "sinon-chai"
+import chaiDom from "chai-dom"
 
 chai.use(sinonChai)
 chai.use(chaiDom)

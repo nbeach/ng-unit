@@ -1,8 +1,9 @@
 import {Component, EventEmitter, Input, Output, Type} from "@angular/core"
-import {selectorOf} from "./selector-of"
-import {propertyMetadata} from "./reflection"
-import {resolveGlobalObject} from "./global-object"
-import isNil = require("lodash/fp/isNil")
+import {selectorOf} from "./selector-of.js"
+import {propertyMetadata} from "./reflection.js"
+import {resolveGlobalObject} from "./global-object.js"
+import lodash from "lodash"
+const {isNil} = lodash
 
 declare const window: any
 declare const global: any
@@ -41,7 +42,7 @@ export function mockComponent<T>(constructor: Type<T>, mockSetup: MockSetup = ()
         outputs: propertiesDecoratedWith(Output, componentPropertyMetadata),
     }
 
-    const MockComponent = () => {
+    const MockComponent = function Mock() {
         const mockProvider = getMockProvider()
 
         const outputs = options.outputs.reduce((obj, property) => ({...obj, [property]: new EventEmitter() }), {})

@@ -1,10 +1,9 @@
 import {ComponentFixture} from "@angular/core/testing"
-import {isNil, isString, findIndex} from "lodash"
 import {By} from "@angular/platform-browser"
-import {selectorOf} from "./selector-of"
+import {selectorOf} from "./selector-of.js"
 import {Type} from "@angular/core"
-import { isEqual } from "lodash"
-
+import lodash from "lodash"
+const { isEqual, isNil, isString, findIndex } = lodash
 function doIfElementPresent<T>(element: T | null, action: (item: T) => void) {
     if (isNil(element)) {
         throw new Error("Element is not present")

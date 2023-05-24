@@ -1,10 +1,10 @@
 import {Component, Type} from "@angular/core"
-import {MockSetup} from "./mock-component"
-import {selectorOf} from "./selector-of"
+import {MockSetup} from "./mock-component.js"
+import {selectorOf} from "./selector-of.js"
 import {first} from "function-composition"
-import {uniq, chain} from "lodash"
-import createElement from "./element-creator"
-
+import lodash from "lodash"
+import createElement from "./element-creator.js"
+const {uniq, chain} = lodash
 export interface OutputWatch {
     name: string,
     action: (event: any) => void
