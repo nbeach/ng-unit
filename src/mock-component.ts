@@ -12,7 +12,7 @@ function propertiesDecoratedWith(decorator: any, propertyMetadata: any): string[
 }
 
 function instanceExistsIn<T>(object: Type<T>, list: any[]): boolean {
-    return list.some(dec => dec instanceof object)
+    return list.some(dec => dec instanceof object || (object as any).annotationCls === dec.type)
 }
 
 export type MockSetup = (mock: any) => void
