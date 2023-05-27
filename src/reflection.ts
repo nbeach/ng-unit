@@ -10,5 +10,5 @@ export function getAnnotation(object: Type<any>, annotationType: any): any | und
 }
 
 export function propertyMetadata(object: Type<any>): any {
-    return (object as any).__prop__metadata__ ||  Reflect.getMetadata("propMetadata", object) || {}
+    return (object as any).propDecorators || (object as any).__prop__metadata__ ||  Reflect.getMetadata("propMetadata", object) || {}
 }
